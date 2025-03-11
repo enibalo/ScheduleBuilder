@@ -111,7 +111,7 @@ export default function GetSchedule() {
         </section>
         
         <section>
-          <div id={style.box}>
+          {/*<div id={style.box}>
           <div id={style.listContainer}> 
             <div>
               <h4 className="underline">Enroll</h4>
@@ -138,19 +138,54 @@ export default function GetSchedule() {
               </ul>
             </div>
           </div>
-          <div id={style.buttonContainer}> 
+          <div className={style.buttonContainer}> 
             <button id={style.button}>Cancel</button>
             <button id={style.button}>Confirm</button>
           </div>
-          </div>
+          </div>*/}
+          <PopUp></PopUp>
         </section>
       </main>
-      <div>
-        
+      <div className={style.buttonContainer}>
+        <button id={style.button}>Go Home</button>
       </div>
     </div>
     </div>
   );
 }
+
+
+
+function CheckMark () {
+  return (
+    <svg className={style.icon} width="24" height="24" viewBox="0 0 24 24">
+      <path d="M5 13l4 4L19 7" stroke="green" strokeWidth="2" fill="none"/>
+    </svg>
+  );
+
+} 
+
+
+function PopUp(props){
+  const courses = ["CPSC 457", "CPSC 413"]
+
+  return (
+    <ul id={style.statusList}>
+      {
+        courses.map((course, index) =>{
+          return  (
+          <li key={"congrats-"+index} className={style.statusItem}>
+            <CheckMark/>
+            <span>Congratulations! You enrolled in {course}.</span>
+          </li>
+        )
+        }
+      )}
+    </ul> 
+  );
+}
+
+
+export {PopUp, Checkmark};
 
 

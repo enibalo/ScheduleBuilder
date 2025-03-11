@@ -20,6 +20,8 @@
     justify-content: center;
     align-items: center;
     padding:  32px;
+    flex-direction: column;
+    gap: 32px;
   }
   
   #header {
@@ -85,9 +87,35 @@
   }
   
 
-  #buttonContainer{
+  .buttonContainer{
     display : flex; 
     justify-content: space-between;
+
+  }
+
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  #statusList {
+    list-style: none;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+
+  .statusItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgb(191, 182, 182);
+    border-radius: 10px;
+    padding: 16px 8px;
+    background-color: white;
   }
 
 
