@@ -77,73 +77,78 @@ export default function GetSchedule() {
     <header id={style.header}>
         <div>University of Calgary</div>
     </header>
-    <main id={style.main}>
-      <section id={style.left}>
-        <ul id={style.courseList}>
-          {courses.map((course, index) => (
-            <li key={index} className={style.course} style={{ backgroundColor: colors[index % colors.length] }}>
-              <div>
-                <strong>{course.name}</strong>
-                <br />
-                <div className={style.smallText}>
-                {course.status}
-                {course.placeInLine && <div>{course.placeInLine}</div>}
+    <div id={style.outer}>
+      <main id={style.main}>
+        <section id={style.left}>
+          <ul id={style.courseList}>
+            {courses.map((course, index) => (
+              <li key={index} className={style.course} style={{ backgroundColor: colors[index % colors.length] }}>
+                <div>
+                  <strong>{course.name}</strong>
+                  <br />
+                  <div className={style.smallText}>
+                  {course.status}
+                  {course.placeInLine && <div>{course.placeInLine}</div>}
+                  </div>
                 </div>
-              </div>
-              <div className={style.action}>
-                <label htmlFor={`action-${index}`}>Action:</label>
-                <select
-                  id={`action-${index}`}
-                  className={style.dropDown}
-                  value={course.current_action}
-                  onChange={(e) => handleChange(index, e.target.value)}
-                >
-                  {course.actions.map((action, i) => (
-                    <option key={i} value={action}>{action}</option>
-                  ))}
-                </select>
-              </div>
-            </li>
-          ))}
-        </ul>
+                <div className={style.action}>
+                  <label htmlFor={`action-${index}`}>Action:</label>
+                  <select
+                    id={`action-${index}`}
+                    className={style.dropDown}
+                    value={course.current_action}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                  >
+                    {course.actions.map((action, i) => (
+                      <option key={i} value={action}>{action}</option>
+                    ))}
+                  </select>
+                </div>
+              </li>
+            ))}
+          </ul>
 
-      </section>
-      
-      <section id={style.right}>
-        <div id={style.box}>
-        <div id={style.listContainer}> 
-          <div>
-            <h4 className="underline">Enroll</h4>
-            <ul className={style.list}>
-              {categories.Enrolled.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
+        </section>
+        
+        <section>
+          <div id={style.box}>
+          <div id={style.listContainer}> 
+            <div>
+              <h4 className="underline">Enroll</h4>
+              <ul className={style.list}>
+                {categories.Enrolled.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="underline">Waitlist</h4>
+              <ul className={style.list}>
+                {categories.Waitlisted.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="underline">Drop</h4>
+              <ul className={style.list}>
+                {categories.Drop.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h4 className="underline">Waitlist</h4>
-            <ul className={style.list}>
-              {categories.Waitlisted.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
+          <div id={style.buttonContainer}> 
+            <button id={style.button}>Cancel</button>
+            <button id={style.button}>Confirm</button>
           </div>
-          <div>
-            <h4 className="underline">Drop</h4>
-            <ul className={style.list}>
-              {categories.Drop.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
           </div>
-        </div>
-        <div id={style.buttonContainer}> 
-          <button id={style.button}>Cancel</button>
-          <button id={style.button}>Confirm</button>
-        </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+      <div>
+        
+      </div>
+    </div>
     </div>
   );
 }

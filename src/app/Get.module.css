@@ -8,16 +8,25 @@
   #main {
     display: grid;
     grid-auto-flow: column;  
-    flex-grow: 1;
     grid-template-columns: 1fr 2fr;
+    border: 1px solid rgb(215, 212, 212); 
+    border-radius: 5px;
+  }
+
+
+  #outer{
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:  32px;
   }
   
   #header {
-    padding: 20px;
+    padding: 16px;
     background-color: #8d827a;
     color: white;
     font-size: 1.2em;
-    margin-bottom: 60px;
   }
   
   #button {
@@ -40,17 +49,14 @@
   }
   
   #left {
-    display: flex
-;
-    align-items: flex-end;
+
     
   }
 
-  #right {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+#right{
+
+}
+  
 
   .underline{ 
     text-decoration: underline;
@@ -60,22 +66,22 @@
     background-color: rgb(215, 213, 213);
     border-radius: 5px;
     padding: 5px;
+    font-size: 0.8em;
   }
 
   #listContainer{
     display: flex; 
     justify-content: space-between;
-    gap: 32px;
+   
   }
 
 
   #box{
-    border: 1px solid black;
-    border-radius: 5px;
     padding: 32px;
     display: flex;
     flex-direction: column;
-    gap: 96px;
+    justify-content: space-between;
+    height: 100%;
   }
   
 
@@ -87,11 +93,8 @@
 
   #courseList{
     display: grid;
-    gap: 0px;
-    flex-grow: 1;
-    border: 1px solid rgb(216, 216, 216); 
-    border-radius: 5px;
-    padding-top: 48px;
+    height: 100%;
+   
   }
 
   .smallText{
@@ -101,6 +104,7 @@
   .course{
     display: flex;
     padding: 16px;
+    gap: 32px;
     justify-content: space-between;
   }
 
