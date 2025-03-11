@@ -1,9 +1,8 @@
-import React from 'react'
+'use client'
+import  {useState, useEffect} from "react";
 
 export default function GetSchedule() {
-  //enroll, drop, waitlist, no action
-  // can't enroll and waitlist only one is applicable 
-  const courses = [
+  const [courses, setCourses] = useState([
     { 
       name: "CPSC 441", 
       status: "Enrolled", 
@@ -34,57 +33,119 @@ export default function GetSchedule() {
       current_action: "Drop"
 
     }
-  ];
-  
+  ]);
+
+  const colors = [" #a5d6a7", "#ef9a9a", "#fff59d", "#ce93d8"]
+
+  const handleChange = (index, newAction) => {
+    const updatedCourses = [...courses];
+    updatedCourses[index].current_action = newAction;
+    setCourses(updatedCourses);
+  };
+
+  const categorizedCourses = {
+    Enrolled: [],
+    Waitlisted: [],
+    Drop: []
+  };
+
+  courses.forEach((course) => {
+    const action = course.current_action === "No Action" ? course.status : course.current_action;
+    if (action === "Enrolled") {
+      categorizedCourses.Enrolled.push(course.name);
+    } else if (action === "Waitlisted") {
+      categorizedCourses.Waitlisted.push(course.name);
+    } else {
+      categorizedCourses.Drop.push(course.name);
+    }
+  });
+
   return (
-    <ul>
-        {courses.map((course)=>{
-            <li> 
-              <span> 
-                <h3>{course.name}</h3>
-                <p>{course.status}</p>
-                {course.status == "Waitlisted" && <p>{course.placeInLine}</p>}
-              </span> 
-              <span> 
-                <Dropdown id={course.name} default={course.current_action} list={course.actions} onSelect={(item)=> console.log(item)}></Dropdown>
-              </span>
-            </li>
-        })}
-    </ul>
-  )
+    <>
+    <header style={style.header}>
+        <div>University of Calgary</div>
+    </header>
+    <main style={{ display: "flex"}}>
+      <div style={{alignSelf: "flex-end"}}>
+        <table>
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.map((course, index) => (
+              <tr key={index}>
+                <td style={{"backgroundColor" : colors[index % colors.length] }}>
+                  {course.name}
+                  <br />
+                  {course.status}
+                  {course.placeInLine && <div>{course.placeInLine}</div>}
+                </td>
+                <td>
+                  <select
+                    value={course.current_action}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                  >
+                    {course.actions.map((action, i) => (
+                      <option key={i} value={action}>{action}</option>
+                    ))}
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
+      <div style={{ marginLeft: "20px", border: "1px solid black", padding: "10px" }}>
+        <h3>Confirm Changes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th style={{ textDecoration: 'underline' }}>Enroll</th>
+              <th style={{ textDecoration: 'underline' }}>Waitlist</th>
+              <th style={{ textDecoration: 'underline' }}>Drop</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{categorizedCourses.Enrolled.join(", ")}</td>
+              <td>{categorizedCourses.Waitlisted.join(", ")}</td>
+              <td>{categorizedCourses.Drop.join(", ")}</td>
+            </tr>
+          </tbody>
+        </table>
+        <button style={style.button}>Cancel</button>
+        <button style={style.button}>Confirm</button>
+      </div>
+    </main>
+    </>
+  );
 }
 
 
+  const style = { 
+    header: {
+      padding: "20px",
+      fontSize: "",
+      backgroundColor : "#8d827a",
+      color: "white",
+      fontSize: "2.2em",
+    },
 
-const Dropdown = ({ list, onSelect, id, default }) => {
-  const [selected, setSelected] = useState("");
-
-  const handleChange = (event) => {
-    setSelected(event.target.value);
-    if (onSelect) {
-      onSelect(event.target.value);
+    button: {
+      borderRadius: "4px",
+      color: "white",
+      padding: "8px 12px 9px 12px",
+      fontWeight: 500,
+      letterSpacing: ".08929em",
+      textTransform: "uppercase",
+      boxShadow: "0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)",
+      height: "36px",
+      backgroundColor: "#E30300", 
     }
-  };
 
-  return (
-    <div>
-      <label htmlFor="dropdown" id={"dropdown-label-"+id}>Actions:</label>
-      <select
-        id={"dropdown-"+id}
-        aria-labelledby="dropdown-label"
-        value={selected}
-        onChange={handleChange}
-      >
-        {list.map((item, index) => (
-          <option key={index} value={item} selected>
-            {item}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
-
-
-export {Dropdown};
+    
+  }
