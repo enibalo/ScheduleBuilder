@@ -1,0 +1,104 @@
+#body { 
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #main {
+    display: grid;
+    grid-auto-flow: column;  
+    flex-grow: 1;
+  }
+  
+  #header {
+    padding: 20px;
+    background-color: #8d827a;
+    color: white;
+    font-size: 1.2em;
+    margin-bottom: 60px;
+  }
+  
+  #button {
+    border-radius: 4px;
+    color: white;
+    padding: 8px 12px 9px 12px;
+    font-weight: 500;
+    letter-spacing: .08929em;
+    text-transform: uppercase;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 
+                0 3px 1px -2px rgba(0,0,0,.2), 
+                0 1px 5px 0 rgba(0,0,0,.12);
+    height: 36px;
+    background-color: #E30300;
+  }
+
+  #button:hover{
+    background-color: #ec7573;
+    cursor: pointer;
+  }
+  
+  #left {
+    display: flex
+;
+    align-items: flex-end;
+  }
+
+  #right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .underline{ 
+    text-decoration: underline;
+  }
+
+  .dropDown{
+    background-color: rgb(215, 213, 213);
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  #listContainer{
+    display: flex; 
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+
+  #box{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 96px;
+  }
+  
+
+  #buttonContainer{
+    display : flex; 
+    justify-content: space-between;
+  }
+
+
+  #courseList{
+    display: grid;
+    gap: 0px;
+    flex-grow: 1;
+  }
+
+
+  .course{
+    display: flex;
+    padding: 16px;
+    justify-content: space-between;
+  }
+
+
+  .action{
+    display: flex;
+    flex-direction: column;
+  }
+
