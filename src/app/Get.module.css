@@ -9,6 +9,7 @@
     display: grid;
     grid-auto-flow: column;  
     flex-grow: 1;
+    grid-template-columns: 1fr 2fr;
   }
   
   #header {
@@ -42,6 +43,7 @@
     display: flex
 ;
     align-items: flex-end;
+    
   }
 
   #right {
@@ -87,8 +89,14 @@
     display: grid;
     gap: 0px;
     flex-grow: 1;
+    border: 1px solid rgb(216, 216, 216); 
+    border-radius: 5px;
+    padding-top: 48px;
   }
 
+  .smallText{
+    font-size: 0.8em;
+  }
 
   .course{
     display: flex;

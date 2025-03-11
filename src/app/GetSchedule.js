@@ -85,9 +85,10 @@ export default function GetSchedule() {
               <div>
                 <strong>{course.name}</strong>
                 <br />
-
+                <div className={style.smallText}>
                 {course.status}
                 {course.placeInLine && <div>{course.placeInLine}</div>}
+                </div>
               </div>
               <div className={style.action}>
                 <label htmlFor={`action-${index}`}>Action:</label>
