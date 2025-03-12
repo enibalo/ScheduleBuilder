@@ -1,0 +1,5 @@
+@import "tailwindcss";
+  
+.button-primary {
+  @apply my-2 mx-1 px-2 py-1 text-white transition-all duration-200 bg-red-600 rounded-lg hover:bg-red-500 hover:-translate-y-0.5 active:bg-red-800;
+}
