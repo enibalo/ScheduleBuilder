@@ -70,12 +70,30 @@ export default function GetSchedule() {
     });
   },[])
 
-  
+
+  const semesterChange = ( semester) => {
+    console.log(semester)
+  };
+
+  const semesters = ["Fall", "Winter"]
 //add status: and go back button. do we need course list drop down. point of agenda is to build schedule in there!!!!
   return (
     <div id={style.body}>
       <header id={style.header}>
-          <div>University of Calgary</div>
+          <span>University of Calgary</span>
+          <span>
+            <a href="#">Tutorial</a>
+            <select
+                id={`semester`}
+                className={style.dropDown}
+                value={"Fall Semester"}
+                onChange={(e) => semesterChange(e.target.value)}
+              >
+                {semesters.map((semester, i) => (
+                  <option key={i} value={semester}>{semester}</option>
+                ))}
+              </select>
+          </span>
       </header>
       <div id={style.outer}>
         <div id={style.center}>
@@ -147,12 +165,6 @@ export default function GetSchedule() {
              {/* <PopUp></PopUp>*/}
             </section>
           </main>
-          <nav className={style.nav}>
-            
-              <button className={style.button + " " + style.white}>Back</button>
-              <button className={style.button + " " + style.white}>Home</button>
-      
-          </nav>
         </div>
       </div>
     </div>

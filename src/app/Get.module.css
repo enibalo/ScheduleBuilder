@@ -1,5 +1,6 @@
 #body { 
     margin: 0;
+    padding: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -29,6 +30,7 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+    max-width: 750px;
   }
   
   #header {
@@ -36,8 +38,40 @@
     background-color: #8d827a;
     color: white;
     font-size: 1.2em;
+    display: flex; 
+    justify-content: space-between;
+  }
+
+  #header span:nth-child(2){
+    display: grid; 
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-items: center;
+    /* justify-items: stretch; */
+    gap: 32px;
   }
   
+
+  #header a {
+    border: 1px solid white;
+    border-radius: 5px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    height: 100%;
+  }
+
+  #header .dropDown { 
+    border: 1px solid white; 
+    background-color: inherit;
+    color: inherit;
+  }
+
+  .dropDown > option { 
+    color: black; 
+  }
+
   .button {
     border-radius: 4px;
     color: white;
@@ -77,6 +111,7 @@
     border-radius: 5px;
     padding: 5px;
     font-size: 0.8em;
+    color: black;
   }
 
   #listContainer{
@@ -129,7 +164,7 @@
 
   #courseList{
     display: grid;
-    height: 100%;
+    grid-auto-rows: 1fr;
    
   }
 
