@@ -11,15 +11,22 @@
     grid-template-columns: 1fr 2fr;
     border: 1px solid rgb(215, 212, 212); 
     border-radius: 5px;
+    background-color: white;
+    
   }
 
 
-  #outer{
+
+#outer{
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding:  32px;
+   
+  }
+
+  #center{
+    display: flex;
     flex-direction: column;
     gap: 32px;
   }
@@ -31,7 +38,7 @@
     font-size: 1.2em;
   }
   
-  #button {
+  .button {
     border-radius: 4px;
     color: white;
     padding: 8px 12px 9px 12px;
@@ -45,9 +52,8 @@
     background-color: #E30300;
   }
 
-  #button:hover{
+  .button:hover{
     background-color: #ec7573;
-    cursor: pointer;
   }
   
   #left {
@@ -59,6 +65,8 @@
 
 }
   
+
+
 
   .underline{ 
     text-decoration: underline;
@@ -140,5 +148,23 @@
   .action{
     display: flex;
     flex-direction: column;
+  }
+
+  .nav{ 
+    display: grid;
+    grid-auto-flow: column;
+    gap: 32px; 
+    padding-top: 16px;
+    border-top: 1px solid #d7d4d4;
+  }
+
+  .white{
+    color: black;
+    font-weight: bold;
+    background-color: white;
+  }
+
+  .white:hover{
+    background-color: rgb(212, 212, 212);
   }
 
