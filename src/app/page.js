@@ -1,8 +1,8 @@
 import Image from "next/image";
-import GetSchedule from "./GetSchedule";
+import Homepage from "./Home"; 
 
 export default function Home() {
   return (
-    <GetSchedule></GetSchedule>
+    <Homepage />  
   );
 }
