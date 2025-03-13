@@ -41,10 +41,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SchedulePreview } from "./components/schedule-preview"
 import { SavedSchedules } from "./components/saved-schedules"
-import { EnrollmentConfirmation } from "./components/enrollment-confirmation"
+import { SuccessDialog } from "./components/success-dialog"
 import { FilterDialog } from "./components/filter-dialog"
 import { AppHeader } from "./components/app-header"
-import { SuccessDialog } from "./components/success-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function CourseSearch() {
@@ -692,9 +691,9 @@ export default function CourseSearch() {
       <AppHeader />
 
       <div className="w-full max-w-[1400px] mx-auto p-4 pt-6 flex items-center min-h-[calc(100vh-4rem)]">
-        <div className="grid lg:grid-cols-[1fr,600px] gap-12 w-full items-start">
+        <div className="flex gap-12 w-full items-start">
           {/* Course Search Section */}
-          <div>
+          <div className="w-1/2">
             {/* Term selection and info icon */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -912,7 +911,7 @@ export default function CourseSearch() {
           </div>
 
           {/* Schedule Preview Section */}
-          <div className="lg:self-center">
+          <div className="w-1/2 lg:self-center">
             <SchedulePreview
               weekNumber={weekNumber}
               totalWeeks={totalWeeks}
@@ -955,13 +954,6 @@ export default function CourseSearch() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            <EnrollmentConfirmation
-              open={confirmationOpen}
-              onOpenChange={setConfirmationOpen}
-              actions={pendingActions}
-              onConfirm={handleConfirmActions}
-              onCancel={handleCancelActions}
-            />
           </div>
 
           {/* Saved Schedules Component - Now fixed positioned */}
@@ -975,28 +967,114 @@ export default function CourseSearch() {
         </div>
         {/* Confirmation Dialog */}
         <Dialog open={confirmationOpen} onOpenChange={setConfirmationOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Confirm Actions</DialogTitle>
-              <DialogDescription>Are you sure you want to perform the following actions?</DialogDescription>
-            </DialogHeader>
-            <div className="py-4">
-              <ul>
-                {pendingActions.map((action, index) => (
-                  <li key={index}>
-                    {action.type === "enroll" && `Enroll in ${action.courseName}`}
-                    {action.type === "waitlist" && `Join waitlist for ${action.courseName}`}
-                    {action.type === "drop" && `Drop ${action.courseName}`}
-                  </li>
-                ))}
-              </ul>
+          <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
+            <div className="flex h-full">
+              {/* Left side - Course list */}
+              <div className="flex-1 p-6 max-h-[600px] overflow-y-auto">
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold">Confirm Actions</h2>
+                  <p className="text-sm text-gray-500">Review the following changes to your schedule</p>
+                </div>
+                <div className="space-y-4">
+                  {pendingActions.map((action, index) => {
+                    // Find the course details to get the color
+                    const course = activeCourses.find((c) => c.id === action.courseId)
+                    const bgColor =
+                      course?.color === "blue"
+                        ? "bg-blue-100 border-blue-200"
+                        : course?.color === "green"
+                          ? "bg-green-100 border-green-200"
+                          : course?.color === "yellow"
+                            ? "bg-yellow-100 border-yellow-200"
+                            : course?.color === "pink"
+                              ? "bg-pink-100 border-pink-200"
+                              : course?.color === "purple"
+                                ? "bg-purple-100 border-purple-200"
+                                : "bg-gray-100 border-gray-200"
+
+                    const textColor =
+                      course?.color === "blue"
+                        ? "text-blue-800"
+                        : course?.color === "green"
+                          ? "text-green-800"
+                          : course?.color === "yellow"
+                            ? "text-yellow-800"
+                            : course?.color === "pink"
+                              ? "text-pink-800"
+                              : course?.color === "purple"
+                                ? "text-purple-800"
+                                : "text-gray-800"
+
+                    return (
+                      <div key={index} className={`p-3 rounded-md border ${bgColor} flex justify-between items-center`}>
+                        <div>
+                          <span className={`font-medium ${textColor}`}>{action.courseName}</span>
+                          <div className="text-xs text-gray-600 mt-1">
+                            {action.type === "enroll" && "Add to your schedule"}
+                            {action.type === "waitlist" && "Join the waitlist"}
+                            {action.type === "drop" && "Remove from your schedule"}
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline" className="bg-white hover:bg-gray-50">
+                          {action.type === "enroll" && "Enroll"}
+                          {action.type === "waitlist" && "Waitlist"}
+                          {action.type === "drop" && "Drop"}
+                        </Button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Right side - Summary and Buttons */}
+              <div className="w-[220px] bg-gray-50 border-l p-6 flex flex-col">
+                <h3 className="font-medium mb-6">Summary</h3>
+
+                <div className="space-y-6 flex-1">
+                  {/* Enrollment count */}
+                  {pendingActions.filter((a) => a.type === "enroll").length > 0 && (
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-green-600">Enroll</div>
+                      <div className="text-sm text-gray-500">
+                        {pendingActions.filter((a) => a.type === "enroll").length} course
+                        {pendingActions.filter((a) => a.type === "enroll").length !== 1 ? "s" : ""}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Waitlist count */}
+                  {pendingActions.filter((a) => a.type === "waitlist").length > 0 && (
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-yellow-600">Waitlist</div>
+                      <div className="text-sm text-gray-500">
+                        {pendingActions.filter((a) => a.type === "waitlist").length} course
+                        {pendingActions.filter((a) => a.type === "waitlist").length !== 1 ? "s" : ""}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Drop count */}
+                  {pendingActions.filter((a) => a.type === "drop").length > 0 && (
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-red-600">Drop</div>
+                      <div className="text-sm text-gray-500">
+                        {pendingActions.filter((a) => a.type === "drop").length} course
+                        {pendingActions.filter((a) => a.type === "drop").length !== 1 ? "s" : ""}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-auto space-y-3">
+                  <Button variant="outline" className="w-full" onClick={handleCancelActions}>
+                    Cancel
+                  </Button>
+                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white" onClick={handleConfirmActions}>
+                    Confirm
+                  </Button>
+                </div>
+              </div>
             </div>
-            <DialogFooter>
-              <Button variant="secondary" onClick={handleCancelActions}>
-                Cancel
-              </Button>
-              <Button onClick={handleConfirmActions}>Confirm</Button>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
@@ -1004,3 +1082,4 @@ export default function CourseSearch() {
     </div>
   )
 }
+
