@@ -1,8 +1,8 @@
-import Image from "next/image";
-import GetSchedule from "./GetSchedule";
+
+import SearchBar from "./Search/SearchBar";
 
 export default function Home() {
   return (
-    <GetSchedule></GetSchedule>
+    <SearchBar></SearchBar>
   );
 }
