@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Calendar from "../components/Calendar";
 import SavedSchedules from "../components/SavedSchedules";
+import CourseSearch from "../components/CourseSearch";
 
 export default function ScheduleBuilder() {
     // Example courses data with overlaps
@@ -102,13 +103,21 @@ export default function ScheduleBuilder() {
     ]);
 
     return(
-        <div className="w-full min-h-screen bg-gray-50 py-8 px-4">
-            <div className="max-w-7xl mx-auto space-y-8">
+        <div className="w-full min-h-screen bg-gray-50 py-8 px-4 flex">
+            {/* Course Search Section */}
+            <div className="w-[450px] mr-8">
+                <CourseSearch courses={courses} />
+            </div>
+
+            {/* Calendar Section */}
+            <div className="flex-1">
                 <Calendar 
                     courses={courses}
                 />
-                <SavedSchedules />
             </div>
+
+            {/* Saved Schedules Section */}
+            <SavedSchedules />
         </div>
     );
 }
