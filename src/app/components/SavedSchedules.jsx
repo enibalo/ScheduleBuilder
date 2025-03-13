@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import styles from "./Mainpage.module.css";  
-export default function Mainpage() {
+export default function SavedSchedules() {
   const [isOpen, setIsOpen] = useState(true);
   const [schedules, setSchedules] = useState([
     { id: 1, name: "Schedule 1" },

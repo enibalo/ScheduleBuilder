@@ -1,6 +1,6 @@
 import Image from "next/image";
 import GetSchedule from "./pages/GetSchedule";
-import MainPage from "./pages/Mainpage";
+import MainPage from "./components/SavedSchedules";
 import Homepage from "./pages/Home";
 import ScheduleBuilder from "./pages/ScheduleBuilder";
 

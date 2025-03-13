@@ -1,6 +1,7 @@
 'use client'
 import { useState } from "react";
 import Calendar from "../components/Calendar";
+import SavedSchedules from "../components/SavedSchedules";
 
 export default function ScheduleBuilder() {
     // Example courses data with overlaps
@@ -106,6 +107,9 @@ export default function ScheduleBuilder() {
                 <Calendar 
                     courses={courses}
                 />
+            </div>
+            <div>
+                <SavedSchedules />
             </div>
         </div>
     );
