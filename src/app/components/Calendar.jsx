@@ -102,7 +102,7 @@ const Calendar = ({ courses = [], onScheduleChange }) => {
                 </div>
 
                 {/* Calendar Grid */}
-                <div className="border rounded-md flex-1">
+                <div className="border border-gray-200 rounded-md flex-1">
                     {/* Days row */}
                     <div className="grid grid-cols-5 border-b">
                         {days.map((day, index) => (
