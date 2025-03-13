@@ -28,10 +28,23 @@ export function SavedSchedules({
       }`}
     >
       <div className="flex h-full">
-        {/* Toggle Button */}
-        <Button variant="outline" size="icon" className="h-12 w-8 rounded-r-none shadow-md" onClick={onCollapse}>
-          <ChevronLeft className={`h-4 w-4 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
-        </Button>
+        {/* Toggle Button with Vertical Label */}
+        <div className="flex h-full flex-col">
+          <Button variant="outline" size="icon" className="h-12 w-8 rounded-r-none shadow-md" onClick={onCollapse}>
+            <ChevronLeft className={`h-4 w-4 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
+          </Button>
+
+          {/* Add vertical label that shows when collapsed */}
+          {isCollapsed && (
+            <div className="bg-white border-y border-r rounded-r-md shadow-md py-4 px-1.5">
+              <div className="flex flex-col items-center justify-center h-full">
+                <span className="text-xs font-medium [writing-mode:vertical-rl] rotate-180 text-muted-foreground tracking-wide">
+                  SAVED SCHEDULES
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="w-[280px] bg-white rounded-l-lg border shadow-sm h-full flex flex-col">
           {/* Header */}
