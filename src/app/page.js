@@ -1,3 +1,6 @@
+
+import SearchBar from "./Search/SearchBar";
+import GetSchedule from "./GetSchedule";
 import Image from "next/image";
 import GetSchedule from "./pages/GetSchedule";
 import MainPage from "./components/SavedSchedules";
