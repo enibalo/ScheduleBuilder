@@ -102,22 +102,22 @@ export default function ScheduleBuilder() {
         }
     ]);
 
-    return(
-        <div className="w-full min-h-screen bg-gray-50 py-8 px-4 flex">
-            {/* Course Search Section */}
-            <div className="w-[450px] mr-8">
-                <CourseSearch courses={courses} />
-            </div>
+    return (
+        <div className="w-full max-w-[1400px] mx-auto p-4 pt-6 flex items-center min-h-[calc(100vh-4rem)]">
+            <div className="grid lg:grid-cols-[1fr,600px] gap-12 w-full items-start">
+                {/* Course Search Section */}
+                <div className="w-full">
+                    <CourseSearch courses={courses} />
+                </div>
 
-            {/* Calendar Section */}
-            <div className="flex-1">
-                <Calendar 
-                    courses={courses}
-                />
+                {/* Calendar and Saved Schedules Section */}
+                <div className="space-y-6 lg:self-center">
+                    <Calendar 
+                        courses={courses}
+                    />
+                    <SavedSchedules />
+                </div>
             </div>
-
-            {/* Saved Schedules Section */}
-            <SavedSchedules />
         </div>
     );
 }
