@@ -102,13 +102,11 @@ export default function ScheduleBuilder() {
     ]);
 
     return(
-        <div className="w-full min-h-screen bg-gray-50 p-8">
-            <div className="max-w-7xl mx-auto">
+        <div className="w-full min-h-screen bg-gray-50 py-8 px-4">
+            <div className="max-w-7xl mx-auto space-y-8">
                 <Calendar 
                     courses={courses}
                 />
-            </div>
-            <div>
                 <SavedSchedules />
             </div>
         </div>
