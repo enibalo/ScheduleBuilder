@@ -14,6 +14,8 @@ import {
   Clock,
   Info,
   Calendar,
+  Copy,
+  Trash2,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -690,9 +692,9 @@ export default function CourseSearch() {
       <AppHeader />
 
       <div className="w-full max-w-[1400px] mx-auto p-4 pt-6 flex items-center min-h-[calc(100vh-4rem)]">
-        <div className="flex gap-12 w-full items-start">
+        <div className="grid lg:grid-cols-[1fr,600px] gap-12 w-full items-start">
           {/* Course Search Section */}
-          <div className="w-1/2">
+          <div>
             {/* Term selection and info icon */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -788,6 +790,57 @@ export default function CourseSearch() {
                 </div>
                 <div className="flex-1 border-b -mb-px"></div>
               </div>
+
+              {/* Schedule action buttons - moved below the tab line */}
+              <div className="flex justify-end items-center gap-2 mt-2 mb-4">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          // Copy current schedule logic
+                          const newSchedule = [...selectedCourses]
+                          const newPinnedCourses = [...pinnedCourses]
+                          if (activeSchedule === 1) {
+                            setSelectedCoursesSchedule2(newSchedule)
+                            setPinnedCoursesSchedule2(newPinnedCourses)
+                            setActiveSchedule(2)
+                          } else {
+                            setSelectedCoursesSchedule1(newSchedule)
+                            setPinnedCoursesSchedule1(newPinnedCourses)
+                            setActiveSchedule(1)
+                          }
+                        }}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Create a copy of this schedule</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="text-red-500 hover:text-red-600"
+                  onClick={() => {
+                    // Clear current schedule logic
+                    if (activeSchedule === 1) {
+                      setSelectedCoursesSchedule1([])
+                      setPinnedCoursesSchedule1([])
+                    } else {
+                      setSelectedCoursesSchedule2([])
+                      setPinnedCoursesSchedule2([])
+                    }
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto pr-2">
@@ -859,7 +912,7 @@ export default function CourseSearch() {
           </div>
 
           {/* Schedule Preview Section */}
-          <div className="w-1/2 lg:self-center">
+          <div className="lg:self-center">
             <SchedulePreview
               weekNumber={weekNumber}
               totalWeeks={totalWeeks}
