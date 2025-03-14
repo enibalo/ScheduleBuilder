@@ -1,14 +1,13 @@
 'use client'
 import { useState } from "react";
 import styles from "./Home.module.css"; 
+import { AppHeader } from "../components/app-header";
 
 export default function Homepage() {
   return (
+    <>
+    <AppHeader></AppHeader>
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerText}>University of Calgary</div>
-      </header>
-
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.buttonColumn}>
@@ -38,5 +37,6 @@ export default function Homepage() {
         </div>
       </main>
     </div>
+    </>
   );
 }

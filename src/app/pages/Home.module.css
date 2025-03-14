@@ -1,7 +1,7 @@
 /* Global styles */
 .container {
   font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  background-color: #f9fafb;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -58,7 +58,7 @@ html, body {
 }
 
 .largeButton {
-  background-color: #ae1818; /* Light red */
+  background-color: #d50723; /* Light red */
   border: none;
   padding: 30px 3px;
   color: white;

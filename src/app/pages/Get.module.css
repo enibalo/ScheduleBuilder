@@ -4,13 +4,13 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #f5f5f5;
+    background-color: #f9fafb;
   }
   
   #main {
     display: grid;
     grid-auto-flow: column;  
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 2fr 3fr;
     border: 1px solid rgb(215, 212, 212); 
     border-radius: 5px;
     background-color: white;
@@ -105,6 +105,7 @@
 
   .underline{ 
     text-decoration: underline;
+    font-weight: bold;
   }
 
   .dropDown{
@@ -166,7 +167,14 @@
   #courseList{
     display: grid;
     grid-auto-rows: 1fr;
-   
+    padding: 8px;
+    gap: 8px;
+
+  }
+
+  #courseList li { 
+    border-radius: 5px;
+    border-color: #d8d3d3;
   }
 
   .smallText{
