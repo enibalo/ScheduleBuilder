@@ -36,6 +36,30 @@ export default function Homepage() {
           </div>
         </div>
       </main>
+      <div>
+        <div>
+          <h2>Helpful Tools</h2>
+          <ToolIcon></ToolIcon>
+        </div>
+        <line></line>
+        <section>
+          <h3>First Year Guide</h3>
+          <p>
+            A recommended sequence of courses for a degree, designed by the
+            Academic Advising department to simplify schedule planning. This
+            feature is not available for all degrees.
+          </p>
+        </section>
+        <section>
+          <h3>Academic Requirements Report</h3>
+          <p>
+            A report comparing completed courses to degree requirements,
+            allowing students to determine which requirements have been
+            fulfilled and how many remain.
+          </p>
+          <a>https://university.edu/academic-requirements</a>
+        </section>
+      </div>
     </div>
     </>
   );
