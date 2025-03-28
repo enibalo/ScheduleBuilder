@@ -3,7 +3,7 @@ import { useState } from "react";
 import styles from "./Home.module.css";
 import { AppHeader } from "../components/app-header";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Homepage() {
   return (
@@ -86,18 +86,27 @@ function SearchDropdown() {
     "Mathematics.pdf",
   ];
 
+  function handleChange(e) {
+    setSearch(e.target.value);
+}
+
   return (
-    <div>
-      <label className="hidden">Program Name</label>
-      <Input value={search} onValueChange={setSearch} placeholder="Search..." />
-      <ScrollArea className="hidden">
+    <div className="pt-4">
+      <label className="hidden">Degree Name</label>
+      {/*input rounded-b-none
+
+      */}
+      <Input className="rounded-b-none" value={search} onChange={handleChange} placeholder="Degree Name..." />
+      <ScrollArea className="h-72 w-48 border w-full border-input rounded-b max-h-[100px]">
         <div className="p-4">
           {degrees
             .filter((item) => item.toLowerCase().includes(search.toLowerCase()))
             .map((item, index) => (
-              <div key={index}>
+              <>
+              <div key={index} className="text-sm border-b-2 border-input py-2">
                 <a href="https://example.com/">{item}</a>
               </div>
+              </>
             ))}
         </div>
       </ScrollArea>
