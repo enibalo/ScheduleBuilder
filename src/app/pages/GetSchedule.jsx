@@ -75,7 +75,6 @@ export default function GetSchedule() {
   };
 
   const semesters = ["Fall", "Winter"];
-  //add status: and go back button. do we need course list drop down. point of agenda is to build schedule in there!!!!
   return (
     <div id={style.body}>
       <AppHeader></AppHeader>
