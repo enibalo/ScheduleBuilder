@@ -1,12 +1,13 @@
 /* Global styles */
 .container {
-  font-family: Arial, sans-serif;
   background-color: #f9fafb;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  
+  
 }
 
 html, body {
@@ -41,7 +42,7 @@ html, body {
   max-width: 1200px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  flex-grow: 1;
+  
 }
 
 .content {

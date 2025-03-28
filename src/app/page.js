@@ -6,7 +6,6 @@ import MainPage from "./components/SavedSchedules";
 import Homepage from "./pages/Home";
 import ScheduleBuilder from "./pages/ScheduleBuilder";
 import CourseSearch from "./course-search";
-import GetSchedule from "./pages/GetSchedule";
 
 export default function Home() {
     const courses = [
@@ -105,6 +104,6 @@ export default function Home() {
             }
         ]
   return (
-   <CourseSearch></CourseSearch>
+   <Homepage></Homepage>
   );
 }
