@@ -86,6 +86,9 @@ function SearchDropdown() {
     "Mathematics.pdf",
   ];
 
+  degrees.sort();
+  
+
   function handleChange(e) {
     setSearch(e.target.value);
 }
@@ -96,7 +99,7 @@ function SearchDropdown() {
       {/*input rounded-b-none
 
       */}
-      <Input className="rounded-b-none" value={search} onChange={handleChange} placeholder="Degree Name..." />
+      <Input className="rounded-b-none focus-visible:border-input focus-visible:ring-0 focus-visible:shadow-none" value={search} onChange={handleChange} placeholder="Degree Name..." />
       <ScrollArea className="h-72 w-48 border w-full border-input rounded-b max-h-[100px]">
         <div className="p-4">
           {degrees
