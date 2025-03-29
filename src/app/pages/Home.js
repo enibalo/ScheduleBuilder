@@ -104,12 +104,10 @@ function SearchDropdown() {
         <div className="p-4">
           {degrees
             .filter((item) => item.toLowerCase().includes(search.toLowerCase()))
-            .map((item, index) => (
-              <>
+            .map((item, index) => (   
               <div key={index} className="text-sm border-b-2 border-input py-2">
                 <a href="https://example.com/">{item}</a>
               </div>
-              </>
             ))}
         </div>
       </ScrollArea>
