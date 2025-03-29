@@ -1036,8 +1036,10 @@ export default function CourseSearch() {
                     <div className="text-center">
                       <div className="text-lg font-bold text-green-600">Enroll</div>
                       <div className="text-sm text-gray-500">
-                        {pendingActions.filter((a) => a.type === "enroll").length} course
-                        {pendingActions.filter((a) => a.type === "enroll").length !== 1 ? "s" : ""}
+                        {pendingActions
+                        .filter((a) => a.type === "enroll")
+                        .map((a)=> a.courseName)
+                        .join(", ")} 
                       </div>
                     </div>
                   )}
@@ -1047,8 +1049,10 @@ export default function CourseSearch() {
                     <div className="text-center">
                       <div className="text-lg font-bold text-yellow-600">Waitlist</div>
                       <div className="text-sm text-gray-500">
-                        {pendingActions.filter((a) => a.type === "waitlist").length} course
-                        {pendingActions.filter((a) => a.type === "waitlist").length !== 1 ? "s" : ""}
+                        {pendingActions
+                        .filter((a) => a.type === "waitlist")
+                        .map((a)=> a.courseName)
+                        .join(", ")} 
                       </div>
                     </div>
                   )}
@@ -1058,8 +1062,10 @@ export default function CourseSearch() {
                     <div className="text-center">
                       <div className="text-lg font-bold text-red-600">Drop</div>
                       <div className="text-sm text-gray-500">
-                        {pendingActions.filter((a) => a.type === "drop").length} course
-                        {pendingActions.filter((a) => a.type === "drop").length !== 1 ? "s" : ""}
+                        {pendingActions
+                        .filter((a) => a.type === "drop")
+                        .map((a)=> a.courseName)
+                        .join(", ")} 
                       </div>
                     </div>
                   )}
