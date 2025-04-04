@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import styles from "./Home.module.css";
-import { AppHeader } from "../components/app-header";
+import { AppHeader } from "./components/app-header";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
