@@ -33,9 +33,9 @@ export function AppHeader() {
               alt="University of Calgary"
               className="h-8 md:h-10"
             />
-            {pathname.includes("home") == false &&
+            {pathname.includes("schedule") &&
               <Link
-              href="/home"
+              href="/"
               className="underline text-white font-bold"
             >
               <Home></Home>

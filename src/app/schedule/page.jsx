@@ -39,12 +39,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { SchedulePreview } from "./components/schedule-preview"
-import { SavedSchedules } from "./components/saved-schedules"
-import { SuccessDialog } from "./components/success-dialog"
-import { FilterDialog } from "./components/filter-dialog"
-import { AppHeader } from "./components/app-header"
+import { SchedulePreview } from "@/app/components/schedule-preview"
+import { SavedSchedules } from "@/app/components/saved-schedules"
+import { SuccessDialog } from "@/app/components/success-dialog"
+import { FilterDialog } from "@/app/components/filter-dialog"
+import { AppHeader } from "@/app/components/app-header"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+
+
+import { useRouter } from "next/navigation";
+
 
 export default function CourseSearch() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -61,7 +65,6 @@ export default function CourseSearch() {
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
   const [selectedTerm, setSelectedTerm] = useState("fall2024")
   const totalWeeks = 88
-
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
@@ -78,6 +81,13 @@ export default function CourseSearch() {
     fullClasses: false,
     waitlistedClasses: false,
   })
+
+  const router = useRouter()
+  const redirectHome = () =>{
+    setConfirmationOpen(false);
+    router.push('/');
+    
+  }
 
   // Load saved schedules from localStorage on component mount
   useEffect(() => {
@@ -135,6 +145,8 @@ export default function CourseSearch() {
 
     return dates
   }
+
+
 
   const weekDates = calculateDates(weekNumber)
 
@@ -449,6 +461,7 @@ export default function CourseSearch() {
   const toggleCoursePinned = (courseId) => {
     setPinnedCourses((prev) => (prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]))
   }
+
 
   const saveCurrentSchedule = () => {
     if (!scheduleName.trim()) return
@@ -1072,8 +1085,8 @@ export default function CourseSearch() {
                 </div>
 
                 <div className="mt-auto space-y-3">
-                  <Button variant="outline" className="w-full" onClick={handleCancelActions}>
-                    Cancel
+                  <Button variant="outline" className="w-full" onClick={() =>  redirectHome()}>
+                    Home
                   </Button>
                   <Button className="w-full bg-red-500 hover:bg-red-600 text-white" onClick={handleConfirmActions}>
                     Confirm
