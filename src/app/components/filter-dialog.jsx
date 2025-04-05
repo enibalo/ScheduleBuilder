@@ -37,7 +37,12 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
                   checked={filters.morningClasses}
                   onCheckedChange={() => handleCheckboxChange("morningClasses")}
                 />
-                <Label htmlFor="morning-classes">Morning Classes</Label>
+                <Label htmlFor="morning-classes">
+                  <div>
+                    <p>Morning Classes</p>
+                    <p className="text-[11px] text-gray-700">(9am-12pm)</p>
+                  </div>
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -45,7 +50,12 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
                   checked={filters.afternoonClasses}
                   onCheckedChange={() => handleCheckboxChange("afternoonClasses")}
                 />
-                <Label htmlFor="afternoon-classes">Afternoon Classes</Label>
+                <Label htmlFor="afternoon-classes">
+                  <div>
+                    <p>Afternoon Classes</p>
+                    <p className="text-[11px] text-gray-700">(12pm-4pm)</p>
+                  </div>
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -53,7 +63,12 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
                   checked={filters.eveningClasses}
                   onCheckedChange={() => handleCheckboxChange("eveningClasses")}
                 />
-                <Label htmlFor="evening-classes">Evening Classes</Label>
+                <Label htmlFor="evening-classes">
+                  <div>
+                    <p>Evening Classes</p>
+                    <p className="text-[11px] text-gray-700">(4pm-7pm)</p>
+                  </div>
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
