@@ -1,0 +1,260 @@
+[[
+    {
+      "id": "1",
+      "code": "BSOE 101",
+      "title": "Intro to Computer Science",
+      "seats": {
+        "available": 14,
+        "total": 101
+      },
+      "waitlist": {
+        "count": 0,
+        "capacity": 50
+      },
+      "status": "available",
+      "color": "blue",
+      "schedule": [
+        {
+          "day": 0,
+          "startHour": 10,
+          "duration": 2,
+          "type": "LEC"
+        },
+        {
+          "day": 2,
+          "startHour": 10,
+          "duration": 1,
+          "type": "TUT"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "code": "BSOE 201",
+      "title": "Data Structures",
+      "seats": {
+        "available": 65,
+        "total": 99
+      },
+      "waitlist": {
+        "count": 0,
+        "capacity": 40
+      },
+      "status": "available",
+      "color": "green",
+      "schedule": [
+        {
+          "day": 1,
+          "startHour": 13,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 3,
+          "startHour": 13,
+          "duration": 1.5,
+          "type": "LEC"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "code": "BSOE 301",
+      "title": "Algorithms",
+      "seats": {
+        "available": 0,
+        "total": 60
+      },
+      "waitlist": {
+        "count": 15,
+        "capacity": 20
+      },
+      "status": "waitlist",
+      "color": "purple",
+      "schedule": [
+        {
+          "day": 0,
+          "startHour": 14,
+          "duration": 1,
+          "type": "LEC"
+        },
+        {
+          "day": 2,
+          "startHour": 14,
+          "duration": 1,
+          "type": "LEC"
+        },
+        {
+          "day": 4,
+          "startHour": 9,
+          "duration": 2,
+          "type": "LAB"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "code": "CHEM 201",
+      "title": "Organic Chemistry",
+      "seats": {
+        "available": 0,
+        "total": 200
+      },
+      "waitlist": {
+        "count": 45,
+        "capacity": 45
+      },
+      "status": "not-found",
+      "color": "orange",
+      "schedule": [
+        {
+          "day": 1,
+          "startHour": 9,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 3, 
+          "startHour": 9,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 4, 
+          "startHour": 13,
+          "duration": 3,
+          "type": "LAB"
+        }
+      ]
+    }
+  ], [
+    {
+      "id": "5",
+      "code": "PHYS 101",
+      "title": "Physics I: Mechanics",
+      "seats": {
+        "available": 25,
+        "total": 120
+      },
+      "waitlist": {
+        "count": 0,
+        "capacity": 30
+      },
+      "status": "available",
+      "color": "yellow",
+      "schedule": [
+        {
+          "day": 0, 
+          "startHour": 8,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 2,
+          "startHour": 8,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 4,
+          "startHour": 14,
+          "duration": 2,
+          "type": "LAB"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "code": "MATH 101",
+      "title": "Calculus I",
+      "seats": {
+        "available": 12,
+        "total": 150
+      },
+      "waitlist": {
+        "count": 5,
+        "capacity": 25
+      },
+      "status": "available",
+      "color": "pink",
+      "schedule": [
+        {
+          "day": 1,
+          "startHour": 10,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 3,
+          "startHour": 10,
+          "duration": 1.5,
+          "type": "LEC"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "code": "HIST 101",
+      "title": "World History",
+      "seats": {
+        "available": 0,
+        "total": 80
+      },
+      "waitlist": {
+        "count": 20,
+        "capacity": 20
+      },
+      "status": "waitlist",
+      "color": "green",
+      "schedule": [
+        {
+          "day": 0,
+          "startHour": 13,
+          "duration": 1,
+          "type": "LEC"
+        },
+        {
+          "day": 2,
+          "startHour": 13,
+          "duration": 1,
+          "type": "LEC"
+        },
+        {
+          "day": 4,
+          "startHour": 11,
+          "duration": 1,
+          "type": "TUT"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "code": "ENGL 101",
+      "title": "Composition",
+      "seats": {
+        "available": 30,
+        "total": 100
+      },
+      "waitlist": {
+        "count": 0,
+        "capacity": 20
+      },
+      "status": "available",
+      "color": "blue",
+      "schedule": [
+        {
+          "day": 1,
+          "startHour": 15,
+          "duration": 1.5,
+          "type": "LEC"
+        },
+        {
+          "day": 3,
+          "startHour": 15,
+          "duration": 1.5,
+          "type": "LEC"
+        }
+      ]
+    }
+  ]
+]

@@ -21,7 +21,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -30,13 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SchedulePreview } from "@/app/components/schedule-preview"
@@ -44,15 +37,19 @@ import { SavedSchedules } from "@/app/components/saved-schedules"
 import { SuccessDialog } from "@/app/components/success-dialog"
 import { FilterDialog } from "@/app/components/filter-dialog"
 import { AppHeader } from "@/app/components/app-header"
+import EnrollmentStatus from "@/app/components/EnrollmentStatus"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 
 import { useRouter } from "next/navigation";
 
+import baseData from "@/app/schedule/baseData.json";
+
 
 export default function CourseSearch() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(1)
+  const [selectedCoursesSchedule, setSelectedCoursesSchedule] = useState([])
   const [selectedCoursesSchedule1, setSelectedCoursesSchedule1] = useState([])
   const [selectedCoursesSchedule2, setSelectedCoursesSchedule2] = useState([])
   const [pinnedCoursesSchedule1, setPinnedCoursesSchedule1] = useState([])
@@ -83,10 +80,10 @@ export default function CourseSearch() {
   })
 
   const router = useRouter()
-  const redirectHome = () =>{
+  const redirectHome = () => {
     setConfirmationOpen(false);
     router.push('/');
-    
+
   }
 
   // Load saved schedules from localStorage on component mount
@@ -150,272 +147,11 @@ export default function CourseSearch() {
 
   const weekDates = calculateDates(weekNumber)
 
-  // Sample course data for Schedule 1
-  const coursesSchedule1 = [
-    {
-      id: "1",
-      code: "BSOE 101",
-      title: "Intro to Computer Science",
-      seats: {
-        available: 14,
-        total: 101,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 50,
-      },
-      status: "available",
-      color: "blue",
-      schedule: [
-        {
-          day: 0, // Monday
-          startHour: 10,
-          duration: 2,
-          type: "LEC",
-        },
-        {
-          day: 2, // Wednesday
-          startHour: 10,
-          duration: 1,
-          type: "TUT",
-        },
-      ],
-    },
-    {
-      id: "2",
-      code: "BSOE 201",
-      title: "Data Structures",
-      seats: {
-        available: 65,
-        total: 99,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 40,
-      },
-      status: "available",
-      color: "green",
-      schedule: [
-        {
-          day: 1, // Tuesday
-          startHour: 13,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3, // Thursday
-          startHour: 13,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-    {
-      id: "3",
-      code: "BSOE 301",
-      title: "Algorithms",
-      seats: {
-        available: 0,
-        total: 60,
-      },
-      waitlist: {
-        count: 15,
-        capacity: 20,
-      },
-      status: "waitlist",
-      color: "purple",
-      schedule: [
-        {
-          day: 0, // Monday
-          startHour: 14,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 2, // Wednesday
-          startHour: 14,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 4, // Friday
-          startHour: 9,
-          duration: 2,
-          type: "LAB",
-        },
-      ],
-    },
-    {
-      id: "4",
-      code: "CHEM 201",
-      title: "Organic Chemistry",
-      seats: {
-        available: 0,
-        total: 200,
-      },
-      waitlist: {
-        count: 45,
-        capacity: 45,
-      },
-      status: "not-found",
-      color: "orange",
-      schedule: [
-        {
-          day: 1, // Tuesday
-          startHour: 9,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3, // Thursday
-          startHour: 9,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 4, // Friday
-          startHour: 13,
-          duration: 3,
-          type: "LAB",
-        },
-      ],
-    },
-  ]
-
-  // Sample course data for Schedule 2
-  const coursesSchedule2 = [
-    {
-      id: "5",
-      code: "PHYS 101",
-      title: "Physics I: Mechanics",
-      seats: {
-        available: 25,
-        total: 120,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 30,
-      },
-      status: "available",
-      color: "yellow",
-      schedule: [
-        {
-          day: 0, // Monday
-          startHour: 8,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 2, // Wednesday
-          startHour: 8,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 4, // Friday
-          startHour: 14,
-          duration: 2,
-          type: "LAB",
-        },
-      ],
-    },
-    {
-      id: "6",
-      code: "MATH 101",
-      title: "Calculus I",
-      seats: {
-        available: 12,
-        total: 150,
-      },
-      waitlist: {
-        count: 5,
-        capacity: 25,
-      },
-      status: "available",
-      color: "pink",
-      schedule: [
-        {
-          day: 1, // Tuesday
-          startHour: 10,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3, // Thursday
-          startHour: 10,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-    {
-      id: "7",
-      code: "HIST 101",
-      title: "World History",
-      seats: {
-        available: 0,
-        total: 80,
-      },
-      waitlist: {
-        count: 20,
-        capacity: 20,
-      },
-      status: "waitlist",
-      color: "green",
-      schedule: [
-        {
-          day: 0, // Monday
-          startHour: 13,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 2, // Wednesday
-          startHour: 13,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 4, // Friday
-          startHour: 11,
-          duration: 1,
-          type: "TUT",
-        },
-      ],
-    },
-    {
-      id: "8",
-      code: "ENGL 101",
-      title: "Composition",
-      seats: {
-        available: 30,
-        total: 100,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 20,
-      },
-      status: "available",
-      color: "blue",
-      schedule: [
-        {
-          day: 1, // Tuesday
-          startHour: 15,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3, // Thursday
-          startHour: 15,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-  ]
+  const courseSchedules = baseData;
 
   // Get the active course list based on selected schedule
-  const activeCourses = activeSchedule === 1 ? coursesSchedule1 : coursesSchedule2
+  const activeCourses = courseSchedules[activeSchedule - 1]
+
   const selectedCourses = activeSchedule === 1 ? selectedCoursesSchedule1 : selectedCoursesSchedule2
   const setSelectedCourses = activeSchedule === 1 ? setSelectedCoursesSchedule1 : setSelectedCoursesSchedule2
   const pinnedCourses = activeSchedule === 1 ? pinnedCoursesSchedule1 : pinnedCoursesSchedule2
@@ -524,37 +260,12 @@ export default function CourseSearch() {
     }))
   }
 
-  // Modify the enrollment action handlers to store pending actions instead of executing immediately
-  const handleEnroll = (courseId) => {
+  const handleAction = (courseId, action) => {
     const course = activeCourses.find((c) => c.id === courseId)
     setPendingActions((prev) => [
       ...prev,
       {
-        type: "enroll",
-        courseId,
-        courseName: course.code,
-      },
-    ])
-  }
-
-  const handleWaitlist = (courseId) => {
-    const course = activeCourses.find((c) => c.id === courseId)
-    setPendingActions((prev) => [
-      ...prev,
-      {
-        type: "waitlist",
-        courseId,
-        courseName: course.code,
-      },
-    ])
-  }
-
-  const handleDrop = (courseId) => {
-    const course = activeCourses.find((c) => c.id === courseId)
-    setPendingActions((prev) => [
-      ...prev,
-      {
-        type: "drop",
+        type: action,
         courseId,
         courseName: course.code,
       },
@@ -605,98 +316,6 @@ export default function CourseSearch() {
   const handleSaveFilters = () => {
     // Apply filters logic here
     setFilterDialogOpen(false)
-  }
-
-  // Render enrollment status badge
-  const renderEnrollmentStatus = (course) => {
-    const status = getCourseEnrollmentStatus(course.id)
-
-    let badgeContent = null
-
-    if (status === "enrolled") {
-      badgeContent = (
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-          <Check className="h-3 w-3" /> Enrolled
-        </Badge>
-      )
-    } else if (status === "waitlisted") {
-      badgeContent = (
-        <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1">
-          <Clock className="h-3 w-3" /> Waitlisted
-        </Badge>
-      )
-    } else if (course.status === "not-found") {
-      return (
-        <div className="flex items-center text-amber-500">
-          <AlertTriangle className="h-4 w-4 mr-1" />
-          <span className="text-sm">Not found in schedule</span>
-        </div>
-      )
-    } else {
-      badgeContent = (
-        <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200 flex items-center gap-1">
-          Not Enrolled
-        </Badge>
-      )
-    }
-
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="p-0 h-auto hover:bg-transparent">
-            <div className="flex items-center gap-1">
-              {badgeContent}
-              <ChevronDown className="h-3 w-3 ml-1" />
-            </div>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {status !== "enrolled" && course.seats.available > 0 && (
-            <DropdownMenuItem onClick={() => handleEnroll(course.id)}>
-              <UserPlus className="h-4 w-4 mr-2" />
-              <span>Enroll</span>
-            </DropdownMenuItem>
-          )}
-
-          {status !== "waitlisted" &&
-            course.seats.available === 0 &&
-            course.waitlist.count < course.waitlist.capacity && (
-              <DropdownMenuItem onClick={() => handleWaitlist(course.id)}>
-                <Clock className="h-4 w-4 mr-2" />
-                <span>Join Waitlist</span>
-              </DropdownMenuItem>
-            )}
-
-          {(status === "enrolled" || status === "waitlisted") && (
-            <>
-              {status === "enrolled" && course.seats.available === 0 && (
-                <DropdownMenuItem onClick={() => handleWaitlist(course.id)}>
-                  <Clock className="h-4 w-4 mr-2" />
-                  <span>Move to Waitlist</span>
-                </DropdownMenuItem>
-              )}
-
-              {status === "waitlisted" && course.seats.available > 0 && (
-                <DropdownMenuItem onClick={() => handleEnroll(course.id)}>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  <span>Move to Enrolled</span>
-                </DropdownMenuItem>
-              )}
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem
-                onClick={() => handleDrop(course.id)}
-                className="text-destructive focus:text-destructive"
-              >
-                <UserMinus className="h-4 w-4 mr-2" />
-                <span>Drop Course</span>
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
   }
 
   return (
@@ -779,22 +398,20 @@ export default function CourseSearch() {
             <div className="mb-6">
               <div className="flex border-b">
                 <div
-                  className={`relative px-4 py-2 flex items-center cursor-pointer ${
-                    activeSchedule === 1
-                      ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                      : "text-muted-foreground hover:bg-muted/50"
-                  }`}
+                  className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === 1
+                    ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
+                    : "text-muted-foreground hover:bg-muted/50"
+                    }`}
                   onClick={() => setActiveSchedule(1)}
                 >
                   <span className="text-sm font-medium">Schedule 1</span>
                   {activeSchedule === 1 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
                 </div>
                 <div
-                  className={`relative px-4 py-2 flex items-center cursor-pointer ${
-                    activeSchedule === 2
-                      ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                      : "text-muted-foreground hover:bg-muted/50"
-                  }`}
+                  className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === 2
+                    ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
+                    : "text-muted-foreground hover:bg-muted/50"
+                    }`}
                   onClick={() => setActiveSchedule(2)}
                 >
                   <span className="text-sm font-medium">Schedule 2</span>
@@ -899,7 +516,9 @@ export default function CourseSearch() {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-center">{renderEnrollmentStatus(course)}</div>
+                            <div className="flex items-center">
+                              <EnrollmentStatus course={course} enrollmentStatus={enrollmentStatus} handleAction={handleAction} />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1050,9 +669,9 @@ export default function CourseSearch() {
                       <div className="text-lg font-bold text-green-600">Enroll</div>
                       <div className="text-sm text-gray-500">
                         {pendingActions
-                        .filter((a) => a.type === "enroll")
-                        .map((a)=> a.courseName)
-                        .join(", ")} 
+                          .filter((a) => a.type === "enroll")
+                          .map((a) => a.courseName)
+                          .join(", ")}
                       </div>
                     </div>
                   )}
@@ -1063,9 +682,9 @@ export default function CourseSearch() {
                       <div className="text-lg font-bold text-yellow-600">Waitlist</div>
                       <div className="text-sm text-gray-500">
                         {pendingActions
-                        .filter((a) => a.type === "waitlist")
-                        .map((a)=> a.courseName)
-                        .join(", ")} 
+                          .filter((a) => a.type === "waitlist")
+                          .map((a) => a.courseName)
+                          .join(", ")}
                       </div>
                     </div>
                   )}
@@ -1076,16 +695,16 @@ export default function CourseSearch() {
                       <div className="text-lg font-bold text-red-600">Drop</div>
                       <div className="text-sm text-gray-500">
                         {pendingActions
-                        .filter((a) => a.type === "drop")
-                        .map((a)=> a.courseName)
-                        .join(", ")} 
+                          .filter((a) => a.type === "drop")
+                          .map((a) => a.courseName)
+                          .join(", ")}
                       </div>
                     </div>
                   )}
                 </div>
 
                 <div className="mt-auto space-y-3">
-                  <Button variant="outline" className="w-full" onClick={() =>  redirectHome()}>
+                  <Button variant="outline" className="w-full" onClick={() => redirectHome()}>
                     Home
                   </Button>
                   <Button className="w-full bg-red-500 hover:bg-red-600 text-white" onClick={handleConfirmActions}>
