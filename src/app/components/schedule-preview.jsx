@@ -42,7 +42,7 @@ export function SchedulePreview({
   }
 
   return (
-    <div className="w-full bg-white rounded-lg border shadow-sm">
+    <div className="w-full bg-white rounded-lg border shadow-sm" style={{padding: "5px"}}>
       {/* Header */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-4">
@@ -73,22 +73,27 @@ export function SchedulePreview({
 
       {/* Calendar Body */}
       <div className="relative p-4">
-        <div className="relative bg-border rounded-lg overflow-hidden">
-          {/* Time slots */}
-          <div className="absolute -left-14 top-0 bottom-0 w-12 flex flex-col justify-between py-[10px] text-xs text-muted-foreground">
-            {hours.map((hour) => (
-              <div key={hour} className="text-right">{`${hour}:00`}</div>
-            ))}
-          </div>
-
+        <div className="relative bg-border rounded-lg">
           {/* Grid cells */}
           <div className="grid grid-cols-5 min-h-[600px]">
             {Array.from({ length: 5 }, (_, dayIndex) => (
               <div key={dayIndex} className="relative bg-background border-r last:border-r-0">
                 {/* Hour lines */}
-                {hours.map((hour) => (
+                {hours.map((hour) => {
+
+                  return (<>
+                  {dayIndex == 0 ? 
+                  <div key={hour} className="absolute w-full h-px bg-border" style={{ top: `${(hour - 8) * 60}px` }} >
+                    <span className="text-xs text-muted-foreground" style={styles.hours}>{`${hour}:00`}</span>
+                  </div>
+                  : 
                   <div key={hour} className="absolute w-full h-px bg-border" style={{ top: `${(hour - 8) * 60}px` }} />
-                ))}
+                            
+                }
+                  </>);
+                }
+                
+                  )}
               </div>
             ))}
           </div>
@@ -156,3 +161,15 @@ export function SchedulePreview({
     </div>
   )
 }
+
+
+const styles = { 
+  hours : { 
+    position: "absolute",
+    zIndex: "2",
+    left: "-15px",
+    backgroundColor: "rgb(241 243 248)",
+  }
+}
+
+
