@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
  * @param {Function} props.onNextWeek - Function to go to next week
  * @param {Array} props.courses - Array of course blocks to display
  * @param {Array} [props.dates] - Array of date strings for the week
- * @param {number} [props.scheduleNumber] - Schedule number (1 or 2)
+ * @param {String} [props.scheduleName] - Schedule name
  * @param {Function} [props.onTogglePin] - Function to toggle pin status
  * @param {Function} [props.onSaveSchedule] - Function to save the schedule
  * @param {Function} [props.onGetSchedule] - Function to get the schedule
@@ -24,10 +24,10 @@ export function SchedulePreview({
   onNextWeek,
   courses = [],
   dates = ["Jan 10", "Jan 11", "Jan 12", "Jan 13", "Jan 14"], // Default dates if none provided
-  scheduleNumber = 1,
-  onTogglePin = () => {},
-  onSaveSchedule = () => {},
-  onGetSchedule = () => {},
+  scheduleName = "Schedule 1",
+  onTogglePin = () => { },
+  onSaveSchedule = () => { },
+  onGetSchedule = () => { },
 }) {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
   const hours = Array.from({ length: 10 }, (_, i) => i + 8) // 8am to 5pm
@@ -46,7 +46,7 @@ export function SchedulePreview({
       {/* Header */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Schedule {scheduleNumber} Preview</h2>
+          <h2 className="text-lg font-semibold">{scheduleName} Preview</h2>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" onClick={onPrevWeek}>
               <ChevronLeft className="h-4 w-4" />

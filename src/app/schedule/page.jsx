@@ -56,22 +56,24 @@ const colors = {
 
 export default function CourseSearch() {
   // load data from the database, assign each course as unselected
-  const courseSchedules = baseData.map(schedule => {
-    return [
-      ...schedule.map(course => {
+  const courseSchedules = baseData.map((schedule, index) => {
+    return {
+      name: `Schedule ${index}`,
+      id: index,
+      courses: schedule.map(course => {
         return {
           ...course,
           selected: false,
           pinned: false
         }
       })
-    ]
+    }
   });
 
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeSchedule, setActiveSchedule] = useState(1)
+  const [activeSchedule, setActiveSchedule] = useState(0)
   const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
-  const [allSchedules, setAllSchedules] = useState(courseSchedules)
+  const [loadedSchedules, setLoadedSchedules] = useState(courseSchedules)
   const [weekNumber, setWeekNumber] = useState(1)
   const [savedSchedules, setSavedSchedules] = useState([])
   const [savedSchedulesCollapsed, setSavedSchedulesCollapsed] = useState(true)
@@ -105,8 +107,15 @@ export default function CourseSearch() {
 
   // whenever active schedule is changed, update the current scheduel to use
   useEffect(() => {
-    setActiveScheduleData(allSchedules[activeSchedule - 1])
+    setActiveScheduleData(loadedSchedules[activeSchedule])
   }, [activeSchedule])
+
+  // update the loaded schedules when the current schedule is updated
+  useEffect(() => {
+    const newSchedules = loadedSchedules;
+    newSchedules[activeSchedule] = activeScheduleData
+    setLoadedSchedules(newSchedules);
+  }, [activeScheduleData])
 
   // Load saved schedules from localStorage on component mount
   useEffect(() => {
@@ -169,7 +178,8 @@ export default function CourseSearch() {
   // Convert selected courses to schedule blocks
   const selectedCourseBlocks = useMemo(() => {
     const blocks = []
-    activeScheduleData.forEach(course => {
+
+    activeScheduleData.courses.forEach(course => {
       if (course.selected) {
         course.schedule.forEach((scheduleItem, index) => {
           blocks.push({
@@ -190,32 +200,34 @@ export default function CourseSearch() {
     return blocks
   }, [activeScheduleData])
 
-  const filteredCourses = activeScheduleData.filter(
+  const filteredCourses = activeScheduleData.courses.filter(
     (course) =>
       course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.title.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   const toggleCourseSelection = (courseId) => {
-    setActiveScheduleData(
-      activeScheduleData.map(course => {
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: activeScheduleData.courses.map(course => {
         if (course.id == courseId) {
           return { ...course, selected: !course.selected }
         }
         return course
       })
-    )
+    })
   }
 
   const toggleCoursePinned = (courseId) => {
-    setActiveScheduleData(
-      activeScheduleData.map(course => {
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: activeScheduleData.courses.map(course => {
         if (course.id == courseId) {
           return { ...course, pinned: !course.pinned }
         }
         return course
       })
-    )
+    })
   }
 
 
@@ -226,7 +238,7 @@ export default function CourseSearch() {
       id: Date.now().toString(),
       name: scheduleName,
       scheduleNumber: activeSchedule,
-      courses: activeScheduleData,
+      courses: activeScheduleData.courses,
       savedAt: new Date().toISOString(),
     }
 
@@ -235,29 +247,28 @@ export default function CourseSearch() {
     setSaveDialogOpen(false)
   }
 
-  function addSchedule(schedule) {
-    // add the schedule to the list of schedules
+  function addTab(schedule) {
 
-    const current = allSchedules;
+    // add the schedule to the list of schedules
+    const current = loadedSchedules;
     current.push(schedule);
-    setAllSchedules(current);
+    setLoadedSchedules(current);
 
     // select the new schedule
-    setActiveSchedule(allSchedules.length)
+    setActiveSchedule(loadedSchedules.length - 1);
   }
 
   function clearCurrentSchedule() {
-    setActiveScheduleData([])
-    const newSchedules = allSchedules;
-    newSchedules[activeSchedule - 1] = []
-    setAllSchedules(newSchedules);
+    setActiveScheduleData({
+      ...activeScheduleData, courses: []
+    })
   }
 
   const loadSavedSchedule = (scheduleId) => {
     const schedule = savedSchedules.find((s) => s.id === scheduleId)
     if (!schedule) return
 
-    addSchedule(schedule);
+    addTab(schedule);
   }
 
   const removeSavedSchedule = (scheduleId) => {
@@ -277,7 +288,7 @@ export default function CourseSearch() {
   }
 
   const handleAction = (courseId, action) => {
-    const course = activeScheduleData.find((c) => c.id === courseId)
+    const course = activeScheduleData.courses.find((c) => c.id === courseId)
     setPendingActions((prev) => [
       ...prev,
       {
@@ -414,16 +425,16 @@ export default function CourseSearch() {
             <div className="mb-6">
               <div className="flex border-b">
                 {
-                  allSchedules.map((schedule, index) => {
+                  loadedSchedules.map((schedule, index) => {
                     return <div key={index}
-                      className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === index + 1
+                      className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === index
                         ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
                         : "text-muted-foreground hover:bg-muted/50"
                         }`}
-                      onClick={() => setActiveSchedule(index + 1)}
+                      onClick={() => setActiveSchedule(index)}
                     >
-                      <span className="text-sm font-medium">Schedule {`${index + 1}`}</span>
-                      {activeSchedule === index + 1 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
+                      <span className="text-sm font-medium">{schedule.name}</span>
+                      {activeSchedule === index && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
                     </div>
                   })
                 }
@@ -440,7 +451,7 @@ export default function CourseSearch() {
                         variant="outline"
                         size="icon"
                         onClick={() => {
-                          addSchedule(activeScheduleData);
+                          addTab(activeScheduleData);
                         }}
                       >
                         <Copy className="h-4 w-4" />
@@ -524,10 +535,10 @@ export default function CourseSearch() {
             </div>
 
             <div className="mt-6 p-4 border rounded-md bg-muted/20">
-              <h3 className="font-medium mb-2">Selected Courses in Schedule {activeSchedule}</h3>
+              <h3 className="font-medium mb-2">Selected Courses in {activeScheduleData.name}</h3>
               <p className="text-sm text-muted-foreground">
-                {activeScheduleData.length > 0
-                  ? `${activeScheduleData.length} course${activeScheduleData.length > 1 ? "s" : ""} selected`
+                {activeScheduleData.courses.length > 0
+                  ? `${activeScheduleData.courses.length} course${activeScheduleData.courses.length > 1 ? "s" : ""} selected`
                   : "No courses selected"}
               </p>
             </div>
@@ -542,7 +553,7 @@ export default function CourseSearch() {
               onNextWeek={() => setWeekNumber((prev) => Math.min(totalWeeks, prev + 1))}
               courses={selectedCourseBlocks}
               dates={weekDates}
-              scheduleNumber={activeSchedule}
+              scheduleName={activeScheduleData.name}
               onTogglePin={(courseId) => toggleCoursePinned(courseId)}
               onSaveSchedule={() => setSaveDialogOpen(true)}
               onGetSchedule={handleGetSchedule}
@@ -601,7 +612,7 @@ export default function CourseSearch() {
                 <div className="space-y-4">
                   {pendingActions.map((action, index) => {
                     // Find the course details to get the color
-                    const course = activeScheduleData.find((c) => c.id === action.courseId)
+                    const course = activeScheduleData.courses.find((c) => c.id === action.courseId)
                     const color = colors[course?.color] || "bg-gray-100 border-gray-200 text-gray-800";
 
                     const textColor = "";
