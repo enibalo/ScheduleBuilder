@@ -46,14 +46,32 @@ import { useRouter } from "next/navigation";
 import baseData from "@/app/schedule/baseData.json";
 
 
+const colors = {
+  "blue": "bg-blue-100 border-blue-200 text-blue-800",
+  "green": "bg-green-100 border-green-200 text-green-800",
+  "yellow": "bg-yellow-100 border-yellow-200 text-yellow-800",
+  "pink": "bg-pink-100 border-pink-200 text-pink-800",
+  "purple": "bg-purple-100 border-purple-200 text-purple-800",
+}
+
 export default function CourseSearch() {
+  // load data from the database, assign each course as unselected
+  const courseSchedules = baseData.map(schedule => {
+    return [
+      ...schedule.map(course => {
+        return {
+          ...course,
+          selected: false,
+          pinned: false
+        }
+      })
+    ]
+  });
+
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(1)
-  const [selectedCoursesSchedule, setSelectedCoursesSchedule] = useState([])
-  const [selectedCoursesSchedule1, setSelectedCoursesSchedule1] = useState([])
-  const [selectedCoursesSchedule2, setSelectedCoursesSchedule2] = useState([])
-  const [pinnedCoursesSchedule1, setPinnedCoursesSchedule1] = useState([])
-  const [pinnedCoursesSchedule2, setPinnedCoursesSchedule2] = useState([])
+  const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
+  const [allSchedules, setAllSchedules] = useState(courseSchedules)
   const [weekNumber, setWeekNumber] = useState(1)
   const [savedSchedules, setSavedSchedules] = useState([])
   const [savedSchedulesCollapsed, setSavedSchedulesCollapsed] = useState(true)
@@ -83,8 +101,12 @@ export default function CourseSearch() {
   const redirectHome = () => {
     setConfirmationOpen(false);
     router.push('/');
-
   }
+
+  // whenever active schedule is changed, update the current scheduel to use
+  useEffect(() => {
+    setActiveScheduleData(allSchedules[activeSchedule - 1])
+  }, [activeSchedule])
 
   // Load saved schedules from localStorage on component mount
   useEffect(() => {
@@ -142,29 +164,13 @@ export default function CourseSearch() {
 
     return dates
   }
-
-
-
   const weekDates = calculateDates(weekNumber)
-
-  const courseSchedules = baseData;
-
-  // Get the active course list based on selected schedule
-  const activeCourses = courseSchedules[activeSchedule - 1]
-
-  const selectedCourses = activeSchedule === 1 ? selectedCoursesSchedule1 : selectedCoursesSchedule2
-  const setSelectedCourses = activeSchedule === 1 ? setSelectedCoursesSchedule1 : setSelectedCoursesSchedule2
-  const pinnedCourses = activeSchedule === 1 ? pinnedCoursesSchedule1 : pinnedCoursesSchedule2
-  const setPinnedCourses = activeSchedule === 1 ? setPinnedCoursesSchedule1 : setPinnedCoursesSchedule2
 
   // Convert selected courses to schedule blocks
   const selectedCourseBlocks = useMemo(() => {
     const blocks = []
-    const courseMap = new Map(activeCourses.map((course) => [course.id, course]))
-
-    for (const courseId of selectedCourses) {
-      const course = courseMap.get(courseId)
-      if (course) {
+    activeScheduleData.forEach(course => {
+      if (course.selected) {
         course.schedule.forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
@@ -175,50 +181,52 @@ export default function CourseSearch() {
             startHour: scheduleItem.startHour,
             duration: scheduleItem.duration,
             color: course.color,
-            isPinned: pinnedCourses.includes(course.id),
+            isPinned: course.pinned,
           })
         })
       }
-    }
+    })
 
     return blocks
-  }, [activeCourses, selectedCourses, pinnedCourses])
+  }, [activeScheduleData])
 
-  const filteredCourses = activeCourses.filter(
+  const filteredCourses = activeScheduleData.filter(
     (course) =>
       course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.title.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   const toggleCourseSelection = (courseId) => {
-    setSelectedCourses((prev) => (prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]))
+    setActiveScheduleData(
+      activeScheduleData.map(course => {
+        if (course.id == courseId) {
+          return { ...course, selected: !course.selected }
+        }
+        return course
+      })
+    )
   }
 
   const toggleCoursePinned = (courseId) => {
-    setPinnedCourses((prev) => (prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]))
+    setActiveScheduleData(
+      activeScheduleData.map(course => {
+        if (course.id == courseId) {
+          return { ...course, pinned: !course.pinned }
+        }
+        return course
+      })
+    )
   }
 
 
   const saveCurrentSchedule = () => {
     if (!scheduleName.trim()) return
 
-    // Get selected course details
-    const selectedCourseDetails = selectedCourses.map((courseId) => {
-      const course = activeCourses.find((c) => c.id === courseId)
-      return {
-        id: course.id,
-        code: course.code,
-        title: course.title,
-        color: course.color,
-      }
-    })
-
     const newSchedule = {
       id: Date.now().toString(),
       name: scheduleName,
       scheduleNumber: activeSchedule,
-      courses: selectedCourseDetails,
-      pinnedCourses: [...pinnedCourses],
+      courses: activeScheduleData,
       savedAt: new Date().toISOString(),
     }
 
@@ -227,21 +235,29 @@ export default function CourseSearch() {
     setSaveDialogOpen(false)
   }
 
+  function addSchedule(schedule) {
+    // add the schedule to the list of schedules
+
+    const current = allSchedules;
+    current.push(schedule);
+    setAllSchedules(current);
+
+    // select the new schedule
+    setActiveSchedule(allSchedules.length)
+  }
+
+  function clearCurrentSchedule() {
+    setActiveScheduleData([])
+    const newSchedules = allSchedules;
+    newSchedules[activeSchedule - 1] = []
+    setAllSchedules(newSchedules);
+  }
+
   const loadSavedSchedule = (scheduleId) => {
     const schedule = savedSchedules.find((s) => s.id === scheduleId)
     if (!schedule) return
 
-    // Set active schedule
-    setActiveSchedule(schedule.scheduleNumber)
-
-    // Set selected courses
-    if (schedule.scheduleNumber === 1) {
-      setSelectedCoursesSchedule1(schedule.courses.map((c) => c.id))
-      setPinnedCoursesSchedule1(schedule.pinnedCourses || [])
-    } else {
-      setSelectedCoursesSchedule2(schedule.courses.map((c) => c.id))
-      setPinnedCoursesSchedule2(schedule.pinnedCourses || [])
-    }
+    addSchedule(schedule);
   }
 
   const removeSavedSchedule = (scheduleId) => {
@@ -261,7 +277,7 @@ export default function CourseSearch() {
   }
 
   const handleAction = (courseId, action) => {
-    const course = activeCourses.find((c) => c.id === courseId)
+    const course = activeScheduleData.find((c) => c.id === courseId)
     setPendingActions((prev) => [
       ...prev,
       {
@@ -285,19 +301,19 @@ export default function CourseSearch() {
       switch (action.type) {
         case "enroll":
           updateEnrollmentStatus(action.courseId, "enrolled")
-          if (!selectedCourses.includes(action.courseId)) {
+          if (!activeScheduleData.includes(action.courseId)) {
             toggleCourseSelection(action.courseId)
           }
           break
         case "waitlist":
           updateEnrollmentStatus(action.courseId, "waitlisted")
-          if (!selectedCourses.includes(action.courseId)) {
+          if (!activeScheduleData.includes(action.courseId)) {
             toggleCourseSelection(action.courseId)
           }
           break
         case "drop":
           updateEnrollmentStatus(action.courseId, "not-enrolled")
-          if (selectedCourses.includes(action.courseId)) {
+          if (activeScheduleData.includes(action.courseId)) {
             toggleCourseSelection(action.courseId)
           }
           break
@@ -397,26 +413,21 @@ export default function CourseSearch() {
 
             <div className="mb-6">
               <div className="flex border-b">
-                <div
-                  className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === 1
-                    ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                    : "text-muted-foreground hover:bg-muted/50"
-                    }`}
-                  onClick={() => setActiveSchedule(1)}
-                >
-                  <span className="text-sm font-medium">Schedule 1</span>
-                  {activeSchedule === 1 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
-                </div>
-                <div
-                  className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === 2
-                    ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                    : "text-muted-foreground hover:bg-muted/50"
-                    }`}
-                  onClick={() => setActiveSchedule(2)}
-                >
-                  <span className="text-sm font-medium">Schedule 2</span>
-                  {activeSchedule === 2 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
-                </div>
+                {
+                  allSchedules.map((schedule, index) => {
+                    return <div key={index}
+                      className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === index + 1
+                        ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
+                        : "text-muted-foreground hover:bg-muted/50"
+                        }`}
+                      onClick={() => setActiveSchedule(index + 1)}
+                    >
+                      <span className="text-sm font-medium">Schedule {`${index + 1}`}</span>
+                      {activeSchedule === index + 1 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
+                    </div>
+                  })
+                }
+
                 <div className="flex-1 border-b -mb-px"></div>
               </div>
 
@@ -429,18 +440,7 @@ export default function CourseSearch() {
                         variant="outline"
                         size="icon"
                         onClick={() => {
-                          // Copy current schedule logic
-                          const newSchedule = [...selectedCourses]
-                          const newPinnedCourses = [...pinnedCourses]
-                          if (activeSchedule === 1) {
-                            setSelectedCoursesSchedule2(newSchedule)
-                            setPinnedCoursesSchedule2(newPinnedCourses)
-                            setActiveSchedule(2)
-                          } else {
-                            setSelectedCoursesSchedule1(newSchedule)
-                            setPinnedCoursesSchedule1(newPinnedCourses)
-                            setActiveSchedule(1)
-                          }
+                          addSchedule(activeScheduleData);
                         }}
                       >
                         <Copy className="h-4 w-4" />
@@ -456,16 +456,7 @@ export default function CourseSearch() {
                   variant="outline"
                   size="icon"
                   className="text-red-500 hover:text-red-600"
-                  onClick={() => {
-                    // Clear current schedule logic
-                    if (activeSchedule === 1) {
-                      setSelectedCoursesSchedule1([])
-                      setPinnedCoursesSchedule1([])
-                    } else {
-                      setSelectedCoursesSchedule2([])
-                      setPinnedCoursesSchedule2([])
-                    }
-                  }}
+                  onClick={clearCurrentSchedule}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -484,7 +475,7 @@ export default function CourseSearch() {
                           className="absolute top-2 right-2"
                           onClick={() => toggleCoursePinned(course.id)}
                         >
-                          {pinnedCourses.includes(course.id) ? (
+                          {course.pinned ? (
                             <Pin className="h-4 w-4 text-red-500 fill-red-500" />
                           ) : (
                             <PinOff className="h-4 w-4 text-muted-foreground" />
@@ -493,7 +484,7 @@ export default function CourseSearch() {
                         <div className="flex items-center">
                           <div className="mr-4">
                             <Checkbox
-                              checked={selectedCourses.includes(course.id)}
+                              checked={course.selected}
                               onCheckedChange={() => toggleCourseSelection(course.id)}
                             />
                           </div>
@@ -535,8 +526,8 @@ export default function CourseSearch() {
             <div className="mt-6 p-4 border rounded-md bg-muted/20">
               <h3 className="font-medium mb-2">Selected Courses in Schedule {activeSchedule}</h3>
               <p className="text-sm text-muted-foreground">
-                {selectedCourses.length > 0
-                  ? `${selectedCourses.length} course${selectedCourses.length > 1 ? "s" : ""} selected`
+                {activeScheduleData.length > 0
+                  ? `${activeScheduleData.length} course${activeScheduleData.length > 1 ? "s" : ""} selected`
                   : "No courses selected"}
               </p>
             </div>
@@ -610,35 +601,13 @@ export default function CourseSearch() {
                 <div className="space-y-4">
                   {pendingActions.map((action, index) => {
                     // Find the course details to get the color
-                    const course = activeCourses.find((c) => c.id === action.courseId)
-                    const bgColor =
-                      course?.color === "blue"
-                        ? "bg-blue-100 border-blue-200"
-                        : course?.color === "green"
-                          ? "bg-green-100 border-green-200"
-                          : course?.color === "yellow"
-                            ? "bg-yellow-100 border-yellow-200"
-                            : course?.color === "pink"
-                              ? "bg-pink-100 border-pink-200"
-                              : course?.color === "purple"
-                                ? "bg-purple-100 border-purple-200"
-                                : "bg-gray-100 border-gray-200"
+                    const course = activeScheduleData.find((c) => c.id === action.courseId)
+                    const color = colors[course?.color] || "bg-gray-100 border-gray-200 text-gray-800";
 
-                    const textColor =
-                      course?.color === "blue"
-                        ? "text-blue-800"
-                        : course?.color === "green"
-                          ? "text-green-800"
-                          : course?.color === "yellow"
-                            ? "text-yellow-800"
-                            : course?.color === "pink"
-                              ? "text-pink-800"
-                              : course?.color === "purple"
-                                ? "text-purple-800"
-                                : "text-gray-800"
+                    const textColor = "";
 
                     return (
-                      <div key={index} className={`p-3 rounded-md border ${bgColor} flex justify-between items-center`}>
+                      <div key={index} className={`p-3 rounded-md border ${color} flex justify-between items-center`}>
                         <div>
                           <span className={`font-medium ${textColor}`}>{action.courseName}</span>
                           <div className="text-xs text-gray-600 mt-1">
