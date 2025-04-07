@@ -498,13 +498,6 @@ export default function CourseSearch() {
     },
   ];
 
-  // Get the active course list based on selected schedule
-  const activeCourses = activeSchedule === 1 ? coursesSchedule1 : coursesSchedule2
-  const selectedCourses = activeSchedule === 1 ? selectedCoursesSchedule1 : selectedCoursesSchedule2
-  const setSelectedCourses = activeSchedule === 1 ? setSelectedCoursesSchedule1 : setSelectedCoursesSchedule2
-  const pinnedCourses = activeSchedule === 1 ? pinnedCoursesSchedule1 : pinnedCoursesSchedule2
-  const setPinnedCourses = activeSchedule === 1 ? setPinnedCoursesSchedule1 : setPinnedCoursesSchedule2
-
   // Convert selected courses to schedule blocks
   const selectedCourseBlocks = useMemo(() => {
     const blocks = []
