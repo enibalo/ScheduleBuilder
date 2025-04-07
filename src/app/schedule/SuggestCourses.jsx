@@ -42,7 +42,7 @@ export default function SuggestedCourses({ onClick }) {
       <div className="pt-10 flex flex-col gap-10">
         {courses.map((course) => {
           return (
-            <Card style={{padding: "5px 0px"}}>
+            <Card key={"suggested-"+ course.code} style={{padding: "5px 0px"}}>
               <div className="text-left p-4" value={course.code} onClick={(e) => onclick(e.target.value)}>
                 <div className="pb-5">
                 <h3 className="font-bold">{course.code}</h3>
