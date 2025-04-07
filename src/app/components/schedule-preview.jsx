@@ -42,6 +42,7 @@ export function SchedulePreview({
     orange: "bg-orange-100 border-orange-200 text-orange-900",
   }
 
+
   return (
     <div className="w-full bg-white rounded-lg border shadow-sm" style={{padding: "5px"}}>
       {/* Header */}
@@ -63,8 +64,9 @@ export function SchedulePreview({
 
         {/* Calendar Grid */}
         <div className="grid grid-cols-5 gap-px bg-border">
-          {days.map((day, i) => (
-            <div key={day} className="bg-background p-2 text-center">
+          {
+          days.map((day, i) => (
+            <div key={"text-"+day} className="bg-background p-2 text-center">
               <div className="font-medium text-sm">{day}</div>
               <div className="text-xs text-muted-foreground">{dates[i]}</div>
             </div>
@@ -78,23 +80,13 @@ export function SchedulePreview({
           {/* Grid cells */}
           <div className="grid grid-cols-5 min-h-[600px]">
             {Array.from({ length: 5 }, (_, dayIndex) => (
-              <div key={dayIndex} className="relative bg-background border-r last:border-r-0">
+              <div key={"a-day-"+ dayIndex} className="relative bg-background border-r last:border-r-0">
                 {/* Hour lines */}
-                {hours.map((hour) => {
-
-                  return (<>
-                  {dayIndex == 0 ? 
-                  <div key={hour} className="absolute w-full h-px bg-border" style={{ top: `${(hour - 8) * 60}px` }} >
-                    <span className="text-xs text-muted-foreground" style={styles.hours}>{`${hour}:00`}</span>
-                  </div>
-                  : 
-                  <div key={hour} className="absolute w-full h-px bg-border" style={{ top: `${(hour - 8) * 60}px` }} />
-                            
-                }
-                  </>);
-                }
-                
-                  )}
+                {hours.map((hour) => (
+                    <div key={`${dayIndex}-${hour}-hour`} className="absolute w-full h-px bg-border" style={{ top: `${(hour - 8) * 60}px` }} >
+                    {dayIndex == 0 && <span className="text-xs text-muted-foreground" style={styles.hours}>{`${hour}:00`}</span>}
+                    </div>
+                  ))}
               </div>
             ))}
           </div>
@@ -109,7 +101,7 @@ export function SchedulePreview({
 
             return (
               <div
-                key={`${course.code}-${index}`}
+                key={`schedule-preview-${course.code}-${index}`}
                 className={`absolute border rounded-md p-1 ${colors[course.color]} group`}
                 style={{
                   left,
@@ -146,6 +138,7 @@ export function SchedulePreview({
 
             return (
               <div
+              key={"conflict-" + index}
               className="absolute p-1 group opacity-60 pointer-events-none"
               style={{
                 backgroundImage: `repeating-linear-gradient(

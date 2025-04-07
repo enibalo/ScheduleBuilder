@@ -37,7 +37,9 @@ import SuggestedCourses from "./SuggestCourses"
 import baseData from "@/app/database/baseData.json";
 import allCourses from "@/app/database/allClasses.json";
 import CourseList from "@/app/components/CourseList"
-import GetScheduleDialog from "@/app/components/GetScheduleDialog"
+import GetScheduleDialog from "@/app/components/GetScheduleDialog";
+
+import { RequirementsDialog } from "./Requirements";
 
 export default function CourseSearch() {
   // load data from the database
@@ -83,6 +85,7 @@ export default function CourseSearch() {
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
   const [successDialogOpen, setSuccessDialogOpen] = useState(false)
+  const [requiredDialogOpen, setRequiredDialogOpen] = useState(true)
 
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false);
@@ -845,7 +848,7 @@ export default function CourseSearch() {
         </div>
         {/* Confirmation Dialog */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-
+        <RequirementsDialog open={requiredDialogOpen} onConfirm={()=> {console.log("item added"); setRequiredDialogOpen(false)}} onCancel={()=> setRequiredDialogOpen(false)}></RequirementsDialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>
