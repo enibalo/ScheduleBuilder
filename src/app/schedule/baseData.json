@@ -4,7 +4,7 @@
       "code": "BSOE 101",
       "title": "Intro to Computer Science",
       "seats": {
-        "available": 14,
+        "available": 101,
         "total": 101
       },
       "waitlist": {

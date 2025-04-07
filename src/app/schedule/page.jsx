@@ -4,14 +4,6 @@ import { useState, useMemo, useEffect } from "react"
 import {
   Search,
   Filter,
-  AlertTriangle,
-  Check,
-  Pin,
-  PinOff,
-  ChevronDown,
-  UserPlus,
-  UserMinus,
-  Clock,
   Info,
   Calendar,
   Copy,
@@ -19,8 +11,6 @@ import {
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -37,13 +27,13 @@ import { SavedSchedules } from "@/app/components/saved-schedules"
 import { SuccessDialog } from "@/app/components/success-dialog"
 import { FilterDialog } from "@/app/components/filter-dialog"
 import { AppHeader } from "@/app/components/app-header"
-import EnrollmentStatus from "@/app/components/EnrollmentStatus"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 
 import { useRouter } from "next/navigation";
 
 import baseData from "@/app/schedule/baseData.json";
+import CourseList from "../components/CourseList"
 
 
 const colors = {
@@ -474,65 +464,7 @@ export default function CourseSearch() {
               </div>
             </div>
 
-            <div className="space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto pr-2">
-              {filteredCourses.length > 0 ? (
-                filteredCourses.map((course) => (
-                  <Card key={course.id} className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <div className="relative p-4">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2"
-                          onClick={() => toggleCoursePinned(course.id)}
-                        >
-                          {course.pinned ? (
-                            <Pin className="h-4 w-4 text-red-500 fill-red-500" />
-                          ) : (
-                            <PinOff className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </Button>
-                        <div className="flex items-center">
-                          <div className="mr-4">
-                            <Checkbox
-                              checked={course.selected}
-                              onCheckedChange={() => toggleCourseSelection(course.id)}
-                            />
-                          </div>
-                          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                              <h3 className="font-bold">{course.code}</h3>
-                              <p className="text-sm text-muted-foreground">{course.title}</p>
-                            </div>
-                            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-                              <div>
-                                <p className="text-xs text-muted-foreground">Seats:</p>
-                                <p className="font-medium">
-                                  {course.seats.available}/{course.seats.total}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-muted-foreground">Waitlist:</p>
-                                <p className="font-medium">
-                                  {course.waitlist.count}/{course.waitlist.capacity}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center">
-                              <EnrollmentStatus course={course} enrollmentStatus={enrollmentStatus} handleAction={handleAction} />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  No courses found. Try adjusting your search.
-                </div>
-              )}
-            </div>
+            <CourseList courses={activeScheduleData.courses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
             <div className="mt-6 p-4 border rounded-md bg-muted/20">
               <h3 className="font-medium mb-2">Selected Courses in {activeScheduleData.name}</h3>
