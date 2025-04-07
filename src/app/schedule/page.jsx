@@ -4,14 +4,6 @@ import { useState, useMemo, useEffect } from "react"
 import {
   Search,
   Filter,
-  AlertTriangle,
-  Check,
-  Pin,
-  PinOff,
-  ChevronDown,
-  UserPlus,
-  UserMinus,
-  Clock,
   Info,
   Calendar,
   Copy,
@@ -19,9 +11,6 @@ import {
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -30,13 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SchedulePreview } from "@/app/components/schedule-preview"
@@ -51,14 +34,43 @@ import { useRouter } from "next/navigation";
 import SearchBar from "./SearchBar"
 import SuggestedCourses from "./SuggestCourses"
 
+import baseData from "@/app/database/baseData.json";
+import allCourses from "@/app/database/allClasses.json";
+import CourseList from "@/app/components/CourseList"
+import GetScheduleDialog from "@/app/components/GetScheduleDialog"
 
 export default function CourseSearch() {
+  // load data from the database
+  function findClassByID(id) {
+    let found = {}
+    allCourses.forEach(course => {
+      if (course.id === id) {
+        found = course
+      }
+    })
+
+    return found;
+  }
+
+  const courseSchedules = baseData.map((schedule, index) => {
+    return {
+      name: `Schedule ${index}`,
+      id: index,
+      courses: schedule.map(course => {
+        return {
+          ...course,
+          ...findClassByID(course.id),
+          selected: false,
+          pinned: false
+        }
+      })
+    }
+  });
+
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeSchedule, setActiveSchedule] = useState(1)
-  const [selectedCoursesSchedule1, setSelectedCoursesSchedule1] = useState([])
-  const [selectedCoursesSchedule2, setSelectedCoursesSchedule2] = useState([])
-  const [pinnedCoursesSchedule1, setPinnedCoursesSchedule1] = useState([])
-  const [pinnedCoursesSchedule2, setPinnedCoursesSchedule2] = useState([])
+  const [activeSchedule, setActiveSchedule] = useState(0)
+  const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
+  const [loadedSchedules, setLoadedSchedules] = useState(courseSchedules)
   const [weekNumber, setWeekNumber] = useState(1)
   const [savedSchedules, setSavedSchedules] = useState([])
   const [savedSchedulesCollapsed, setSavedSchedulesCollapsed] = useState(true)
@@ -86,11 +98,22 @@ export default function CourseSearch() {
   })
 
   const router = useRouter()
-  const redirectHome = () =>{
+  const redirectHome = () => {
     setConfirmationOpen(false);
     router.push('/');
-    
   }
+
+  // whenever active schedule is changed, update the current scheduel to use
+  useEffect(() => {
+    setActiveScheduleData(loadedSchedules[activeSchedule])
+  }, [activeSchedule])
+
+  // update the loaded schedules when the current schedule is updated
+  useEffect(() => {
+    const newSchedules = loadedSchedules;
+    newSchedules[activeSchedule] = activeScheduleData
+    setLoadedSchedules(newSchedules);
+  }, [activeScheduleData])
 
   // Load saved schedules from localStorage on component mount
   useEffect(() => {
@@ -148,9 +171,6 @@ export default function CourseSearch() {
 
     return dates
   }
-
-
-
   const weekDates = calculateDates(weekNumber)
 
   // Sample course data for Schedule 1
@@ -478,21 +498,12 @@ export default function CourseSearch() {
     },
   ];
 
-  // Get the active course list based on selected schedule
-  const activeCourses = activeSchedule === 1 ? coursesSchedule1 : coursesSchedule2
-  const selectedCourses = activeSchedule === 1 ? selectedCoursesSchedule1 : selectedCoursesSchedule2
-  const setSelectedCourses = activeSchedule === 1 ? setSelectedCoursesSchedule1 : setSelectedCoursesSchedule2
-  const pinnedCourses = activeSchedule === 1 ? pinnedCoursesSchedule1 : pinnedCoursesSchedule2
-  const setPinnedCourses = activeSchedule === 1 ? setPinnedCoursesSchedule1 : setPinnedCoursesSchedule2
-
   // Convert selected courses to schedule blocks
   const selectedCourseBlocks = useMemo(() => {
     const blocks = []
-    const courseMap = new Map(activeCourses.map((course) => [course.id, course]))
 
-    for (const courseId of selectedCourses) {
-      const course = courseMap.get(courseId)
-      if (course) {
+    activeScheduleData.courses.forEach(course => {
+      if (course.selected) {
         course.schedule.forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
@@ -503,50 +514,48 @@ export default function CourseSearch() {
             startHour: scheduleItem.startHour,
             duration: scheduleItem.duration,
             color: course.color,
-            isPinned: pinnedCourses.includes(course.id),
+            isPinned: course.pinned,
           })
         })
       }
-    }
+    })
 
     return blocks
-  }, [activeCourses, selectedCourses, pinnedCourses])
-
-  const filteredCourses = activeCourses.filter(
-    (course) =>
-      course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  }, [activeScheduleData])
 
   const toggleCourseSelection = (courseId) => {
-    setSelectedCourses((prev) => (prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]))
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: activeScheduleData.courses.map(course => {
+        if (course.id == courseId) {
+          return { ...course, selected: !course.selected }
+        }
+        return course
+      })
+    })
   }
 
   const toggleCoursePinned = (courseId) => {
-    setPinnedCourses((prev) => (prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]))
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: activeScheduleData.courses.map(course => {
+        if (course.id == courseId) {
+          return { ...course, pinned: !course.pinned }
+        }
+        return course
+      })
+    })
   }
 
 
   const saveCurrentSchedule = () => {
     if (!scheduleName.trim()) return
 
-    // Get selected course details
-    const selectedCourseDetails = selectedCourses.map((courseId) => {
-      const course = activeCourses.find((c) => c.id === courseId)
-      return {
-        id: course.id,
-        code: course.code,
-        title: course.title,
-        color: course.color,
-      }
-    })
-
     const newSchedule = {
       id: Date.now().toString(),
       name: scheduleName,
       scheduleNumber: activeSchedule,
-      courses: selectedCourseDetails,
-      pinnedCourses: [...pinnedCourses],
+      courses: activeScheduleData.courses,
       savedAt: new Date().toISOString(),
     }
 
@@ -555,21 +564,28 @@ export default function CourseSearch() {
     setSaveDialogOpen(false)
   }
 
+  function addTab(schedule) {
+
+    // add the schedule to the list of schedules
+    const current = loadedSchedules;
+    current.push(schedule);
+    setLoadedSchedules(current);
+
+    // select the new schedule
+    setActiveSchedule(loadedSchedules.length - 1);
+  }
+
+  function clearCurrentSchedule() {
+    setActiveScheduleData({
+      ...activeScheduleData, courses: []
+    })
+  }
+
   const loadSavedSchedule = (scheduleId) => {
     const schedule = savedSchedules.find((s) => s.id === scheduleId)
     if (!schedule) return
 
-    // Set active schedule
-    setActiveSchedule(schedule.scheduleNumber)
-
-    // Set selected courses
-    if (schedule.scheduleNumber === 1) {
-      setSelectedCoursesSchedule1(schedule.courses.map((c) => c.id))
-      setPinnedCoursesSchedule1(schedule.pinnedCourses || [])
-    } else {
-      setSelectedCoursesSchedule2(schedule.courses.map((c) => c.id))
-      setPinnedCoursesSchedule2(schedule.pinnedCourses || [])
-    }
+    addTab(schedule);
   }
 
   const removeSavedSchedule = (scheduleId) => {
@@ -588,37 +604,12 @@ export default function CourseSearch() {
     }))
   }
 
-  // Modify the enrollment action handlers to store pending actions instead of executing immediately
-  const handleEnroll = (courseId) => {
-    const course = activeCourses.find((c) => c.id === courseId)
+  const handleAction = (courseId, action) => {
+    const course = activeScheduleData.courses.find((c) => c.id === courseId)
     setPendingActions((prev) => [
       ...prev,
       {
-        type: "enroll",
-        courseId,
-        courseName: course.code,
-      },
-    ])
-  }
-
-  const handleWaitlist = (courseId) => {
-    const course = activeCourses.find((c) => c.id === courseId)
-    setPendingActions((prev) => [
-      ...prev,
-      {
-        type: "waitlist",
-        courseId,
-        courseName: course.code,
-      },
-    ])
-  }
-
-  const handleDrop = (courseId) => {
-    const course = activeCourses.find((c) => c.id === courseId)
-    setPendingActions((prev) => [
-      ...prev,
-      {
-        type: "drop",
+        type: action,
         courseId,
         courseName: course.code,
       },
@@ -627,9 +618,7 @@ export default function CourseSearch() {
 
   // Add a new function to handle the "Get Schedule" button click
   const handleGetSchedule = () => {
-    if (pendingActions.length > 0) {
-      setConfirmationOpen(true)
-    }
+    setConfirmationOpen(true)
   }
 
   // Add confirmation handlers
@@ -638,19 +627,19 @@ export default function CourseSearch() {
       switch (action.type) {
         case "enroll":
           updateEnrollmentStatus(action.courseId, "enrolled")
-          if (!selectedCourses.includes(action.courseId)) {
+          if (!activeScheduleData.includes(action.courseId)) {
             toggleCourseSelection(action.courseId)
           }
           break
         case "waitlist":
           updateEnrollmentStatus(action.courseId, "waitlisted")
-          if (!selectedCourses.includes(action.courseId)) {
+          if (!activeScheduleData.includes(action.courseId)) {
             toggleCourseSelection(action.courseId)
           }
           break
         case "drop":
           updateEnrollmentStatus(action.courseId, "not-enrolled")
-          if (selectedCourses.includes(action.courseId)) {
+          if (activeScheduleData.includes(action.courseId)) {
             toggleCourseSelection(action.courseId)
           }
           break
@@ -669,98 +658,6 @@ export default function CourseSearch() {
   const handleSaveFilters = () => {
     // Apply filters logic here
     setFilterDialogOpen(false)
-  }
-
-  // Render enrollment status badge
-  const renderEnrollmentStatus = (course) => {
-    const status = getCourseEnrollmentStatus(course.id)
-
-    let badgeContent = null
-
-    if (status === "enrolled") {
-      badgeContent = (
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-          <Check className="h-3 w-3" /> Enrolled
-        </Badge>
-      )
-    } else if (status === "waitlisted") {
-      badgeContent = (
-        <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1">
-          <Clock className="h-3 w-3" /> Waitlisted
-        </Badge>
-      )
-    } else if (course.status === "not-found") {
-      return (
-        <div className="flex items-center text-amber-500">
-          <AlertTriangle className="h-4 w-4 mr-1" />
-          <span className="text-sm">Not found in schedule</span>
-        </div>
-      )
-    } else {
-      badgeContent = (
-        <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200 flex items-center gap-1">
-          Not Enrolled
-        </Badge>
-      )
-    }
-
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="p-0 h-auto hover:bg-transparent">
-            <div className="flex items-center gap-1">
-              {badgeContent}
-              <ChevronDown className="h-3 w-3 ml-1" />
-            </div>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {status !== "enrolled" && course.seats.available > 0 && (
-            <DropdownMenuItem onClick={() => handleEnroll(course.id)}>
-              <UserPlus className="h-4 w-4 mr-2" />
-              <span>Enroll</span>
-            </DropdownMenuItem>
-          )}
-
-          {status !== "waitlisted" &&
-            course.seats.available === 0 &&
-            course.waitlist.count < course.waitlist.capacity && (
-              <DropdownMenuItem onClick={() => handleWaitlist(course.id)}>
-                <Clock className="h-4 w-4 mr-2" />
-                <span>Join Waitlist</span>
-              </DropdownMenuItem>
-            )}
-
-          {(status === "enrolled" || status === "waitlisted") && (
-            <>
-              {status === "enrolled" && course.seats.available === 0 && (
-                <DropdownMenuItem onClick={() => handleWaitlist(course.id)}>
-                  <Clock className="h-4 w-4 mr-2" />
-                  <span>Move to Waitlist</span>
-                </DropdownMenuItem>
-              )}
-
-              {status === "waitlisted" && course.seats.available > 0 && (
-                <DropdownMenuItem onClick={() => handleEnroll(course.id)}>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  <span>Move to Enrolled</span>
-                </DropdownMenuItem>
-              )}
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem
-                onClick={() => handleDrop(course.id)}
-                className="text-destructive focus:text-destructive"
-              >
-                <UserMinus className="h-4 w-4 mr-2" />
-                <span>Drop Course</span>
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
   }
 
   return (
@@ -836,28 +733,21 @@ export default function CourseSearch() {
 
             <div className="mb-6">
               <div className="flex border-b">
-                <div
-                  className={`relative px-4 py-2 flex items-center cursor-pointer ${
-                    activeSchedule === 1
-                      ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                      : "text-muted-foreground hover:bg-muted/50"
-                  }`}
-                  onClick={() => setActiveSchedule(1)}
-                >
-                  <span className="text-sm font-medium">Schedule 1</span>
-                  {activeSchedule === 1 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
-                </div>
-                <div
-                  className={`relative px-4 py-2 flex items-center cursor-pointer ${
-                    activeSchedule === 2
-                      ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                      : "text-muted-foreground hover:bg-muted/50"
-                  }`}
-                  onClick={() => setActiveSchedule(2)}
-                >
-                  <span className="text-sm font-medium">Schedule 2</span>
-                  {activeSchedule === 2 && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
-                </div>
+                {
+                  loadedSchedules.map((schedule, index) => {
+                    return <div key={index}
+                      className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === index
+                        ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
+                        : "text-muted-foreground hover:bg-muted/50"
+                        }`}
+                      onClick={() => setActiveSchedule(index)}
+                    >
+                      <span className="text-sm font-medium">{schedule.name}</span>
+                      {activeSchedule === index && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
+                    </div>
+                  })
+                }
+
                 <div className="flex-1 border-b -mb-px"></div>
               </div>
 
@@ -870,18 +760,7 @@ export default function CourseSearch() {
                         variant="outline"
                         size="icon"
                         onClick={() => {
-                          // Copy current schedule logic
-                          const newSchedule = [...selectedCourses]
-                          const newPinnedCourses = [...pinnedCourses]
-                          if (activeSchedule === 1) {
-                            setSelectedCoursesSchedule2(newSchedule)
-                            setPinnedCoursesSchedule2(newPinnedCourses)
-                            setActiveSchedule(2)
-                          } else {
-                            setSelectedCoursesSchedule1(newSchedule)
-                            setPinnedCoursesSchedule1(newPinnedCourses)
-                            setActiveSchedule(1)
-                          }
+                          addTab(activeScheduleData);
                         }}
                       >
                         <Copy className="h-4 w-4" />
@@ -897,79 +776,14 @@ export default function CourseSearch() {
                   variant="outline"
                   size="icon"
                   className="text-red-500 hover:text-red-600"
-                  onClick={() => {
-                    // Clear current schedule logic
-                    if (activeSchedule === 1) {
-                      setSelectedCoursesSchedule1([])
-                      setPinnedCoursesSchedule1([])
-                    } else {
-                      setSelectedCoursesSchedule2([])
-                      setPinnedCoursesSchedule2([])
-                    }
-                  }}
+                  onClick={clearCurrentSchedule}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
-            <div className="space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto pr-2">
-              {filteredCourses.length > 0 ? (
-                filteredCourses.map((course) => (
-                  <Card key={course.id} className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <div className="relative p-4">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2"
-                          onClick={() => toggleCoursePinned(course.id)}
-                        >
-                          {pinnedCourses.includes(course.id) ? (
-                            <Pin className="h-4 w-4 text-red-500 fill-red-500" />
-                          ) : (
-                            <PinOff className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </Button>
-                        <div className="flex items-center">
-                          <div className="mr-4">
-                            <Checkbox
-                              checked={selectedCourses.includes(course.id)}
-                              onCheckedChange={() => toggleCourseSelection(course.id)}
-                            />
-                          </div>
-                          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                              <h3 className="font-bold">{course.code}</h3>
-                              <p className="text-sm text-muted-foreground">{course.title}</p>
-                            </div>
-                            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-                              <div>
-                                <p className="text-xs text-muted-foreground">Seats:</p>
-                                <p className="font-medium">
-                                  {course.seats.available}/{course.seats.total}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-muted-foreground">Waitlist:</p>
-                                <p className="font-medium">
-                                  {course.waitlist.count}/{course.waitlist.capacity}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center">{renderEnrollmentStatus(course)}</div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  No courses found. Try adjusting your search.
-                </div>
-              )}
-            </div>
+            <CourseList courses={activeScheduleData.courses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
             <SuggestedCourses onClick={(item)=>console.log(item)}></SuggestedCourses>
           </div>
@@ -983,7 +797,7 @@ export default function CourseSearch() {
               onNextWeek={() => setWeekNumber((prev) => Math.min(totalWeeks, prev + 1))}
               courses={selectedCourseBlocks}
               dates={weekDates}
-              scheduleNumber={activeSchedule}
+              scheduleName={activeScheduleData.name}
               onTogglePin={(courseId) => toggleCoursePinned(courseId)}
               onSaveSchedule={() => setSaveDialogOpen(true)}
               onGetSchedule={handleGetSchedule}
@@ -1030,123 +844,8 @@ export default function CourseSearch() {
           />
         </div>
         {/* Confirmation Dialog */}
-        <Dialog open={confirmationOpen} onOpenChange={setConfirmationOpen}>
-          <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
-            <div className="flex h-full">
-              {/* Left side - Course list */}
-              <div className="flex-1 p-6 max-h-[600px] overflow-y-auto">
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold">Confirm Actions</h2>
-                  <p className="text-sm text-gray-500">Review the following changes to your schedule</p>
-                </div>
-                <div className="space-y-4">
-                  {pendingActions.map((action, index) => {
-                    // Find the course details to get the color
-                    const course = activeCourses.find((c) => c.id === action.courseId)
-                    const bgColor =
-                      course?.color === "blue"
-                        ? "bg-blue-100 border-blue-200"
-                        : course?.color === "green"
-                          ? "bg-green-100 border-green-200"
-                          : course?.color === "yellow"
-                            ? "bg-yellow-100 border-yellow-200"
-                            : course?.color === "pink"
-                              ? "bg-pink-100 border-pink-200"
-                              : course?.color === "purple"
-                                ? "bg-purple-100 border-purple-200"
-                                : "bg-gray-100 border-gray-200"
+        <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
 
-                    const textColor =
-                      course?.color === "blue"
-                        ? "text-blue-800"
-                        : course?.color === "green"
-                          ? "text-green-800"
-                          : course?.color === "yellow"
-                            ? "text-yellow-800"
-                            : course?.color === "pink"
-                              ? "text-pink-800"
-                              : course?.color === "purple"
-                                ? "text-purple-800"
-                                : "text-gray-800"
-
-                    return (
-                      <div key={index} className={`p-3 rounded-md border ${bgColor} flex justify-between items-center`}>
-                        <div>
-                          <span className={`font-medium ${textColor}`}>{action.courseName}</span>
-                          <div className="text-xs text-gray-600 mt-1">
-                            {action.type === "enroll" && "Add to your schedule"}
-                            {action.type === "waitlist" && "Join the waitlist"}
-                            {action.type === "drop" && "Remove from your schedule"}
-                          </div>
-                        </div>
-                        <Button size="sm" variant="outline" className="bg-white hover:bg-gray-50">
-                          {action.type === "enroll" && "Enroll"}
-                          {action.type === "waitlist" && "Waitlist"}
-                          {action.type === "drop" && "Drop"}
-                        </Button>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Right side - Summary and Buttons */}
-              <div className="w-[220px] bg-gray-50 border-l p-6 flex flex-col">
-                <h3 className="font-medium mb-6">Summary</h3>
-
-                <div className="space-y-6 flex-1">
-                  {/* Enrollment count */}
-                  {pendingActions.filter((a) => a.type === "enroll").length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-green-600">Enroll</div>
-                      <div className="text-sm text-gray-500">
-                        {pendingActions
-                        .filter((a) => a.type === "enroll")
-                        .map((a)=> a.courseName)
-                        .join(", ")} 
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Waitlist count */}
-                  {pendingActions.filter((a) => a.type === "waitlist").length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-yellow-600">Waitlist</div>
-                      <div className="text-sm text-gray-500">
-                        {pendingActions
-                        .filter((a) => a.type === "waitlist")
-                        .map((a)=> a.courseName)
-                        .join(", ")} 
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Drop count */}
-                  {pendingActions.filter((a) => a.type === "drop").length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-red-600">Drop</div>
-                      <div className="text-sm text-gray-500">
-                        {pendingActions
-                        .filter((a) => a.type === "drop")
-                        .map((a)=> a.courseName)
-                        .join(", ")} 
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-auto space-y-3">
-                  <Button variant="outline" className="w-full" onClick={() =>  redirectHome()}>
-                    Home
-                  </Button>
-                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white" onClick={handleConfirmActions}>
-                    Confirm
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>
