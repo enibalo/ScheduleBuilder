@@ -49,6 +49,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 import { useRouter } from "next/navigation";
 import SearchBar from "./SearchBar"
+import SuggestedCourses from "./SuggestCourses"
 
 
 export default function CourseSearch() {
@@ -970,14 +971,7 @@ export default function CourseSearch() {
               )}
             </div>
 
-            <div className="mt-6 p-4 border rounded-md bg-muted/20">
-              <h3 className="font-medium mb-2">Selected Courses in Schedule {activeSchedule}</h3>
-              <p className="text-sm text-muted-foreground">
-                {selectedCourses.length > 0
-                  ? `${selectedCourses.length} course${selectedCourses.length > 1 ? "s" : ""} selected`
-                  : "No courses selected"}
-              </p>
-            </div>
+            <SuggestedCourses onClick={(item)=>console.log(item)}></SuggestedCourses>
           </div>
 
           {/* Schedule Preview Section */}
