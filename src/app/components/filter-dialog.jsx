@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { Trash2 } from "lucide-react";
+
 
 export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onSave }) {
   const handleCheckboxChange = (filterKey) => {
@@ -11,6 +13,13 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
       ...filters,
       [filterKey]: !filters[filterKey],
     })
+  }
+
+  const handleClearFilters = () => {
+    const resetFilters = Object.fromEntries(
+      Object.entries(filters).map(([key]) => [key, false])
+    );    
+    onFiltersChange(resetFilters)
   }
 
   return (
@@ -105,6 +114,12 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
                   onCheckedChange={() => handleCheckboxChange("waitlistedClasses")}
                 />
                 <Label htmlFor="waitlisted-classes">Waitlisted Classes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+              <Button variant="outline" className="w-full" onClick={() => handleClearFilters()}>
+              <Trash2 className="w-4 h-4" />
+                Clear Filters
+              </Button>
               </div>
             </div>
           </div>
