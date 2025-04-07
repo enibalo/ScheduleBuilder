@@ -136,6 +136,38 @@ export function SchedulePreview({
             )
           })}
 
+
+          {conflicts.map((conflict, index) => {
+            // Calculate position
+            const left = `${conflict.day * 20}%` // 20% width for each day column
+            const top = `${(conflict.startHour - 8) * 60}px` // 60px per hour
+            const height = `${conflict.duration * 60}px`
+            const width = "calc(20% - 2px)" // 20% width minus a small gap
+
+            return (
+              <div
+              className="absolute p-1 group opacity-60 pointer-events-none"
+              style={{
+                backgroundImage: `repeating-linear-gradient(
+                  -45deg,
+                  #fef08a 0px,
+                  #fef08a 8px,
+                  #f97316 8px,
+                  #f97316 12px
+                )`,
+                borderRadius: '0.25rem',
+                left,
+                top,
+                height,
+                width,
+                margin: "1px",
+              }}
+              ></div>
+
+
+            )
+          })}
+
           {/* Empty state - moved inside the calendar body */}
           {courses.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none bg-background/50">
