@@ -5,7 +5,17 @@ import { AppHeader } from "./components/app-header";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+import { useRouter } from "next/navigation";
+
 export default function Homepage() {
+  //filtercourses.sort
+    const router = useRouter();
+    const redirectSchedule = (e) =>{
+      const term = e.target.value; 
+      localStorage.setItem("term", term)
+      router.push('/schedule');
+    }
+
   return (
     <>
       <AppHeader></AppHeader>
@@ -13,10 +23,10 @@ export default function Homepage() {
         <main className={styles.main}>
           <div className={styles.content}>
             <div className={styles.buttonColumn}>
-              <button className={styles.largeButton}>Spring 2025</button>
-              <button className={styles.largeButton}>Summer 2025</button>
-              <button className={styles.largeButton}>Fall 2025</button>
-              <button className={styles.largeButton}>Winter 2026</button>
+              <button onClick={redirectSchedule} value={"spring2025"} className={styles.largeButton}>Spring 2025</button>
+              <button onClick={redirectSchedule} value={"summer2025"} className={styles.largeButton}>Summer 2025</button>
+              <button onClick={redirectSchedule} value={"fall2024"} className={styles.largeButton}>Fall 2024</button>
+              <button onClick={redirectSchedule} value={"winter2025"} className={styles.largeButton}>Winter 2025</button>
             </div>
 
             <div className={styles.videoColumn}>
@@ -70,6 +80,7 @@ export default function Homepage() {
 
 function SearchDropdown() {
   const [search, setSearch] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   const degrees = [
     "Biological Sciences.pdf",
@@ -96,11 +107,14 @@ function SearchDropdown() {
   return (
     <div className="pt-4">
       <label className="hidden">Degree Name</label>
-      {/*input rounded-b-none
-
-      */}
-      <Input className="rounded-b-none focus-visible:border-input focus-visible:ring-0 focus-visible:shadow-none" value={search} onChange={handleChange} placeholder="Degree Name..." />
-      <ScrollArea className="h-72 w-48 border w-full border-input rounded-b max-h-[100px]">
+      <Input 
+      className="rounded-b-none focus-visible:border-input focus-visible:ring-0 focus-visible:shadow-none" 
+      value={search}
+      onChange={handleChange} 
+      placeholder="Degree Name..." 
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setTimeout(() => setIsFocused(false), 100)}/>
+      {isFocused && <ScrollArea className="h-72 w-48 border w-full border-input rounded-b max-h-[100px]">
         <div className="p-4">
           {degrees
             .filter((item) => item.toLowerCase().includes(search.toLowerCase()))
@@ -110,7 +124,7 @@ function SearchDropdown() {
               </div>
             ))}
         </div>
-      </ScrollArea>
+      </ScrollArea>}
     </div>
   );
 }
