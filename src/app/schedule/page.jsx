@@ -64,7 +64,7 @@ export default function CourseSearch() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [scheduleName, setScheduleName] = useState("")
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
-  const [selectedTerm, setSelectedTerm] = useState("fall2024")
+  const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
   const totalWeeks = 88
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
