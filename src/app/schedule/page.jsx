@@ -34,16 +34,8 @@ import { useRouter } from "next/navigation";
 
 import baseData from "@/app/database/baseData.json";
 import allCourses from "@/app/database/allClasses.json";
-import CourseList from "../components/CourseList"
-
-
-const colors = {
-  "blue": "bg-blue-100 border-blue-200 text-blue-800",
-  "green": "bg-green-100 border-green-200 text-green-800",
-  "yellow": "bg-yellow-100 border-yellow-200 text-yellow-800",
-  "pink": "bg-pink-100 border-pink-200 text-pink-800",
-  "purple": "bg-purple-100 border-purple-200 text-purple-800",
-}
+import CourseList from "@/app/components/CourseList"
+import GetScheduleDialog from "@/app/components/GetScheduleDialog"
 
 export default function CourseSearch() {
   // load data from the database
@@ -203,12 +195,6 @@ export default function CourseSearch() {
     return blocks
   }, [activeScheduleData])
 
-  const filteredCourses = activeScheduleData.courses.filter(
-    (course) =>
-      course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
-
   const toggleCourseSelection = (courseId) => {
     setActiveScheduleData({
       ...activeScheduleData,
@@ -304,9 +290,7 @@ export default function CourseSearch() {
 
   // Add a new function to handle the "Get Schedule" button click
   const handleGetSchedule = () => {
-    if (pendingActions.length > 0) {
-      setConfirmationOpen(true)
-    }
+    setConfirmationOpen(true)
   }
 
   // Add confirmation handlers
@@ -545,101 +529,8 @@ export default function CourseSearch() {
           />
         </div>
         {/* Confirmation Dialog */}
-        <Dialog open={confirmationOpen} onOpenChange={setConfirmationOpen}>
-          <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
-            <div className="flex h-full">
-              {/* Left side - Course list */}
-              <div className="flex-1 p-6 max-h-[600px] overflow-y-auto">
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold">Confirm Actions</h2>
-                  <p className="text-sm text-gray-500">Review the following changes to your schedule</p>
-                </div>
-                <div className="space-y-4">
-                  {pendingActions.map((action, index) => {
-                    // Find the course details to get the color
-                    const course = activeScheduleData.courses.find((c) => c.id === action.courseId)
-                    const color = colors[course?.color] || "bg-gray-100 border-gray-200 text-gray-800";
+        <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
 
-                    const textColor = "";
-
-                    return (
-                      <div key={index} className={`p-3 rounded-md border ${color} flex justify-between items-center`}>
-                        <div>
-                          <span className={`font-medium ${textColor}`}>{action.courseName}</span>
-                          <div className="text-xs text-gray-600 mt-1">
-                            {action.type === "enroll" && "Add to your schedule"}
-                            {action.type === "waitlist" && "Join the waitlist"}
-                            {action.type === "drop" && "Remove from your schedule"}
-                          </div>
-                        </div>
-                        <Button size="sm" variant="outline" className="bg-white hover:bg-gray-50">
-                          {action.type === "enroll" && "Enroll"}
-                          {action.type === "waitlist" && "Waitlist"}
-                          {action.type === "drop" && "Drop"}
-                        </Button>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Right side - Summary and Buttons */}
-              <div className="w-[220px] bg-gray-50 border-l p-6 flex flex-col">
-                <h3 className="font-medium mb-6">Summary</h3>
-
-                <div className="space-y-6 flex-1">
-                  {/* Enrollment count */}
-                  {pendingActions.filter((a) => a.type === "enroll").length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-green-600">Enroll</div>
-                      <div className="text-sm text-gray-500">
-                        {pendingActions
-                          .filter((a) => a.type === "enroll")
-                          .map((a) => a.courseName)
-                          .join(", ")}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Waitlist count */}
-                  {pendingActions.filter((a) => a.type === "waitlist").length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-yellow-600">Waitlist</div>
-                      <div className="text-sm text-gray-500">
-                        {pendingActions
-                          .filter((a) => a.type === "waitlist")
-                          .map((a) => a.courseName)
-                          .join(", ")}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Drop count */}
-                  {pendingActions.filter((a) => a.type === "drop").length > 0 && (
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-red-600">Drop</div>
-                      <div className="text-sm text-gray-500">
-                        {pendingActions
-                          .filter((a) => a.type === "drop")
-                          .map((a) => a.courseName)
-                          .join(", ")}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-auto space-y-3">
-                  <Button variant="outline" className="w-full" onClick={() => redirectHome()}>
-                    Home
-                  </Button>
-                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white" onClick={handleConfirmActions}>
-                    Confirm
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>
