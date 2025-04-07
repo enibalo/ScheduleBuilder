@@ -48,6 +48,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 
 import { useRouter } from "next/navigation";
+import SearchBar from "./SearchBar"
 
 
 export default function CourseSearch() {
@@ -71,6 +72,7 @@ export default function CourseSearch() {
   const [successDialogOpen, setSuccessDialogOpen] = useState(false)
 
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
+  const [isFocused, setIsFocused] = useState(false);
   const [filters, setFilters] = useState({
     allClasses: false,
     morningClasses: false,
@@ -156,6 +158,8 @@ export default function CourseSearch() {
       id: "1",
       code: "BSOE 101",
       title: "Intro to Computer Science",
+      professor: "Dr. Ada Lovelace",
+      room: "ENG 101",
       seats: {
         available: 14,
         total: 101,
@@ -168,13 +172,13 @@ export default function CourseSearch() {
       color: "blue",
       schedule: [
         {
-          day: 0, // Monday
+          day: 0,
           startHour: 10,
           duration: 2,
           type: "LEC",
         },
         {
-          day: 2, // Wednesday
+          day: 2,
           startHour: 10,
           duration: 1,
           type: "TUT",
@@ -185,6 +189,8 @@ export default function CourseSearch() {
       id: "2",
       code: "BSOE 201",
       title: "Data Structures",
+      professor: "Dr. Alan Turing",
+      room: "ENG 204",
       seats: {
         available: 65,
         total: 99,
@@ -197,13 +203,13 @@ export default function CourseSearch() {
       color: "green",
       schedule: [
         {
-          day: 1, // Tuesday
+          day: 1,
           startHour: 13,
           duration: 1.5,
           type: "LEC",
         },
         {
-          day: 3, // Thursday
+          day: 3,
           startHour: 13,
           duration: 1.5,
           type: "LEC",
@@ -214,6 +220,8 @@ export default function CourseSearch() {
       id: "3",
       code: "BSOE 301",
       title: "Algorithms",
+      professor: "Dr. Grace Hopper",
+      room: "ENG 302",
       seats: {
         available: 0,
         total: 60,
@@ -226,19 +234,19 @@ export default function CourseSearch() {
       color: "purple",
       schedule: [
         {
-          day: 0, // Monday
+          day: 0,
           startHour: 14,
           duration: 1,
           type: "LEC",
         },
         {
-          day: 2, // Wednesday
+          day: 2,
           startHour: 14,
           duration: 1,
           type: "LEC",
         },
         {
-          day: 4, // Friday
+          day: 4,
           startHour: 9,
           duration: 2,
           type: "LAB",
@@ -249,6 +257,8 @@ export default function CourseSearch() {
       id: "4",
       code: "CHEM 201",
       title: "Organic Chemistry",
+      professor: "Dr. Marie Curie",
+      room: "SCI 110",
       seats: {
         available: 0,
         total: 200,
@@ -261,26 +271,79 @@ export default function CourseSearch() {
       color: "orange",
       schedule: [
         {
-          day: 1, // Tuesday
+          day: 1,
           startHour: 9,
           duration: 1.5,
           type: "LEC",
         },
         {
-          day: 3, // Thursday
+          day: 3,
           startHour: 9,
           duration: 1.5,
           type: "LEC",
         },
         {
-          day: 4, // Friday
+          day: 4,
           startHour: 13,
           duration: 3,
           type: "LAB",
         },
       ],
     },
+
+    //conflicting courses
+    {
+      id: "5",
+      code: "MATH 200",
+      title: "Calculus II",
+      professor: "Dr. Carl Gauss",
+      room: "MATH 220",
+      seats: {
+        available: 10,
+        total: 150,
+      },
+      waitlist: {
+        count: 5,
+        capacity: 20,
+      },
+      status: "open",
+      color: "blue",
+      schedule: [
+        {
+          day: 1,
+          startHour: 9.5,
+          duration: 1.5,
+          type: "LEC",
+        },
+      ],
+    },
+    {
+      id: "6",
+      code: "PHYS 101",
+      title: "Physics I",
+      professor: "Dr. Isaac Newton",
+      room: "PHY 100",
+      seats: {
+        available: 20,
+        total: 180,
+      },
+      waitlist: {
+        count: 0,
+        capacity: 30,
+      },
+      status: "open",
+      color: "green",
+      schedule: [
+        {
+          day: 1,
+          startHour: 10,
+          duration: 1,
+          type: "LEC",
+        },
+      ],
+    },
   ]
+  
 
   // Sample course data for Schedule 2
   const coursesSchedule2 = [
@@ -412,7 +475,7 @@ export default function CourseSearch() {
         },
       ],
     },
-  ]
+  ];
 
   // Get the active course list based on selected schedule
   const activeCourses = activeSchedule === 1 ? coursesSchedule1 : coursesSchedule2
@@ -755,13 +818,7 @@ export default function CourseSearch() {
 
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search courses..."
-                  className="pl-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <SearchBar courses={coursesSchedule1.map((item) => item.code)} onSelect={(e)=> console.log(e)}></SearchBar>
               </div>
               <Button variant="outline" className="flex items-center gap-2" onClick={() => setFilterDialogOpen(true)}>
                 <Filter className="h-4 w-4" />

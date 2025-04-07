@@ -70,6 +70,7 @@ export default function Homepage() {
 
 function SearchDropdown() {
   const [search, setSearch] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   const degrees = [
     "Biological Sciences.pdf",
@@ -96,11 +97,14 @@ function SearchDropdown() {
   return (
     <div className="pt-4">
       <label className="hidden">Degree Name</label>
-      {/*input rounded-b-none
-
-      */}
-      <Input className="rounded-b-none focus-visible:border-input focus-visible:ring-0 focus-visible:shadow-none" value={search} onChange={handleChange} placeholder="Degree Name..." />
-      <ScrollArea className="h-72 w-48 border w-full border-input rounded-b max-h-[100px]">
+      <Input 
+      className="rounded-b-none focus-visible:border-input focus-visible:ring-0 focus-visible:shadow-none" 
+      value={search}
+      onChange={handleChange} 
+      placeholder="Degree Name..." 
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setTimeout(() => setIsFocused(false), 100)}/>
+      {isFocused && <ScrollArea className="h-72 w-48 border w-full border-input rounded-b max-h-[100px]">
         <div className="p-4">
           {degrees
             .filter((item) => item.toLowerCase().includes(search.toLowerCase()))
@@ -110,7 +114,7 @@ function SearchDropdown() {
               </div>
             ))}
         </div>
-      </ScrollArea>
+      </ScrollArea>}
     </div>
   );
 }
