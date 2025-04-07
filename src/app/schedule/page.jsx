@@ -85,7 +85,7 @@ export default function CourseSearch() {
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
   const [successDialogOpen, setSuccessDialogOpen] = useState(false)
-  const [requiredDialogOpen, setRequiredDialogOpen] = useState(true)
+  const [requiredDialogOpen, setRequiredDialogOpen] = useState(false)
 
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false);
