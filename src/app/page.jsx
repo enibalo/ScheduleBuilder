@@ -5,7 +5,17 @@ import { AppHeader } from "./components/app-header";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+import { useRouter } from "next/navigation";
+
 export default function Homepage() {
+  //filtercourses.sort
+    const router = useRouter();
+    const redirectSchedule = (e) =>{
+      const term = e.target.value; 
+      localStorage.setItem("term", term)
+      router.push('/schedule');
+    }
+
   return (
     <>
       <AppHeader></AppHeader>
@@ -13,10 +23,10 @@ export default function Homepage() {
         <main className={styles.main}>
           <div className={styles.content}>
             <div className={styles.buttonColumn}>
-              <button className={styles.largeButton}>Spring 2025</button>
-              <button className={styles.largeButton}>Summer 2025</button>
-              <button className={styles.largeButton}>Fall 2025</button>
-              <button className={styles.largeButton}>Winter 2026</button>
+              <button onClick={redirectSchedule} value={"spring2025"} className={styles.largeButton}>Spring 2025</button>
+              <button onClick={redirectSchedule} value={"summer2025"} className={styles.largeButton}>Summer 2025</button>
+              <button onClick={redirectSchedule} value={"fall2024"} className={styles.largeButton}>Fall 2024</button>
+              <button onClick={redirectSchedule} value={"winter2025"} className={styles.largeButton}>Winter 2025</button>
             </div>
 
             <div className={styles.videoColumn}>
