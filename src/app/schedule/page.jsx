@@ -32,7 +32,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 import { useRouter } from "next/navigation";
 
-import baseData from "@/app/schedule/baseData.json";
+import baseData from "@/app/database/baseData.json";
+import allCourses from "@/app/database/allClasses.json";
 import CourseList from "../components/CourseList"
 
 
@@ -45,7 +46,18 @@ const colors = {
 }
 
 export default function CourseSearch() {
-  // load data from the database, assign each course as unselected
+  // load data from the database
+  function findClassByID(id) {
+    let found = {}
+    allCourses.forEach(course => {
+      if (course.id === id) {
+        found = course
+      }
+    })
+
+    return found;
+  }
+
   const courseSchedules = baseData.map((schedule, index) => {
     return {
       name: `Schedule ${index}`,
@@ -53,6 +65,7 @@ export default function CourseSearch() {
       courses: schedule.map(course => {
         return {
           ...course,
+          ...findClassByID(course.id),
           selected: false,
           pinned: false
         }
