@@ -23,6 +23,7 @@ export function SchedulePreview({
   onPrevWeek,
   onNextWeek,
   courses = [],
+  conflicts = [],
   dates = ["Jan 10", "Jan 11", "Jan 12", "Jan 13", "Jan 14"], // Default dates if none provided
   scheduleNumber = 1,
   onTogglePin = () => {},
