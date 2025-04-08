@@ -4,7 +4,7 @@
     "code": "BSOE 101",
     "title": "Intro to Computer Science",
     "seats": {
-      "available": 101,
+      "available": 0,
       "total": 101
     },
     "waitlist": {
@@ -25,7 +25,11 @@
         "duration": 1,
         "type": "TUT"
       }
-    ]
+    ],
+    "professor": "Dr. Smith",
+    "room": "Online",
+    "requiredClasses": false,
+    "onlineClasses": true
   },
   {
     "id": "2",
@@ -53,7 +57,11 @@
         "duration": 1.5,
         "type": "LEC"
       }
-    ]
+    ],
+    "professor": "Dr. Johnson",
+    "room": "Online",
+    "requiredClasses": true,
+    "onlineClasses": true
   },
   {
     "id": "3",
@@ -87,7 +95,11 @@
         "duration": 2,
         "type": "LAB"
       }
-    ]
+    ],
+    "professor": "Dr. Thompson",
+    "room": "Room 303",
+    "requiredClasses": false,
+    "onlineClasses": false
   },
   {
     "id": "4",
@@ -110,18 +122,22 @@
         "type": "LEC"
       },
       {
-        "day": 3, 
+        "day": 3,
         "startHour": 9,
         "duration": 1.5,
         "type": "LEC"
       },
       {
-        "day": 4, 
+        "day": 4,
         "startHour": 13,
         "duration": 3,
         "type": "LAB"
       }
-    ]
+    ],
+    "professor": "Dr. Lee",
+    "room": "Online",
+    "requiredClasses": true,
+    "onlineClasses": true
   },
   {
     "id": "5",
@@ -138,7 +154,7 @@
     "color": "yellow",
     "schedule": [
       {
-        "day": 0, 
+        "day": 0,
         "startHour": 8,
         "duration": 1.5,
         "type": "LEC"
@@ -155,7 +171,11 @@
         "duration": 2,
         "type": "LAB"
       }
-    ]
+    ],
+    "professor": "Dr. Patel",
+    "room": "Room 505",
+    "requiredClasses": true,
+    "onlineClasses": false
   },
   {
     "id": "6",
@@ -183,7 +203,11 @@
         "duration": 1.5,
         "type": "LEC"
       }
-    ]
+    ],
+    "professor": "Dr. Kim",
+    "room": "Room 606",
+    "requiredClasses": true,
+    "onlineClasses": false
   },
   {
     "id": "7",
@@ -217,7 +241,11 @@
         "duration": 1,
         "type": "TUT"
       }
-    ]
+    ],
+    "professor": "Dr. Brown",
+    "room": "Room 707",
+    "requiredClasses": true,
+    "onlineClasses": false
   },
   {
     "id": "8",
@@ -245,7 +273,10 @@
         "duration": 1.5,
         "type": "LEC"
       }
-    ]
+    ],
+    "professor": "Dr. Davis",
+    "room": "Room 808",
+    "requiredClasses": false,
+    "onlineClasses": false
   }
 ]
-

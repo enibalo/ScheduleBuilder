@@ -40,6 +40,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned }) {
                     <div>
                       <h3 className="font-bold">{course.code}</h3>
                       <p className="text-sm text-muted-foreground">{course.title}</p>
+                      <p className="text-xs text-muted-foreground">{course.professor}</p>
                     </div>
                     <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
                       <div>
