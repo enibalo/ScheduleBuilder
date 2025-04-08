@@ -44,7 +44,7 @@ export function SchedulePreview({
 
 
   return (
-    <div className="w-full bg-white rounded-lg border shadow-sm" style={{padding: "5px"}}>
+    <div className="w-full bg-white rounded-lg border shadow-sm" style={{padding: "10px", paddingTop: "5px"}}>
       {/* Header */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-4">
@@ -193,8 +193,10 @@ const styles = {
   hours : { 
     position: "absolute",
     zIndex: "2",
-    left: "-15px",
-    backgroundColor: "rgb(241 243 248)",
+    left: "-22px",
+    top:"-7px",
+    marginRight: "5px",
+    border: "1px solid rgb(241 243 248)",
   }
 }
 
