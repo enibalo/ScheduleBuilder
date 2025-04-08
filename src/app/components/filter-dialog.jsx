@@ -20,6 +20,7 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
       Object.entries(filters).map(([key]) => [key, false])
     );    
     onFiltersChange(resetFilters)
+    console.log(filters)
   }
 
   return (
@@ -34,14 +35,6 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="all-classes"
-                  checked={filters.allClasses}
-                  onCheckedChange={() => handleCheckboxChange("allClasses")}
-                />
-                <Label htmlFor="all-classes">All Classes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
                   id="morning-classes"
                   checked={filters.morningClasses}
                   onCheckedChange={() => handleCheckboxChange("morningClasses")}
@@ -49,7 +42,7 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
                 <Label htmlFor="morning-classes">
                   <div>
                     <p>Morning Classes</p>
-                    <p className="text-[11px] text-gray-700">(9am-12pm)</p>
+                    <p className="text-[11px] text-gray-700">(8am-12pm)</p>
                   </div>
                 </Label>
               </div>
@@ -93,19 +86,11 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="available-classes"
-                  checked={filters.availableClasses}
-                  onCheckedChange={() => handleCheckboxChange("availableClasses")}
-                />
-                <Label htmlFor="available-classes">Available Classes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
                   id="full-classes"
                   checked={filters.fullClasses}
                   onCheckedChange={() => handleCheckboxChange("fullClasses")}
                 />
-                <Label htmlFor="full-classes">Full Classes</Label>
+                <Label htmlFor="full-classes">Don't Show Full Classes</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -113,11 +98,19 @@ export function FilterDialog({ open, onOpenChange, filters, onFiltersChange, onS
                   checked={filters.waitlistedClasses}
                   onCheckedChange={() => handleCheckboxChange("waitlistedClasses")}
                 />
-                <Label htmlFor="waitlisted-classes">Waitlisted Classes</Label>
+                <Label htmlFor="waitlisted-classes">Don't Show Waitlist-only Classes</Label>
               </div>
               <div className="flex items-center space-x-2">
-              <Button variant="outline" className="w-full" onClick={() => handleClearFilters()}>
-              <Trash2 className="w-4 h-4" />
+                <Checkbox
+                  id="online-classes"
+                  checked={filters.onlineClasses}
+                  onCheckedChange={() => handleCheckboxChange("onlineClasses")}
+                />
+                <Label htmlFor="waitlisted-classes">Web-based Instruction</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+              <Button variant="outline" className="w-full border-gray-200 rounded-md border" onClick={() => handleClearFilters()}>
+              <Trash2 className="w-4 h-4" ></Trash2>
                 Clear Filters
               </Button>
               </div>

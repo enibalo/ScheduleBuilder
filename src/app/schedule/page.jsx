@@ -90,14 +90,13 @@ export default function CourseSearch() {
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false);
   const [filters, setFilters] = useState({
-    allClasses: false,
     morningClasses: false,
     afternoonClasses: false,
     eveningClasses: false,
     requiredClasses: false,
-    availableClasses: false,
     fullClasses: false,
     waitlistedClasses: false,
+    onlineClasses: false,
   })
 
   const router = useRouter()
@@ -719,7 +718,7 @@ export default function CourseSearch() {
 
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="relative flex-1">
-                <SearchBar courses={coursesSchedule1.map((item) => item.code)} onSelect={(e)=> console.log(e)}></SearchBar>
+                <SearchBar filters={filters} courses={allCourses} onSelect={(e)=> console.log(e)}></SearchBar>
               </div>
               <Button variant="outline" className="flex items-center gap-2" onClick={() => setFilterDialogOpen(true)}>
                 <Filter className="h-4 w-4" />
