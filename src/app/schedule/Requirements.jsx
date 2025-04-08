@@ -9,12 +9,12 @@ import {
 
   import { Button } from "@/components/ui/button";
   
-  export function RequirementsDialog({open, onConfirm, onCancel}) {
+  export function RequirementsDialog({course, open, onConfirm, onCancel}) {
     return (
       <Dialog open={open} onOpenChange={onCancel}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>This course does not fulfill any degree requirements for Computer Science - would you like to proceed ?</DialogTitle>
+            <DialogTitle>{course} does not fulfill any degree requirements for Computer Science - would you like to proceed ?</DialogTitle>
             <DialogDescription>
               Please check your <a className="underline" href="https://example.com/">Academic Requirements Page</a> for more details about your required courses. 
             </DialogDescription>
