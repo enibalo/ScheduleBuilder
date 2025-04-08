@@ -43,12 +43,12 @@ export default function SuggestedCourses({ onClick }) {
         {courses.map((course) => {
           return (
             <Card key={"suggested-"+ course.code} style={{padding: "5px 0px"}}>
-              <div className="text-left p-4" value={course.code} onClick={(e) => onclick(e.target.value)}>
+              <div className="text-left p-4">
                 <div className="pb-5">
                 <h3 className="font-bold">{course.code}</h3>
                 <p className="text-sm text-muted-foreground">{course.title}</p>
                 </div> 
-                <Button variant="ghost" className="text-s h-auto bg-gray-50 text-gray-700 border-gray-200 rounded-md border ">Add This Course To My Tab</Button>
+                <Button value={course.code} onClick={(e) => onClick(e.target.value)} variant="ghost" className="text-s h-auto bg-gray-50 text-gray-700 border-gray-200 rounded-md border ">Add This Course To My Tab</Button>
               </div>
             </Card>
           );

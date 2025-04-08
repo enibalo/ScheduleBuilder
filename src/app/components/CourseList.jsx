@@ -29,7 +29,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned }) {
           return (
           <Card key={course.id} className="overflow-hidden">
             <CardContent className="p-0">
-              <div className="relative p-4">
+              <div className="relative px-2">
                 <Button
                   variant="ghost"
                   size="icon"
