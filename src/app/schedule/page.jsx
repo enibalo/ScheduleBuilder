@@ -734,7 +734,7 @@ export default function CourseSearch() {
             </div>
 
             <div className="mb-6">
-              <div className="flex border-b">
+              <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden">
                 {
                   loadedSchedules.map((schedule, index) => {
                     return <div key={index}
