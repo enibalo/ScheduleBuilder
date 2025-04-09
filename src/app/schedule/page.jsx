@@ -55,25 +55,27 @@ export default function CourseSearch() {
     return found;
   }
 
-  // const courseSchedules = baseData.map((schedule, index) => {
-  //   return {
-  //     name: `Schedule ${index}`,
-  //     id: index,
-  //     courses: schedule.map(course => {
-  //       return {
-  //         ...course,
-  //         ...findClassByID(course.id),
-  //         selected: false,
-  //         pinned: false
-  //       }
-  //     })
-  //   }
-  // });
-  const initalCourses = [{
-    name: `Schedule ${0}`,
-    id: Date.now().toString(),
-    courses: []
-  }];
+  const initalCourses = 
+  // [{
+  //   name: `Schedule ${0}`,
+  //   id: Date.now().toString(),
+  //   courses: []
+  // }];
+
+  baseData.map((schedule, index) => {
+      return {
+        name: `Schedule ${index}`,
+        id: index,
+        courses: schedule.map(course => {
+          return {
+            ...course,
+            ...findClassByID(course.id),
+            selected: false,
+            pinned: false
+          }
+        })
+      }
+    });
 
   const [enrolledCourses, setEnrolledCourses] = useState({});
 
