@@ -8,6 +8,7 @@ import {
   Calendar,
   Copy,
   Trash2,
+  Plus,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -244,8 +245,15 @@ export default function CourseSearch() {
     setSaveDialogOpen(false)
   }
 
-  function addTab(schedule) {
+  function addEmptySchedule() {
+    addTab({
+      name: `New Schedule`,
+      id: Date.now().toString(),
+      courses: []
+    })
+  }
 
+  function addTab(schedule) {
     // add the schedule to the list of schedules
     const current = loadedSchedules;
     current.push(schedule);
@@ -464,6 +472,26 @@ export default function CourseSearch() {
                     </div>
                   })
                 }
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="relative mx-3 flex items-center cursor-pointer text-muted-foreground hover:bg-muted/50"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          addEmptySchedule();
+                        }}
+                      >
+                        <Plus className="h-2 w-2" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Create a new tab</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
 
                 <div className="flex-1 border-b -mb-px"></div>
               </div>

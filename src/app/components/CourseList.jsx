@@ -121,7 +121,7 @@ function CourseList({ courses, weekNumber, toggleCourseSelection, toggleCoursePi
         })
       ) : (
         <div className="text-center py-8 text-muted-foreground">
-          No courses found. Try adjusting your search.
+          No courses found. Add some to your schedule by the <br />search bar or suggested courses.
         </div>
       )}
     </div>
