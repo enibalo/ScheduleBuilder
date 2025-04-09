@@ -69,6 +69,9 @@ export default function CourseSearch() {
     }
   });
 
+
+  const [enrolledCourses, setEnrolledCourses] = useState({"1-1": "Waitlisted"});
+
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(0)
   const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
@@ -80,7 +83,8 @@ export default function CourseSearch() {
   const [scheduleName, setScheduleName] = useState("")
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
-  const totalWeeks = 88
+  const totalWeeks = 2
+
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
@@ -173,332 +177,7 @@ export default function CourseSearch() {
 
     return dates
   }
-  const weekDates = calculateDates(weekNumber)
-
-  // Sample course data for Schedule 1
-  const coursesSchedule1 = [
-    {
-      id: "1",
-      code: "BSOE 101",
-      title: "Intro to Computer Science",
-      professor: "Dr. Ada Lovelace",
-      room: "ENG 101",
-      seats: {
-        available: 14,
-        total: 101,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 50,
-      },
-      status: "available",
-      color: "blue",
-      schedule: [
-        {
-          day: 0,
-          startHour: 10,
-          duration: 2,
-          type: "LEC",
-        },
-        {
-          day: 2,
-          startHour: 10,
-          duration: 1,
-          type: "TUT",
-        },
-      ],
-    },
-    {
-      id: "2",
-      code: "BSOE 201",
-      title: "Data Structures",
-      professor: "Dr. Alan Turing",
-      room: "ENG 204",
-      seats: {
-        available: 65,
-        total: 99,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 40,
-      },
-      status: "available",
-      color: "green",
-      schedule: [
-        {
-          day: 1,
-          startHour: 13,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3,
-          startHour: 13,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-    {
-      id: "3",
-      code: "BSOE 301",
-      title: "Algorithms",
-      professor: "Dr. Grace Hopper",
-      room: "ENG 302",
-      seats: {
-        available: 0,
-        total: 60,
-      },
-      waitlist: {
-        count: 15,
-        capacity: 20,
-      },
-      status: "waitlist",
-      color: "purple",
-      schedule: [
-        {
-          day: 0,
-          startHour: 14,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 2,
-          startHour: 14,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 4,
-          startHour: 9,
-          duration: 2,
-          type: "LAB",
-        },
-      ],
-    },
-    {
-      id: "4",
-      code: "CHEM 201",
-      title: "Organic Chemistry",
-      professor: "Dr. Marie Curie",
-      room: "SCI 110",
-      seats: {
-        available: 0,
-        total: 200,
-      },
-      waitlist: {
-        count: 45,
-        capacity: 45,
-      },
-      status: "not-found",
-      color: "orange",
-      schedule: [
-        {
-          day: 1,
-          startHour: 9,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3,
-          startHour: 9,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 4,
-          startHour: 13,
-          duration: 3,
-          type: "LAB",
-        },
-      ],
-    },
-
-    //conflicting courses
-    {
-      id: "5",
-      code: "MATH 200",
-      title: "Calculus II",
-      professor: "Dr. Carl Gauss",
-      room: "MATH 220",
-      seats: {
-        available: 10,
-        total: 150,
-      },
-      waitlist: {
-        count: 5,
-        capacity: 20,
-      },
-      status: "open",
-      color: "blue",
-      schedule: [
-        {
-          day: 1,
-          startHour: 9.5,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-    {
-      id: "6",
-      code: "PHYS 101",
-      title: "Physics I",
-      professor: "Dr. Isaac Newton",
-      room: "PHY 100",
-      seats: {
-        available: 20,
-        total: 180,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 30,
-      },
-      status: "open",
-      color: "green",
-      schedule: [
-        {
-          day: 1,
-          startHour: 10,
-          duration: 1,
-          type: "LEC",
-        },
-      ],
-    },
-  ]
-  
-
-  // Sample course data for Schedule 2
-  const coursesSchedule2 = [
-    {
-      id: "5",
-      code: "PHYS 101",
-      title: "Physics I: Mechanics",
-      seats: {
-        available: 25,
-        total: 120,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 30,
-      },
-      status: "available",
-      color: "yellow",
-      schedule: [
-        {
-          day: 0, // Monday
-          startHour: 8,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 2, // Wednesday
-          startHour: 8,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 4, // Friday
-          startHour: 14,
-          duration: 2,
-          type: "LAB",
-        },
-      ],
-    },
-    {
-      id: "6",
-      code: "MATH 101",
-      title: "Calculus I",
-      seats: {
-        available: 12,
-        total: 150,
-      },
-      waitlist: {
-        count: 5,
-        capacity: 25,
-      },
-      status: "available",
-      color: "pink",
-      schedule: [
-        {
-          day: 1, // Tuesday
-          startHour: 10,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3, // Thursday
-          startHour: 10,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-    {
-      id: "7",
-      code: "HIST 101",
-      title: "World History",
-      seats: {
-        available: 0,
-        total: 80,
-      },
-      waitlist: {
-        count: 20,
-        capacity: 20,
-      },
-      status: "waitlist",
-      color: "green",
-      schedule: [
-        {
-          day: 0, // Monday
-          startHour: 13,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 2, // Wednesday
-          startHour: 13,
-          duration: 1,
-          type: "LEC",
-        },
-        {
-          day: 4, // Friday
-          startHour: 11,
-          duration: 1,
-          type: "TUT",
-        },
-      ],
-    },
-    {
-      id: "8",
-      code: "ENGL 101",
-      title: "Composition",
-      seats: {
-        available: 30,
-        total: 100,
-      },
-      waitlist: {
-        count: 0,
-        capacity: 20,
-      },
-      status: "available",
-      color: "blue",
-      schedule: [
-        {
-          day: 1, // Tuesday
-          startHour: 15,
-          duration: 1.5,
-          type: "LEC",
-        },
-        {
-          day: 3, // Thursday
-          startHour: 15,
-          duration: 1.5,
-          type: "LEC",
-        },
-      ],
-    },
-  ];
+  const weekDates = calculateDates(1)
 
   // Convert selected courses to schedule blocks
   const selectedCourseBlocks = useMemo(() => {
@@ -506,7 +185,7 @@ export default function CourseSearch() {
 
     activeScheduleData.courses.forEach(course => {
       if (course.selected) {
-        course.schedule.forEach((scheduleItem, index) => {
+        course["schedule" +  weekNumber].forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
             courseId: course.id,
@@ -523,7 +202,7 @@ export default function CourseSearch() {
     })
 
     return blocks
-  }, [activeScheduleData])
+  }, [activeScheduleData, weekNumber])
 
   const toggleCourseSelection = (courseId) => {
     setActiveScheduleData({
@@ -604,6 +283,7 @@ export default function CourseSearch() {
       ...prev,
       [courseId]: status,
     }))
+    
   }
 
   const handleAction = (courseId, action) => {
@@ -647,6 +327,20 @@ export default function CourseSearch() {
           break
       }
     })
+
+    let newEnrolledCourses = {}
+
+    
+    pendingActions.forEach( (action)=>{
+      if (action.type != "drop"){
+        const courseKey =  action.id + "-" + weekNumber
+        const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
+        newEnrolledCourses[courseKey] = capitalizeFirst(action.type +"ed")
+      }
+    })
+
+    setEnrolledCourses((newEnrolledCourses))
+
     setConfirmationOpen(false)
     // Show success dialog after actions are completed
     setSuccessDialogOpen(true)
@@ -732,8 +426,8 @@ export default function CourseSearch() {
                 onSave={handleSaveFilters}
               />
             </div>
-
             <div className="mb-6">
+               {/* create tabs */}
               <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden">
                 {
                   loadedSchedules.map((schedule, index) => {
@@ -785,7 +479,7 @@ export default function CourseSearch() {
               </div>
             </div>
 
-            <CourseList courses={activeScheduleData.courses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
+            <CourseList courses={activeScheduleData.courses} weekNumber={weekNumber} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
             <SuggestedCourses onClick={(item)=>console.log(item)}></SuggestedCourses>
           </div>
@@ -795,8 +489,15 @@ export default function CourseSearch() {
             <SchedulePreview
               weekNumber={weekNumber}
               totalWeeks={totalWeeks}
-              onPrevWeek={() => setWeekNumber((prev) => Math.max(1, prev - 1))}
-              onNextWeek={() => setWeekNumber((prev) => Math.min(totalWeeks, prev + 1))}
+              onPrevWeek={() => {
+                // ignore attempts to go past page 1 
+                let week = weekNumber != 1 ? weekNumber - 1 : weekNumber; 
+                setWeekNumber(week);
+              }}
+              onNextWeek={() => {
+                let week = weekNumber != 2 ? weekNumber + 1 : weekNumber; 
+                setWeekNumber(week); 
+              }}
               courses={selectedCourseBlocks}
               dates={weekDates}
               scheduleName={activeScheduleData.name}

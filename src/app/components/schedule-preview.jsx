@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
  * @param {Function} [props.onSaveSchedule] - Function to save the schedule
  * @param {Function} [props.onGetSchedule] - Function to get the schedule
  */
+
 export function SchedulePreview({
   weekNumber,
   totalWeeks,
