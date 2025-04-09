@@ -71,6 +71,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
     return searchMatch && filterMatch;
   });
 
+
   return (
     <>
       {/* <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -92,8 +93,8 @@ export default function SearchBar({ courses, onSelect, filters }) {
                 filteredCourses.map((course, index) => (
                   <button
                     type="button"
-                    value={course}
-                    onClick={(e) => onSelect(e.target.value)}
+                    value={1}
+                    onClick={(e) => onSelect(course.id)}
                     key={course + "-" + "button" + "-" + index}
                     className=" text-left w-full block text-sm border-b-2 border-input py-2"
                   >
@@ -130,21 +131,21 @@ function SearchTags({ filters }) {
       className="p-1 w-full  text-muted-foreground"
     >
       <div className="flex justify-centre align-centre" >
-      <CollapsibleTrigger asChild>
-        <Button variant="ghost" size="xs">
-          <ChevronDown className="h-2 w-2" />
-          <span className="sr-only">Toggle</span>
-        </Button>
-      </CollapsibleTrigger>
-      <span className="text-xs" styles={styles.upperLeft}>
-        Current Filters ({onFilters.length})
-      </span>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="xs">
+            <ChevronDown className="h-2 w-2" />
+            <span className="sr-only">Toggle</span>
+          </Button>
+        </CollapsibleTrigger>
+        <span className="text-xs" styles={styles.upperLeft}>
+          Current Filters ({onFilters.length})
+        </span>
       </div>
       <CollapsibleContent>
         {onFilters.length != 0 ? onFilters.map((filter) =>
-           (
-            <Badge variant="outline">{filter[0]}</Badge>
-          )
+        (
+          <Badge variant="outline">{filter[0]}</Badge>
+        )
         ) : <div className="text-xs no-bg">You have not selected any filters.</div>}
       </CollapsibleContent>
     </Collapsible>

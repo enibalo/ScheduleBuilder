@@ -70,7 +70,7 @@ export default function CourseSearch() {
   });
 
 
-  const [enrolledCourses, setEnrolledCourses] = useState({"1-1": "Waitlisted"});
+  const [enrolledCourses, setEnrolledCourses] = useState({ "1-1": "Waitlisted" });
 
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(0)
@@ -185,7 +185,7 @@ export default function CourseSearch() {
 
     activeScheduleData.courses.forEach(course => {
       if (course.selected) {
-        course["schedule" +  weekNumber].forEach((scheduleItem, index) => {
+        course["schedule" + weekNumber].forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
             courseId: course.id,
@@ -227,7 +227,6 @@ export default function CourseSearch() {
       })
     })
   }
-
 
   const saveCurrentSchedule = () => {
     if (!scheduleName.trim()) return
@@ -283,7 +282,7 @@ export default function CourseSearch() {
       ...prev,
       [courseId]: status,
     }))
-    
+
   }
 
   const handleAction = (courseId, action) => {
@@ -330,12 +329,12 @@ export default function CourseSearch() {
 
     let newEnrolledCourses = {}
 
-    
-    pendingActions.forEach( (action)=>{
-      if (action.type != "drop"){
-        const courseKey =  action.id + "-" + weekNumber
+
+    pendingActions.forEach((action) => {
+      if (action.type != "drop") {
+        const courseKey = action.id + "-" + weekNumber
         const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-        newEnrolledCourses[courseKey] = capitalizeFirst(action.type +"ed")
+        newEnrolledCourses[courseKey] = capitalizeFirst(action.type + "ed")
       }
     })
 
@@ -354,6 +353,23 @@ export default function CourseSearch() {
   const handleSaveFilters = () => {
     // Apply filters logic here
     setFilterDialogOpen(false)
+  }
+
+  function addCourseToSchedule(courseId) {
+    const course = allCourses.filter(course => course.id === courseId)[0];
+
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: [
+        ...activeScheduleData.courses,
+        {
+          ...course,
+          selected: false,
+          pinned: false,
+          status: "none"
+        }
+      ]
+    })
   }
 
   return (
@@ -412,7 +428,7 @@ export default function CourseSearch() {
 
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="relative flex-1">
-                <SearchBar filters={filters} courses={allCourses} onSelect={(e)=> console.log(e)}></SearchBar>
+                <SearchBar filters={filters} courses={allCourses} onSelect={addCourseToSchedule}></SearchBar>
               </div>
               <Button variant="outline" className="flex items-center gap-2" onClick={() => setFilterDialogOpen(true)}>
                 <Filter className="h-4 w-4" />
@@ -427,7 +443,7 @@ export default function CourseSearch() {
               />
             </div>
             <div className="mb-6">
-               {/* create tabs */}
+              {/* create tabs */}
               <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden">
                 {
                   loadedSchedules.map((schedule, index) => {
@@ -481,7 +497,7 @@ export default function CourseSearch() {
 
             <CourseList courses={activeScheduleData.courses} weekNumber={weekNumber} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
-            <SuggestedCourses onClick={(item)=>console.log(item)}></SuggestedCourses>
+            <SuggestedCourses onAddCourse={addCourseToSchedule}></SuggestedCourses>
           </div>
 
           {/* Schedule Preview Section */}
@@ -491,12 +507,12 @@ export default function CourseSearch() {
               totalWeeks={totalWeeks}
               onPrevWeek={() => {
                 // ignore attempts to go past page 1 
-                let week = weekNumber != 1 ? weekNumber - 1 : weekNumber; 
+                let week = weekNumber != 1 ? weekNumber - 1 : weekNumber;
                 setWeekNumber(week);
               }}
               onNextWeek={() => {
-                let week = weekNumber != 2 ? weekNumber + 1 : weekNumber; 
-                setWeekNumber(week); 
+                let week = weekNumber != 2 ? weekNumber + 1 : weekNumber;
+                setWeekNumber(week);
               }}
               courses={selectedCourseBlocks}
               dates={weekDates}
@@ -548,7 +564,7 @@ export default function CourseSearch() {
         </div>
         {/* Confirmation Dialog */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog open={requiredDialogOpen} onConfirm={()=> {console.log("item added"); setRequiredDialogOpen(false)}} onCancel={()=> setRequiredDialogOpen(false)}></RequirementsDialog>
+        <RequirementsDialog open={requiredDialogOpen} onConfirm={() => { console.log("item added"); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)}></RequirementsDialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>

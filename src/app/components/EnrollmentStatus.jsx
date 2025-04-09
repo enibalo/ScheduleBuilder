@@ -15,9 +15,8 @@ import {
 
 function EnrollmentStatus({ course, weekNumber, enrolledCourses }) {
   const courseKey = "" + course.id + "-" + weekNumber + "";
- 
 
-  if ( enrolledCourses == {} || Object.keys(enrolledCourses).includes(courseKey) == false ){
+  if (enrolledCourses == {} || Object.keys(enrolledCourses).includes(courseKey) == false) {
     if (course.seats.available != 0) {
       return (
         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
@@ -31,13 +30,13 @@ function EnrollmentStatus({ course, weekNumber, enrolledCourses }) {
         </Badge>
       )
     }
-    else{
+    else {
       return (<Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 flex items-center gap-1">
-      <Ban className="h-3 w-3" /> No More Seats
-    </Badge>)
+        <Ban className="h-3 w-3" /> No More Seats
+      </Badge>)
     }
   }
-  else{
+  else {
     return (
       <Badge>
         <CheckCircle className="h-3 w-3" /> {enrolledCourses[courseKey]}
