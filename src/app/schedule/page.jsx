@@ -433,12 +433,16 @@ export default function CourseSearch() {
   }
 
   function addCourseToSchedule(courseId) {
-    const course = allCourses.find(course => course.id === courseId)
-    setSelectedCourse(course)
-    if (course.requiredClasses){
-        if (activeScheduleData.courses.find(course => course.id === courseId) == undefined){
-          addCourse(course)
+    const newCourse = allCourses.find(item => item.id === courseId)
+    setSelectedCourse(newCourse)
+    console.log(`${newCourse}`)
+    if (newCourse.requiredClasses){
+        console.log(`${newCourse.code} isnt required`)
+        console.log(`${activeScheduleData.courses} `)
+        if (activeScheduleData.courses.includes(item => item.id == courseId) == false){
+          addCourse(newCourse)
         }
+
     }else{
       setRequiredDialogOpen(true)  
     }
@@ -451,7 +455,7 @@ export default function CourseSearch() {
         ...activeScheduleData.courses,
         {
           ...course,
-          currentWeek: weekNumber,
+          currentWeek: (weekNumber == 0 ? 1 : weekNumber),
           selected: false,
           pinned: false,
           status: "none"
