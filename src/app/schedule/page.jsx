@@ -255,10 +255,15 @@ export default function CourseSearch() {
     setActiveSchedule(loadedSchedules.length - 1);
   }
 
-  function clearCurrentSchedule() {
-    setActiveScheduleData({
-      ...activeScheduleData, courses: []
-    })
+  function removeCurrentSchedule() {
+    if (loadedSchedules.length <= 1) {
+      setActiveScheduleData({
+        ...activeScheduleData, courses: []
+      })
+      return;
+    }
+    setLoadedSchedules(loadedSchedules.filter((s, index) => index != activeSchedule));
+    setActiveSchedule(0);
   }
 
   const loadSavedSchedule = (scheduleId) => {
@@ -484,14 +489,24 @@ export default function CourseSearch() {
                   </Tooltip>
                 </TooltipProvider>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="text-red-500 hover:text-red-600"
-                  onClick={clearCurrentSchedule}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="text-red-500 hover:text-red-600"
+                        onClick={removeCurrentSchedule}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Remove this tab</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
               </div>
             </div>
 
