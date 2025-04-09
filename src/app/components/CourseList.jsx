@@ -1,6 +1,7 @@
 import {
   Pin,
   PinOff,
+  Trash2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button"
@@ -14,7 +15,7 @@ import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { ChevronDown } from 'lucide-react';
 import { useState } from "react";
 
-function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enrolledCourses}) {
+function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enrolledCourses, onDeleteCourse}) {
   const [isOpen, setIsOpen] = useState(new Array(courses.length).fill(false));
 
 
@@ -29,19 +30,8 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
           return (
           <Card key={course.id} className="overflow-hidden">
             <CardContent className="p-0">
-              <div className="relative px-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-2 right-2"
-                  onClick={() => toggleCoursePinned(course.id)}
-                >
-                  {course.pinned ? (
-                    <Pin className="h-4 w-4 text-red-500 fill-red-500" />
-                  ) : (
-                    <PinOff className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </Button>
+              <div className="relative px-2 grid grid-cols-[1fr_2em]">
+                <div>
                 <div className="flex items-center">
                   <div className="mr-4">
                     <Checkbox
@@ -116,6 +106,30 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
+                  </div>
+                  <div className="flex flex-col justify-between w-full">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className=""
+                        onClick={() => toggleCoursePinned(course.id)}
+                      >
+                        {course.pinned ? (
+                          <Pin className="h-4 w-4 text-red-500 fill-red-500" />
+                        ) : (
+                          <PinOff className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </Button>
+                      <Button
+                      variant="ghost"
+                      size="icon"
+                      className=""
+                      value={course.id}
+                      onClick={(e)=> onDeleteCourse(e.target.value)}>
+                        <Trash2 className="h-4 w-4 text-muted-foreground" ></Trash2>
+                      </Button>
+                      </div>
+    
                 </div>
               </CardContent>
             </Card>
