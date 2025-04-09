@@ -56,26 +56,26 @@ export default function CourseSearch() {
   }
 
   const initalCourses = 
-  // [{
-  //   name: `Schedule ${0}`,
-  //   id: Date.now().toString(),
-  //   courses: []
-  // }];
+  [{
+    name: `Schedule ${0}`,
+    id: Date.now().toString(),
+    courses: []
+  }];
 
-  baseData.map((schedule, index) => {
-      return {
-        name: `Schedule ${index}`,
-        id: index,
-        courses: schedule.map(course => {
-          return {
-            ...course,
-            ...findClassByID(course.id),
-            selected: false,
-            pinned: false
-          }
-        })
-      }
-    });
+  // baseData.map((schedule, index) => {
+  //     return {
+  //       name: `Schedule ${index}`,
+  //       id: index,
+  //       courses: schedule.map(course => {
+  //         return {
+  //           ...course,
+  //           ...findClassByID(course.id),
+  //           selected: false,
+  //           pinned: false
+  //         }
+  //       })
+  //     }
+  //   });
 
   const [enrolledCourses, setEnrolledCourses] = useState({});
 
@@ -91,6 +91,7 @@ export default function CourseSearch() {
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
   const [totalWeeks,setTotalWeeks] = useState(0)
+  const [selectedCourse, setSelectedCourse] = useState("")
 
  
   // Add new state for tracking pending actions
@@ -432,8 +433,18 @@ export default function CourseSearch() {
   }
 
   function addCourseToSchedule(courseId) {
-    const course = allCourses.filter(course => course.id === courseId)[0];
+    const course = allCourses.find(course => course.id === courseId)
+    setSelectedCourse(course)
+    if (course.requiredClasses){
+        if (activeScheduleData.courses.find(course => course.id === courseId) == undefined){
+          addCourse(course)
+        }
+    }else{
+      setRequiredDialogOpen(true)  
+    }
+  }
 
+  function addCourse(course){
     setActiveScheduleData({
       ...activeScheduleData,
       courses: [
@@ -448,6 +459,7 @@ export default function CourseSearch() {
       ]
     })
   }
+
 
   const gridStyle = {
     display: 'grid',
@@ -625,20 +637,27 @@ export default function CourseSearch() {
             }} />
   
             <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-              <DialogContent className="sm:max-w-[400px] text-sm">
+              <DialogContent className="sm:max-w-[400px] h-auto text-sm">
                 <DialogHeader>
                   <DialogTitle>Save Schedule</DialogTitle>
-                  <DialogDescription>Name your schedule to save it.</DialogDescription>
+                  {activeScheduleData.courses.length > 0 ? <DialogDescription>Name your schedule to save it.</DialogDescription> : 
+                  <div>Please add at least one course to your schedule before attempting to save it.</div> }
                 </DialogHeader>
                 <div className="grid gap-3 py-3">
                   <div className="grid grid-cols-4 items-center gap-2">
-                    <Label htmlFor="name" className="text-right">Name</Label>
-                    <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" />
+                  {activeScheduleData.courses.length > 0 &&
+                  <><Label htmlFor="name" className="text-right">Name</Label>
+                    <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" /></> 
+                     }
+                    
                   </div>
                 </div>
                 <DialogFooter>
+                  {activeScheduleData.courses.length > 0 &&
+                  <>
                   <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
                   <Button onClick={saveCurrentSchedule}>Save</Button>
+                  </>}
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -656,7 +675,7 @@ export default function CourseSearch() {
   
         {/* Misc dialogs */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog open={requiredDialogOpen} onConfirm={() => { setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)} />
+        <RequirementsDialog course={selectedCourse} open={requiredDialogOpen} onConfirm={() => { addCourse(selectedCourse); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)} />
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>

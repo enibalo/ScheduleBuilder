@@ -66,6 +66,26 @@ function GetScheduleDialog({ open, courses, onConfirm, onCancel }) {
     // )
   }
 
+  if (courses.length == 0){
+    return (<Dialog open={open} onOpenChange={onCancel}>
+      <DialogContent className=" p-0 overflow-hidden">
+        <div className="flex h-full">
+          <div className="flex-1 p-6 max-h-[600px] overflow-y-auto">
+            <DialogTitle className="">
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold">Confirm Actions</h2>
+                <div className="text-sm font-normal pt-3">Please add at least one course to your schedule before attempting to enroll.</div>
+                <div className="text-sm font-normal pt-3"> <strong>TIP:</strong> If you're not sure what courses to enroll in check your <a className="underline" href="https://example.com/">
+          Academic Requirements Report
+        </a>.</div>
+              </div>
+            </DialogTitle>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>)
+  }
+
   return (
     <Dialog open={open} onOpenChange={onCancel}>
       <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
