@@ -4,11 +4,11 @@
     "code": "BSOE 101",
     "title": "Intro to Computer Science",  
     "seats": {
-      "available": 0,
+      "available": 101,
       "total": 101
     },
     "waitlist": {
-      "count": 0,
+      "count": 50,
       "capacity": 50
     },
     "color": "blue",
@@ -51,7 +51,7 @@
     "code": "BSOE 201",
     "title": "Data Structures",
     "seats": {
-      "available": 65,
+      "available": 99,
       "total": 99
     },
     "waitlist": {

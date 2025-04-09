@@ -70,7 +70,7 @@ export default function CourseSearch() {
   });
 
 
-  const [enrolledCourses, setEnrolledCourses] = useState({"1-1": "Waitlisted"});
+  const [enrolledCourses, setEnrolledCourses] = useState({});
 
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(0)
