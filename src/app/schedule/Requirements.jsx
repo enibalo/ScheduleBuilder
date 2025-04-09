@@ -14,7 +14,7 @@ import {
       <Dialog open={open} onOpenChange={onCancel}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{course} does not fulfill any degree requirements for Computer Science - would you like to proceed ?</DialogTitle>
+            <DialogTitle>{course.code} does not fulfill any degree requirements for Computer Science - would you like to proceed ?</DialogTitle>
             <DialogDescription>
               Please check your <a className="underline" href="https://example.com/">Academic Requirements Page</a> for more details about your required courses. 
             </DialogDescription>

@@ -55,28 +55,34 @@ export default function CourseSearch() {
     return found;
   }
 
-  const courseSchedules = baseData.map((schedule, index) => {
-    return {
-      name: `Schedule ${index}`,
-      id: index,
-      courses: schedule.map(course => {
-        return {
-          ...course,
-          ...findClassByID(course.id),
-          selected: false,
-          pinned: false
-        }
-      })
-    }
-  });
+  const initalCourses = 
+  [{
+    name: `Schedule ${0}`,
+    id: Date.now().toString(),
+    courses: []
+  }];
 
+  // baseData.map((schedule, index) => {
+  //     return {
+  //       name: `Schedule ${index}`,
+  //       id: index,
+  //       courses: schedule.map(course => {
+  //         return {
+  //           ...course,
+  //           ...findClassByID(course.id),
+  //           selected: false,
+  //           pinned: false
+  //         }
+  //       })
+  //     }
+  //   });
 
   const [enrolledCourses, setEnrolledCourses] = useState({});
 
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(0)
-  const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
-  const [loadedSchedules, setLoadedSchedules] = useState(courseSchedules)
+  const [loadedSchedules, setLoadedSchedules] = useState(initalCourses)
+  const [activeScheduleData, setActiveScheduleData] = useState(initalCourses[0])
   const [weekNumber, setWeekNumber] = useState(0)
   const [savedSchedules, setSavedSchedules] = useState([])
   const [savedSchedulesCollapsed, setSavedSchedulesCollapsed] = useState(true)
@@ -85,9 +91,9 @@ export default function CourseSearch() {
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
   const [totalWeeks,setTotalWeeks] = useState(0)
+  const [selectedCourse, setSelectedCourse] = useState("")
 
-  console.log(activeScheduleData)
-
+ 
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
@@ -280,11 +286,25 @@ export default function CourseSearch() {
 
   function addEmptySchedule() {
     addTab({
-      name: `New Schedule`,
+      name: `Schedule ${loadedSchedules.length}`,
       id: Date.now().toString(),
       courses: []
     })
   }
+
+  function handleSelectedTerm(term){
+    setLoadedSchedules([{
+      name: `Schedule ${0}`,
+      id: Date.now().toString(),
+      courses: []
+    }]);
+    console.log(loadedSchedules);
+    setActiveSchedule(0);
+    setActiveScheduleData(loadedSchedules[0]);
+    setSelectedTerm(term);
+  }
+
+
 
   function addTab(schedule) {
     // add the schedule to the list of schedules
@@ -413,15 +433,29 @@ export default function CourseSearch() {
   }
 
   function addCourseToSchedule(courseId) {
-    const course = allCourses.filter(course => course.id === courseId)[0];
+    const newCourse = allCourses.find(item => item.id === courseId)
+    setSelectedCourse(newCourse)
+    console.log(`${newCourse}`)
+    if (newCourse.requiredClasses){
+        console.log(`${newCourse.code} isnt required`)
+        console.log(`${activeScheduleData.courses} `)
+        if (activeScheduleData.courses.includes(item => item.id == courseId) == false){
+          addCourse(newCourse)
+        }
 
+    }else{
+      setRequiredDialogOpen(true)  
+    }
+  }
+
+  function addCourse(course){
     setActiveScheduleData({
       ...activeScheduleData,
       courses: [
         ...activeScheduleData.courses,
         {
           ...course,
-          currentWeek: weekNumber,
+          currentWeek: (weekNumber == 0 ? 1 : weekNumber),
           selected: false,
           pinned: false,
           status: "none"
@@ -429,6 +463,7 @@ export default function CourseSearch() {
       ]
     })
   }
+
 
   const gridStyle = {
     display: 'grid',
@@ -457,7 +492,7 @@ export default function CourseSearch() {
                   <Calendar className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
                   <span className="text-xs font-medium mr-1">Term:</span>
                 </div>
-                <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+                <Select value={selectedTerm} onValueChange={handleSelectedTerm}>
                   <SelectTrigger className="w-[150px] h-7 text-xs"> {/* ↓ smaller input */}
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
@@ -606,20 +641,27 @@ export default function CourseSearch() {
             }} />
   
             <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-              <DialogContent className="sm:max-w-[400px] text-sm">
+              <DialogContent className="sm:max-w-[400px] h-auto text-sm">
                 <DialogHeader>
                   <DialogTitle>Save Schedule</DialogTitle>
-                  <DialogDescription>Name your schedule to save it.</DialogDescription>
+                  {activeScheduleData.courses.length > 0 ? <DialogDescription>Name your schedule to save it.</DialogDescription> : 
+                  <div>Please add at least one course to your schedule before attempting to save it.</div> }
                 </DialogHeader>
                 <div className="grid gap-3 py-3">
                   <div className="grid grid-cols-4 items-center gap-2">
-                    <Label htmlFor="name" className="text-right">Name</Label>
-                    <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" />
+                  {activeScheduleData.courses.length > 0 &&
+                  <><Label htmlFor="name" className="text-right">Name</Label>
+                    <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" /></> 
+                     }
+                    
                   </div>
                 </div>
                 <DialogFooter>
+                  {activeScheduleData.courses.length > 0 &&
+                  <>
                   <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
                   <Button onClick={saveCurrentSchedule}>Save</Button>
+                  </>}
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -637,7 +679,7 @@ export default function CourseSearch() {
   
         {/* Misc dialogs */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog open={requiredDialogOpen} onConfirm={() => { setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)} />
+        <RequirementsDialog course={selectedCourse} open={requiredDialogOpen} onConfirm={() => { addCourse(selectedCourse); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)} />
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>
