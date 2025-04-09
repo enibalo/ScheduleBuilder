@@ -84,7 +84,7 @@ export function SchedulePreview({
                 style={{ top: `${(hour - 8) * 54}px` }}
               >
                 {dayIndex === 0 && (
-                  <span className="text-xs text-muted-foreground absolute -top-2 left-1">{hour}:00</span>
+                  <span className="text-xs text-muted-foreground" style={styles.hours}>{hour}:00</span>
                 )}
               </div>
             ))}
@@ -181,11 +181,11 @@ const styles = {
   hours : { 
     position: "absolute",
     zIndex: "2",
-    left: "-22px",
+    left: "-10px",
     top:"-7px",
     marginRight: "5px",
     border: "1px solid rgb(241 243 248)",
-    backgroundColor: "white",
+  
   }
 }
 
