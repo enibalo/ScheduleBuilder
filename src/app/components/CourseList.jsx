@@ -17,7 +17,7 @@ import { useState } from "react";
 function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enrolledCourses}) {
   const [isOpen, setIsOpen] = useState(new Array(courses.length).fill(false));
 
- 
+
   return (
     <div className="space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto pr-2">
       {courses.length > 0 ? (
@@ -111,18 +111,19 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
                             <div className="font-bold">{courseTimings[1][0]}</div>
                             <div>{course.tutorialRoom}</div>
                             <div>{courseTimings[1][1]}</div>
-                            </div>
-                             }
-                             </div>
-                            </CollapsibleContent>
-                </Collapsible>
-              </div>
-            </CardContent>
-          </Card>
-        )})
+                          </div>
+                        }
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })
       ) : (
         <div className="text-center py-8 text-muted-foreground">
-          No courses found. Try adjusting your search.
+          No courses found. Add some to your schedule by the <br />search bar or suggested courses.
         </div>
       )}
     </div>

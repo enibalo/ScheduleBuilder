@@ -30,13 +30,13 @@ function EnrollmentStatus({ course,  enrolledCourses }) {
         </Badge>
       )
     }
-    else{
+    else {
       return (<Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 flex items-center gap-1">
-      <Ban className="h-3 w-3" /> No More Seats
-    </Badge>)
+        <Ban className="h-3 w-3" /> No More Seats
+      </Badge>)
     }
   }
-  else{
+  else {
     return (
       <Badge>
         <CheckCircle className="h-3 w-3" /> {enrolledCourses[courseKey]}

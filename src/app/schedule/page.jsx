@@ -8,6 +8,7 @@ import {
   Calendar,
   Copy,
   Trash2,
+  Plus,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -259,7 +260,6 @@ export default function CourseSearch() {
     })
   }
 
-
   const saveCurrentSchedule = () => {
     if (!scheduleName.trim()) return
 
@@ -276,8 +276,15 @@ export default function CourseSearch() {
     setSaveDialogOpen(false)
   }
 
-  function addTab(schedule) {
+  function addEmptySchedule() {
+    addTab({
+      name: `New Schedule`,
+      id: Date.now().toString(),
+      courses: []
+    })
+  }
 
+  function addTab(schedule) {
     // add the schedule to the list of schedules
     const current = loadedSchedules;
     current.push(schedule);
@@ -287,10 +294,15 @@ export default function CourseSearch() {
     setActiveSchedule(loadedSchedules.length - 1);
   }
 
-  function clearCurrentSchedule() {
-    setActiveScheduleData({
-      ...activeScheduleData, courses: []
-    })
+  function removeCurrentSchedule() {
+    if (loadedSchedules.length <= 1) {
+      setActiveScheduleData({
+        ...activeScheduleData, courses: []
+      })
+      return;
+    }
+    setLoadedSchedules(loadedSchedules.filter((s, index) => index != activeSchedule));
+    setActiveSchedule(0);
   }
 
   const loadSavedSchedule = (scheduleId) => {
@@ -314,7 +326,7 @@ export default function CourseSearch() {
       ...prev,
       [courseId]: status,
     }))
-    
+
   }
 
   const handleAction = (courseId, action) => {
@@ -366,7 +378,7 @@ export default function CourseSearch() {
       if (action.type != "drop"){
         const courseKey =  action.id + "-" + activeScheduleData.find((item ) => item.id == action.id).currentWeek
         const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-        newEnrolledCourses[courseKey] = capitalizeFirst(action.type +"ed")
+        newEnrolledCourses[courseKey] = capitalizeFirst(action.type + "ed")
       }
     })
 
@@ -385,6 +397,23 @@ export default function CourseSearch() {
   const handleSaveFilters = () => {
     // Apply filters logic here
     setFilterDialogOpen(false)
+  }
+
+  function addCourseToSchedule(courseId) {
+    const course = allCourses.filter(course => course.id === courseId)[0];
+
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: [
+        ...activeScheduleData.courses,
+        {
+          ...course,
+          selected: false,
+          pinned: false,
+          status: "none"
+        }
+      ]
+    })
   }
 
   return (
@@ -443,7 +472,7 @@ export default function CourseSearch() {
 
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="relative flex-1">
-                <SearchBar filters={filters} courses={allCourses} onSelect={(e)=> console.log(e)}></SearchBar>
+                <SearchBar filters={filters} courses={allCourses} onSelect={addCourseToSchedule}></SearchBar>
               </div>
               <Button variant="outline" className="flex items-center gap-2" onClick={() => setFilterDialogOpen(true)}>
                 <Filter className="h-4 w-4" />
@@ -458,7 +487,7 @@ export default function CourseSearch() {
               />
             </div>
             <div className="mb-6">
-               {/* create tabs */}
+              {/* create tabs */}
               <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden">
                 {
                   loadedSchedules.map((schedule, index) => {
@@ -474,6 +503,26 @@ export default function CourseSearch() {
                     </div>
                   })
                 }
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="relative mx-3 flex items-center cursor-pointer text-muted-foreground hover:bg-muted/50"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          addEmptySchedule();
+                        }}
+                      >
+                        <Plus className="h-2 w-2" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Create a new tab</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
 
                 <div className="flex-1 border-b -mb-px"></div>
               </div>
@@ -499,20 +548,30 @@ export default function CourseSearch() {
                   </Tooltip>
                 </TooltipProvider>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="text-red-500 hover:text-red-600"
-                  onClick={clearCurrentSchedule}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="text-red-500 hover:text-red-600"
+                        onClick={removeCurrentSchedule}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Remove this tab</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
               </div>
             </div>
 
             <CourseList courses={activeScheduleData.courses} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
-            <SuggestedCourses onClick={(item)=>console.log(item)}></SuggestedCourses>
+            <SuggestedCourses onAddCourse={addCourseToSchedule}></SuggestedCourses>
           </div>
 
           {/* Schedule Preview Section */}
@@ -599,7 +658,7 @@ export default function CourseSearch() {
         </div>
         {/* Confirmation Dialog */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog open={requiredDialogOpen} onConfirm={()=> {console.log("item added"); setRequiredDialogOpen(false)}} onCancel={()=> setRequiredDialogOpen(false)}></RequirementsDialog>
+        <RequirementsDialog open={requiredDialogOpen} onConfirm={() => { console.log("item added"); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)}></RequirementsDialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>
