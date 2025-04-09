@@ -30,7 +30,7 @@ import { AppHeader } from "@/app/components/app-header"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 
-import { useRouter } from "next/navigation";
+import { ServerInsertedHTMLContext, useRouter } from "next/navigation";
 import SearchBar from "./SearchBar"
 import SuggestedCourses from "./SuggestCourses"
 
@@ -76,14 +76,14 @@ export default function CourseSearch() {
   const [activeSchedule, setActiveSchedule] = useState(0)
   const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
   const [loadedSchedules, setLoadedSchedules] = useState(courseSchedules)
-  const [weekNumber, setWeekNumber] = useState(1)
+  const [weekNumber, setWeekNumber] = useState(0)
   const [savedSchedules, setSavedSchedules] = useState([])
   const [savedSchedulesCollapsed, setSavedSchedulesCollapsed] = useState(true)
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [scheduleName, setScheduleName] = useState("")
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
-  const totalWeeks = 2
+  const [totalWeeks,setTotalWeeks] = useState(0)
 
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
@@ -153,6 +153,35 @@ export default function CourseSearch() {
     localStorage.setItem("enrollmentStatus", JSON.stringify(enrollmentStatus))
   }, [enrollmentStatus])
 
+  useEffect(()=>{
+
+    const countSelected = activeScheduleData.courses.reduce((acc, course)=> acc + course.selected , 0)
+    const countToggled = activeScheduleData.courses.reduce((acc, course)=> acc + course.pinned, 0)
+    console.log(`toggled ${countToggled}`)
+    console.log(`selected ${countSelected}`)
+    //while schedule is empty 
+    if (countSelected == 0){
+      setTotalWeeks(0)
+      setWeekNumber(0)
+      //first item is added to schedule 
+    }else {
+      if (totalWeeks == 0){
+      setTotalWeeks(2)
+      setWeekNumber(1)
+    }}
+
+    //if all courses are pinned 
+    if (countSelected > 0 && countToggled == countSelected){
+      setTotalWeeks(1)
+      setWeekNumber(1)
+      // if one course is released from pinned state 
+    }else {
+      if (totalWeeks == 1){
+      setTotalWeeks(2)
+    }}
+
+  }, [activeScheduleData])
+
   // Calculate dates based on week number
   // Using January 10, 2024 (a Wednesday) as the base date for week 1
   const calculateDates = (weekNum) => {
@@ -185,13 +214,15 @@ export default function CourseSearch() {
 
     activeScheduleData.courses.forEach(course => {
       if (course.selected) {
-        course["schedule" +  weekNumber].forEach((scheduleItem, index) => {
+        {/*Handle pinned courses  */}
+        course["schedule" +  course.currentWeek].forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
             courseId: course.id,
             code: course.code,
             type: scheduleItem.type,
             day: scheduleItem.day,
+            currentWeek: course.currentWeek,
             startHour: scheduleItem.startHour,
             duration: scheduleItem.duration,
             color: course.color,
@@ -202,7 +233,7 @@ export default function CourseSearch() {
     })
 
     return blocks
-  }, [activeScheduleData, weekNumber])
+  }, [activeScheduleData])
 
   const toggleCourseSelection = (courseId) => {
     setActiveScheduleData({
@@ -330,10 +361,10 @@ export default function CourseSearch() {
 
     let newEnrolledCourses = {}
 
-    
+    {/**used to update the Enrollment Status of a course */}
     pendingActions.forEach( (action)=>{
       if (action.type != "drop"){
-        const courseKey =  action.id + "-" + weekNumber
+        const courseKey =  action.id + "-" + activeScheduleData.find((item ) => item.id == action.id).currentWeek
         const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
         newEnrolledCourses[courseKey] = capitalizeFirst(action.type +"ed")
       }
@@ -479,7 +510,7 @@ export default function CourseSearch() {
               </div>
             </div>
 
-            <CourseList courses={activeScheduleData.courses} weekNumber={weekNumber} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
+            <CourseList courses={activeScheduleData.courses} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
             <SuggestedCourses onClick={(item)=>console.log(item)}></SuggestedCourses>
           </div>
@@ -490,13 +521,33 @@ export default function CourseSearch() {
               weekNumber={weekNumber}
               totalWeeks={totalWeeks}
               onPrevWeek={() => {
-                // ignore attempts to go past page 1 
+                // ignore attempts to go to previous page, when current page = 1
                 let week = weekNumber != 1 ? weekNumber - 1 : weekNumber; 
                 setWeekNumber(week);
+                setActiveScheduleData({
+                  ...activeScheduleData,
+                  courses: activeScheduleData.courses.map(course => {
+                                                      // dont move a pinned course
+                      return { ...course, currentWeek: ( course.pinned ? course.currentWeek : week)}
+                    
+                  })
+                })
               }}
               onNextWeek={() => {
+                //ignore attempt to go past page 2 
+                // ignore attempts to go to page 2 when there is only one page
+                if (totalWeeks == 1) {return}
                 let week = weekNumber != 2 ? weekNumber + 1 : weekNumber; 
-                setWeekNumber(week); 
+            
+                setWeekNumber(week);
+                setActiveScheduleData({
+                  ...activeScheduleData,
+                  courses: activeScheduleData.courses.map(course => {
+                                                  //dont move a pinned course
+                      return { ...course, currentWeek: (course.pinned ? course.currentWeek : week)}
+                    
+                  })
+                })
               }}
               courses={selectedCourseBlocks}
               dates={weekDates}

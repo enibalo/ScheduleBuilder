@@ -13,9 +13,8 @@ import {
 } from "lucide-react"
 
 
-function EnrollmentStatus({ course, weekNumber, enrolledCourses }) {
-  const courseKey = "" + course.id + "-" + weekNumber + "";
- 
+function EnrollmentStatus({ course,  enrolledCourses }) {
+  const courseKey =  course.id + "-" + course.currentWeek;
 
   if ( enrolledCourses == {} || enrolledCourses == null || Object.keys(enrolledCourses).includes(courseKey) == false ){
     if (course.seats.available < course.seats.total) {
