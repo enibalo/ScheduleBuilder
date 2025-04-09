@@ -96,7 +96,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
                     value={1}
                     onClick={(e) => onSelect(course.id)}
                     key={course + "-" + "button" + "-" + index}
-                    className=" text-left w-full block text-sm border-b-2 border-input py-2"
+                    className=" p-1 text-left w-full block text-sm border-b-2 border-input py-2 hover:bg-slate-100"
                   >
                     <h3 className="font-bold">{course.code}</h3>
                     <p className="text-sm text-muted-foreground">

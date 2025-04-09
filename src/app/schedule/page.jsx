@@ -86,6 +86,8 @@ export default function CourseSearch() {
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
   const [totalWeeks,setTotalWeeks] = useState(0)
 
+  console.log(activeScheduleData)
+
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
@@ -215,7 +217,7 @@ export default function CourseSearch() {
 
     activeScheduleData.courses.forEach(course => {
       if (course.selected) {
-        {/*Handle pinned courses  */}
+        {/*Handle pinned courses by checking a course's currentWeek */}
         course["schedule" +  course.currentWeek].forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
@@ -341,6 +343,8 @@ export default function CourseSearch() {
     ])
   }
 
+ 
+
   // Add a new function to handle the "Get Schedule" button click
   const handleGetSchedule = () => {
     setConfirmationOpen(true)
@@ -399,6 +403,15 @@ export default function CourseSearch() {
     setFilterDialogOpen(false)
   }
 
+  const handleDeleteCourse = (courseId) =>{
+    const newCourses = activeScheduleData.courses.filter(course => course.id != courseId)
+    setActiveScheduleData({
+      ...activeScheduleData,
+      courses: newCourses,
+    })
+
+  }
+
   function addCourseToSchedule(courseId) {
     const course = allCourses.filter(course => course.id === courseId)[0];
 
@@ -408,6 +421,7 @@ export default function CourseSearch() {
         ...activeScheduleData.courses,
         {
           ...course,
+          currentWeek: weekNumber,
           selected: false,
           pinned: false,
           status: "none"
@@ -569,7 +583,7 @@ export default function CourseSearch() {
               </div>
             </div>
 
-            <CourseList courses={activeScheduleData.courses} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
+            <CourseList onDeleteCourse={handleDeleteCourse} courses={activeScheduleData.courses} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
 
             <SuggestedCourses onAddCourse={addCourseToSchedule}></SuggestedCourses>
           </div>
