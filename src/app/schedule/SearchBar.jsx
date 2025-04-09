@@ -60,12 +60,12 @@ export default function SearchBar({ courses, onSelect, filters }) {
     if (filters.fullClasses == true) {
       filterMatch =
         filterMatch &&
-        (course.seats.available == 0 &&
+        (course.seats.available == course.seats.total &&
           course.waitlist.count === course.waitlist.capacity) == false; // Classes that are full
     }
 
     if (filters.waitlistedClasses == true) {
-      filterMatch = filterMatch && course.seats.available != 0; // Classes with students on the waitlist
+      filterMatch = filterMatch && course.seats.available == course.seats.total  // Classes with students on the waitlist
     }
 
     return searchMatch && filterMatch;

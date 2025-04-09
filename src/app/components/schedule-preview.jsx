@@ -198,6 +198,7 @@ const styles = {
     top:"-7px",
     marginRight: "5px",
     border: "1px solid rgb(241 243 248)",
+    backgroundColor: "white",
   }
 }
 
