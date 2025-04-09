@@ -84,7 +84,7 @@ export function SchedulePreview({
                 style={{ top: `${(hour - 8) * 54}px` }}
               >
                 {dayIndex === 0 && (
-                  <span className="text-xs text-muted-foreground" style={styles.hours}>{hour}:00</span>
+                  <span className="text-xs text-muted-foreground hour-text" style={styles.hours}>{ hour < 10 ? "0" + hour  : hour }:00</span>
                 )}
               </div>
             ))}
@@ -181,12 +181,19 @@ const styles = {
   hours : { 
     position: "absolute",
     zIndex: "2",
-    left: "-10px",
-    top:"-7px",
+    // left: "-10px",
+    // top:"-7px",
     marginRight: "5px",
-    border: "1px solid rgb(241 243 248)",
+    // border: "1px solid rgb(241 243 248)",
+    backgroundColor: 'white',
+    left: '-55px',
+    padding: '0px 10px',
+    borderRightWidth: '0px',
+    borderTop: '1px solid rgb(241, 243, 248)',
+    paddingRight: '50px',
   
-  }
+  }   
+
 }
 
 
