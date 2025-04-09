@@ -2,7 +2,7 @@
   {
     "id": "1",
     "code": "BSOE 101",
-    "title": "Intro to Computer Science",
+    "title": "Intro to Computer Science",  
     "seats": {
       "available": 0,
       "total": 101
@@ -12,16 +12,30 @@
       "capacity": 50
     },
     "color": "blue",
-    "schedule": [
+    "schedule1": [
       {
         "day": 0,
-        "startHour": 10,
+        "startHour": 14,
         "duration": 2,
         "type": "LEC"
       },
       {
         "day": 2,
         "startHour": 10,
+        "duration": 1,
+        "type": "TUT"
+      }
+    ],
+    "schedule2": [
+      {
+        "day": 0,
+        "startHour": 11,
+        "duration": 2,
+        "type": "LEC"
+      },
+      {
+        "day": 2,
+        "startHour": 11,
         "duration": 1,
         "type": "TUT"
       }
@@ -45,15 +59,29 @@
       "capacity": 40
     },
     "color": "green",
-    "schedule": [
+    "schedule1": [
       {
         "day": 1,
-        "startHour": 13,
+        "startHour": 11,
         "duration": 1.5,
         "type": "LEC"
       },
       {
         "day": 3,
+        "startHour": 11,
+        "duration": 1.5,
+        "type": "LEC"
+      }
+    ],
+    "schedule2": [
+      {
+        "day": 3,
+        "startHour": 13,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 1,
         "startHour": 13,
         "duration": 1.5,
         "type": "LEC"
@@ -69,6 +97,8 @@
     "id": "3",
     "code": "BSOE 301",
     "title": "Algorithms",
+    
+    
     "seats": {
       "available": 0,
       "total": 60
@@ -78,7 +108,27 @@
       "capacity": 20
     },
     "color": "purple",
-    "schedule": [
+    "schedule1": [
+      {
+        "day": 0,
+        "startHour": 8,
+        "duration": 1,
+        "type": "LEC"
+      },
+      {
+        "day": 2,
+        "startHour": 8,
+        "duration": 1,
+        "type": "LEC"
+      },
+      {
+        "day": 4,
+        "startHour": 9,
+        "duration": 2,
+        "type": "LAB"
+      }
+    ],
+    "schedule2": [
       {
         "day": 0,
         "startHour": 14,
@@ -108,6 +158,8 @@
     "id": "4",
     "code": "CHEM 201",
     "title": "Organic Chemistry",
+    
+    
     "seats": {
       "available": 0,
       "total": 200
@@ -117,7 +169,27 @@
       "capacity": 45
     },
     "color": "orange",
-    "schedule": [
+    "schedule1": [
+      {
+        "day": 1,
+        "startHour": 11,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 3,
+        "startHour": 11,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 4,
+        "startHour": 13,
+        "duration": 3,
+        "type": "LAB"
+      }
+    ],
+    "schedule2": [
       {
         "day": 1,
         "startHour": 9,
@@ -147,6 +219,8 @@
     "id": "5",
     "code": "PHYS 101",
     "title": "Physics I: Mechanics",
+    
+    
     "seats": {
       "available": 25,
       "total": 120
@@ -156,7 +230,27 @@
       "capacity": 30
     },
     "color": "yellow",
-    "schedule": [
+    "schedule1": [
+      {
+        "day": 0,
+        "startHour": 12,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 2,
+        "startHour": 12,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 4,
+        "startHour": 14,
+        "duration": 2,
+        "type": "LAB"
+      }
+    ],
+    "schedule2": [
       {
         "day": 0,
         "startHour": 8,
@@ -186,6 +280,8 @@
     "id": "6",
     "code": "MATH 101",
     "title": "Calculus I",
+    
+    
     "seats": {
       "available": 12,
       "total": 150
@@ -195,15 +291,29 @@
       "capacity": 25
     },
     "color": "pink",
-    "schedule": [
+    "schedule1": [
       {
-        "day": 1,
+        "day": 2,
+        "startHour": 15,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 4,
+        "startHour": 15,
+        "duration": 1.5,
+        "type": "LEC"
+      }
+    ],
+    "schedule2": [
+      {
+        "day": 2,
         "startHour": 10,
         "duration": 1.5,
         "type": "LEC"
       },
       {
-        "day": 3,
+        "day": 4,
         "startHour": 10,
         "duration": 1.5,
         "type": "LEC"
@@ -219,6 +329,8 @@
     "id": "7",
     "code": "HIST 101",
     "title": "World History",
+    
+    
     "seats": {
       "available": 0,
       "total": 80
@@ -228,7 +340,27 @@
       "capacity": 20
     },
     "color": "green",
-    "schedule": [
+    "schedule1": [
+      {
+        "day": 1,
+        "startHour": 13,
+        "duration": 1,
+        "type": "LEC"
+      },
+      {
+        "day": 3,
+        "startHour": 13,
+        "duration": 1,
+        "type": "LEC"
+      },
+      {
+        "day": 4,
+        "startHour": 11,
+        "duration": 1,
+        "type": "TUT"
+      }
+    ],
+    "schedule2": [
       {
         "day": 0,
         "startHour": 13,
@@ -258,6 +390,8 @@
     "id": "8",
     "code": "ENGL 101",
     "title": "Composition",
+    
+    
     "seats": {
       "available": 30,
       "total": 100
@@ -267,7 +401,21 @@
       "capacity": 20
     },
     "color": "blue",
-    "schedule": [
+    "schedule1": [
+      {
+        "day": 2,
+        "startHour": 15,
+        "duration": 1.5,
+        "type": "LEC"
+      },
+      {
+        "day": 4,
+        "startHour": 15,
+        "duration": 1.5,
+        "type": "LEC"
+      }
+    ],
+    "schedule2": [
       {
         "day": 1,
         "startHour": 15,

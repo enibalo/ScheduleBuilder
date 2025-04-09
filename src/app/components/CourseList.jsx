@@ -14,7 +14,7 @@ import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { ChevronDown } from 'lucide-react';
 import { useState } from "react";
 
-function CourseList({ courses, toggleCourseSelection, toggleCoursePinned }) {
+function CourseList({ courses, weekNumber, toggleCourseSelection, toggleCoursePinned, enrolledCourses}) {
   const [isOpen, setIsOpen] = useState(new Array(courses.length).fill(false));
 
  
@@ -22,7 +22,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned }) {
     <div className="space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto pr-2">
       {courses.length > 0 ? (
         courses.map((course, index) => {
-          const courseTimings = getCourseOfferings(course.schedule);
+          const courseTimings = getCourseOfferings(course["schedule" + weekNumber]);
           
           
           
@@ -72,7 +72,9 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned }) {
                       
                     </div>
                     <div className="flex items-center">
-                      <EnrollmentStatus course={course} />
+                      {/* Only show enrollment status for waitlisted/enrolled course */}
+                      
+                      <EnrollmentStatus course={course} weekNumber={weekNumber} enrolledCourses={enrolledCourses}/>
                     </div>
                   </div>
                 </div>
@@ -134,7 +136,7 @@ function getCourseOfferings(schedule) {
     0: "M", // Monday
     1: "T", // Tuesday
     2: "W", // Wednesday
-    3: "R", // Thursday
+    3: "TR", // Thursday
     4: "F"  // Friday
   };
 
