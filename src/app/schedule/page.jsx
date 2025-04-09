@@ -55,28 +55,32 @@ export default function CourseSearch() {
     return found;
   }
 
-  const courseSchedules = baseData.map((schedule, index) => {
-    return {
-      name: `Schedule ${index}`,
-      id: index,
-      courses: schedule.map(course => {
-        return {
-          ...course,
-          ...findClassByID(course.id),
-          selected: false,
-          pinned: false
-        }
-      })
-    }
-  });
-
+  // const courseSchedules = baseData.map((schedule, index) => {
+  //   return {
+  //     name: `Schedule ${index}`,
+  //     id: index,
+  //     courses: schedule.map(course => {
+  //       return {
+  //         ...course,
+  //         ...findClassByID(course.id),
+  //         selected: false,
+  //         pinned: false
+  //       }
+  //     })
+  //   }
+  // });
+  const initalCourses = [{
+    name: `Schedule ${0}`,
+    id: Date.now().toString(),
+    courses: []
+  }];
 
   const [enrolledCourses, setEnrolledCourses] = useState({});
 
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(0)
-  const [activeScheduleData, setActiveScheduleData] = useState(courseSchedules[0])
-  const [loadedSchedules, setLoadedSchedules] = useState(courseSchedules)
+  const [loadedSchedules, setLoadedSchedules] = useState(initalCourses)
+  const [activeScheduleData, setActiveScheduleData] = useState(initalCourses[0])
   const [weekNumber, setWeekNumber] = useState(0)
   const [savedSchedules, setSavedSchedules] = useState([])
   const [savedSchedulesCollapsed, setSavedSchedulesCollapsed] = useState(true)
@@ -86,8 +90,7 @@ export default function CourseSearch() {
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
   const [totalWeeks,setTotalWeeks] = useState(0)
 
-  console.log(activeScheduleData)
-
+ 
   // Add new state for tracking pending actions
   const [pendingActions, setPendingActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
@@ -280,11 +283,25 @@ export default function CourseSearch() {
 
   function addEmptySchedule() {
     addTab({
-      name: `New Schedule`,
+      name: `Schedule ${loadedSchedules.length}`,
       id: Date.now().toString(),
       courses: []
     })
   }
+
+  function handleSelectedTerm(term){
+    setLoadedSchedules([{
+      name: `Schedule ${0}`,
+      id: Date.now().toString(),
+      courses: []
+    }]);
+    console.log(loadedSchedules);
+    setActiveSchedule(0);
+    setActiveScheduleData(loadedSchedules[0]);
+    setSelectedTerm(term);
+  }
+
+
 
   function addTab(schedule) {
     // add the schedule to the list of schedules
@@ -457,7 +474,7 @@ export default function CourseSearch() {
                   <Calendar className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
                   <span className="text-xs font-medium mr-1">Term:</span>
                 </div>
-                <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+                <Select value={selectedTerm} onValueChange={handleSelectedTerm}>
                   <SelectTrigger className="w-[150px] h-7 text-xs"> {/* ↓ smaller input */}
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
