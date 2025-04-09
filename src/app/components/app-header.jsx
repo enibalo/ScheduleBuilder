@@ -25,26 +25,27 @@ export function AppHeader() {
         scrolled ? "shadow-md" : ""
       }`}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center">
+      <div className="container mx-auto px-3">
+        <div className="flex h-12 items-center"> {/* ↓ from h-16 to h-12 */}
           <div className="flex w-full items-center justify-between">
             <img
               src="https://portal.my.ucalgary.ca/myUofC/images/UC-White-horz-StartSomething-rgb300.png"
               alt="University of Calgary"
-              className="h-8 md:h-10"
+              className="h-6 md:h-8" // ↓ logo height
             />
-            {pathname.includes("schedule") &&
+            {pathname.includes("schedule") && (
               <Link
-              href="/"
-              className="underline text-white font-bold"
-            >
-              <Home></Home>
-            </Link>
-            }
-            
+                href="/"
+                className="text-white font-semibold text-sm underline flex items-center gap-1"
+              >
+                <Home className="h-4 w-4" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
     </header>
   );
+  
+  
 }

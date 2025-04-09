@@ -430,23 +430,35 @@ export default function CourseSearch() {
     })
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <AppHeader />
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: '40% 1fr',
+    gap: '4em',
+    maxWidth: "1130px",
+  };
+  
 
-      <div className="w-full max-w-[1400px] mx-auto p-4 pt-6 flex items-center min-h-[calc(100vh-4rem)]">
-        <div className="flex gap-12 w-full items-start">
+  return (
+    <div className="min-h-screen bg-gray-50 text-sm"> {/* ↓ base text size */}
+      <AppHeader />
+  
+      <div className="w-full max-w-[1400px] mx-auto p-2 pt-2 flex min-h-screen justify-center"> {/* ↓ padding, align top */}
+        <div className="p-2  w-full items-start" style={gridStyle}> {/* ↓ gap */}
+          {/* {
+    gridColumn: 'span 1',
+  }; */}
           {/* Course Search Section */}
-          <div className="w-1/2">
-            {/* Term selection and info icon */}
-            <div className="flex items-center justify-between mb-4">
+          <div className="space-y-3" style={{maxWidth: "480px", }}> {/* ↓ vertical spacing */}
+  
+            {/* Term selection */}
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <span className="text-sm font-medium mr-2">Term:</span>
+                  <Calendar className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                  <span className="text-xs font-medium mr-1">Term:</span>
                 </div>
                 <Select value={selectedTerm} onValueChange={setSelectedTerm}>
-                  <SelectTrigger className="w-[180px] h-8">
+                  <SelectTrigger className="w-[150px] h-7 text-xs"> {/* ↓ smaller input */}
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
                   <SelectContent>
@@ -457,79 +469,71 @@ export default function CourseSearch() {
                   </SelectContent>
                 </Select>
               </div>
-
+  
               <TooltipProvider>
                 <Tooltip delayDuration={300}>
                   <TooltipTrigger asChild>
                     <div className="relative cursor-pointer">
                       <div className="absolute -inset-0.5 rounded-full bg-red-200 animate-[pulse_2s_ease-in-out_infinite]"></div>
-                      <Button variant="ghost" size="sm" className="relative z-10 h-7 w-7 p-0">
-                        <Info className="h-4 w-4 text-red-500" />
+                      <Button variant="ghost" size="icon" className="relative z-10 h-6 w-6 p-0 hover:bg-transparent"> {/* ↓ smaller button */}
+                        <Info className="h-3.5 w-3.5 text-red-500" />
                       </Button>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm p-4" side="bottom">
-                    <div className="space-y-2">
+                  <TooltipContent className="max-w-sm p-2 text-xs"> {/* ↓ padding and text size */}
+                    <div className="space-y-1.5">
                       <p className="font-medium">How to select and enroll in courses:</p>
-                      <ol className="space-y-1 list-decimal pl-4">
+                      <ol className="list-decimal pl-4 space-y-0.5">
                         <li>Use the search box to find courses</li>
-                        <li>Click the checkbox to add a course to your schedule</li>
-                        <li>Pin important courses by clicking the pin icon</li>
-                        <li>Click "Not Enrolled" to see enrollment options</li>
-                        <li>Click "Get Schedule" to confirm your selections</li>
+                        <li>Click the checkbox to add a course</li>
+                        <li>Pin courses with the pin icon</li>
+                        <li>Click "Not Enrolled" for options</li>
+                        <li>Click "Get Schedule" to confirm</li>
                       </ol>
                     </div>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
-
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
+  
+            {/* Search and filter row */}
+            <div className="flex flex-col md:flex-row gap-2 items-start">
               <div className="relative flex-1">
-                <SearchBar filters={filters} courses={allCourses} onSelect={addCourseToSchedule}></SearchBar>
+                <SearchBar filters={filters} courses={allCourses} onSelect={addCourseToSchedule} />
               </div>
-              <Button variant="outline" className="flex items-center gap-2" onClick={() => setFilterDialogOpen(true)}>
-                <Filter className="h-4 w-4" />
+              <Button variant="outline" className="h-8 px-2 text-xs" onClick={() => setFilterDialogOpen(true)}>
+                <Filter className="h-3.5 w-3.5 mr-1" />
                 Filters
               </Button>
-              <FilterDialog
-                open={filterDialogOpen}
-                onOpenChange={setFilterDialogOpen}
-                filters={filters}
-                onFiltersChange={setFilters}
-                onSave={handleSaveFilters}
-              />
+              <FilterDialog {...{ open: filterDialogOpen, onOpenChange: setFilterDialogOpen, filters, onFiltersChange: setFilters, onSave: handleSaveFilters }} />
             </div>
-            <div className="mb-6">
-              {/* create tabs */}
-              <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden">
-                {
-                  loadedSchedules.map((schedule, index) => {
-                    return <div key={index}
-                      className={`relative px-4 py-2 flex items-center cursor-pointer ${activeSchedule === index
-                        ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
-                        : "text-muted-foreground hover:bg-muted/50"
-                        }`}
-                      onClick={() => setActiveSchedule(index)}
-                    >
-                      <span className="text-sm font-medium">{schedule.name}</span>
-                      {activeSchedule === index && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
-                    </div>
-                  })
-                }
-
+  
+            {/* Tab section */}
+            <div>
+              <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden text-xs">
+                {loadedSchedules.map((schedule, index) => (
+                  <div key={index}
+                    className={`relative px-2 py-1 flex items-center cursor-pointer ${activeSchedule === index
+                      ? "bg-background text-foreground border-l border-t border-r rounded-t-md -mb-px"
+                      : "text-muted-foreground hover:bg-muted/50"
+                      }`}
+                    onClick={() => setActiveSchedule(index)}
+                  >
+                    <span>{schedule.name}</span>
+                    {activeSchedule === index && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
+                  </div>
+                ))}
+  
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        className="relative mx-3 flex items-center cursor-pointer text-muted-foreground hover:bg-muted/50"
+                        className="mx-1 text-muted-foreground hover:bg-muted/50"
                         variant="outline"
                         size="icon"
-                        onClick={() => {
-                          addEmptySchedule();
-                        }}
+                        onClick={addEmptySchedule}
                       >
-                        <Plus className="h-2 w-2" />
+                        <Plus className="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -537,145 +541,107 @@ export default function CourseSearch() {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-
                 <div className="flex-1 border-b -mb-px"></div>
               </div>
-
-              {/* Schedule action buttons - moved below the tab line */}
-              <div className="flex justify-end items-center gap-2 mt-2 mb-4">
+  
+              {/* Schedule action buttons */}
+              <div className="flex justify-end items-center gap-2 mt-1 mb-2">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => {
-                          addTab(activeScheduleData);
-                        }}
-                      >
-                        <Copy className="h-4 w-4" />
+                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => addTab(activeScheduleData)}>
+                        <Copy className="h-3.5 w-3.5" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Create a copy of this schedule</p>
-                    </TooltipContent>
+                    <TooltipContent><p>Copy</p></TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-
+  
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="text-red-500 hover:text-red-600"
-                        onClick={removeCurrentSchedule}
-                      >
-                        <Trash2 className="h-4 w-4" />
+                      <Button variant="outline" size="icon" className="h-7 w-7 text-red-500 hover:text-red-600" onClick={removeCurrentSchedule}>
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Remove this tab</p>
-                    </TooltipContent>
+                    <TooltipContent><p>Remove</p></TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-
               </div>
             </div>
-
-            <CourseList onDeleteCourse={handleDeleteCourse} courses={activeScheduleData.courses} enrolledCourses={enrolledCourses} toggleCourseSelection={toggleCourseSelection} toggleCoursePinned={toggleCoursePinned} />
-
-            <SuggestedCourses onAddCourse={addCourseToSchedule}></SuggestedCourses>
-          </div>
-
-          {/* Schedule Preview Section */}
-          <div className="w-1/2 lg:self-center">
-            <SchedulePreview
-              weekNumber={weekNumber}
-              totalWeeks={totalWeeks}
-              onPrevWeek={() => {
-                // ignore attempts to go to previous page, when current page = 1
-                let week = weekNumber != 1 ? weekNumber - 1 : weekNumber; 
-                setWeekNumber(week);
-                setActiveScheduleData({
-                  ...activeScheduleData,
-                  courses: activeScheduleData.courses.map(course => {
-                                                      // dont move a pinned course
-                      return { ...course, currentWeek: ( course.pinned ? course.currentWeek : week)}
-                    
-                  })
-                })
-              }}
-              onNextWeek={() => {
-                //ignore attempt to go past page 2 
-                // ignore attempts to go to page 2 when there is only one page
-                if (totalWeeks == 1) {return}
-                let week = weekNumber != 2 ? weekNumber + 1 : weekNumber; 
+  
+            <CourseList {...{ onDeleteCourse: handleDeleteCourse, courses: activeScheduleData.courses, enrolledCourses, toggleCourseSelection, toggleCoursePinned }} />
             
+          </div>
+  
+          {/* Schedule Preview */}
+          <div className="" >
+            <SchedulePreview {...{
+              weekNumber, totalWeeks, courses: selectedCourseBlocks, dates: weekDates,
+              scheduleName: activeScheduleData.name,
+              onTogglePin: toggleCoursePinned,
+              onSaveSchedule: () => setSaveDialogOpen(true),
+              onGetSchedule: handleGetSchedule,
+              onPrevWeek: () => {
+                const week = weekNumber !== 1 ? weekNumber - 1 : weekNumber;
                 setWeekNumber(week);
                 setActiveScheduleData({
                   ...activeScheduleData,
-                  courses: activeScheduleData.courses.map(course => {
-                                                  //dont move a pinned course
-                      return { ...course, currentWeek: (course.pinned ? course.currentWeek : week)}
-                    
-                  })
-                })
-              }}
-              courses={selectedCourseBlocks}
-              dates={weekDates}
-              scheduleName={activeScheduleData.name}
-              onTogglePin={(courseId) => toggleCoursePinned(courseId)}
-              onSaveSchedule={() => setSaveDialogOpen(true)}
-              onGetSchedule={handleGetSchedule}
-            />
-
-            {/* Save Schedule Dialog */}
+                  courses: activeScheduleData.courses.map(c =>
+                    c.pinned ? c : { ...c, currentWeek: week }
+                  )
+                });
+              },
+              onNextWeek: () => {
+                if (totalWeeks === 1) return;
+                const week = weekNumber !== 2 ? weekNumber + 1 : weekNumber;
+                setWeekNumber(week);
+                setActiveScheduleData({
+                  ...activeScheduleData,
+                  courses: activeScheduleData.courses.map(c =>
+                    c.pinned ? c : { ...c, currentWeek: week }
+                  )
+                });
+              }
+            }} />
+  
             <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[400px] text-sm">
                 <DialogHeader>
                   <DialogTitle>Save Schedule</DialogTitle>
-                  <DialogDescription>Give your schedule a name to save it for later.</DialogDescription>
+                  <DialogDescription>Name your schedule to save it.</DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      value={scheduleName}
-                      onChange={(e) => setScheduleName(e.target.value)}
-                      className="col-span-3"
-                      placeholder="Fall 2024 Schedule"
-                    />
+                <div className="grid gap-3 py-3">
+                  <div className="grid grid-cols-4 items-center gap-2">
+                    <Label htmlFor="name" className="text-right">Name</Label>
+                    <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" />
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-                    Cancel
-                  </Button>
+                  <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
                   <Button onClick={saveCurrentSchedule}>Save</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
-
-          {/* Saved Schedules Component - Now fixed positioned */}
-          <SavedSchedules
-            savedSchedules={savedSchedules}
-            onRemoveSchedule={removeSavedSchedule}
-            onLoadSchedule={loadSavedSchedule}
-            onCollapse={() => setSavedSchedulesCollapsed(!savedSchedulesCollapsed)}
-            isCollapsed={savedSchedulesCollapsed}
-          />
+  
+          {/* Fixed Saved Schedules */}
+          <SavedSchedules {...{
+            savedSchedules, onRemoveSchedule: removeSavedSchedule,
+            onLoadSchedule: loadSavedSchedule,
+            onCollapse: () => setSavedSchedulesCollapsed(!savedSchedulesCollapsed),
+            isCollapsed: savedSchedulesCollapsed
+          }} />
+         <SuggestedCourses onAddCourse={addCourseToSchedule} />
         </div>
-        {/* Confirmation Dialog */}
+  
+        {/* Misc dialogs */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog open={requiredDialogOpen} onConfirm={() => { console.log("item added"); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)}></RequirementsDialog>
+        <RequirementsDialog open={requiredDialogOpen} onConfirm={() => { setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)} />
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
       </div>
     </div>
   )
+  
 }
 

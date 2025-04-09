@@ -30,23 +30,26 @@ export default function SearchBar({ courses, onSelect, filters }) {
       let timeMatch = false;
       //morning
       if (filters.morningClasses) {
-        timeMatch = timeMatch || course.schedule[0].startHour < MORNING_CUTOFF;
+        timeMatch = timeMatch || course.schedule1[0].startHour < MORNING_CUTOFF || course.schedule2[0].startHour < MORNING_CUTOFF ;
       }
 
       //afternoon
       if (filters.afternoonClasses) {
         timeMatch =
           timeMatch ||
-          (course.schedule[0].startHour >= MORNING_CUTOFF &&
-            course.schedule[0].startHour < AFTERNOON_CUTOFF);
+          (course.schedule1[0].startHour >= MORNING_CUTOFF &&
+            course.schedule1[0].startHour < AFTERNOON_CUTOFF) ||
+            (course.schedule2[0].startHour >= MORNING_CUTOFF &&
+              course.schedule2[0].startHour < AFTERNOON_CUTOFF);
       }
 
       //evening
       if (filters.eveningClasses) {
         timeMatch =
-          timeMatch || course.schedule[0].startHour >= AFTERNOON_CUTOFF;
-        filterMatch = filterMatch && timeMatch;
+          timeMatch || course.schedule1[0].startHour >= AFTERNOON_CUTOFF ||
+          course.schedule2[0].startHour >= AFTERNOON_CUTOFF;
       }
+      filterMatch = filterMatch && timeMatch;
     }
 
     if (filters.requiredClasses == true) {
@@ -113,16 +116,24 @@ export default function SearchBar({ courses, onSelect, filters }) {
           </ScrollArea>
         </div>
       )}
-      <SearchTags filters={Object.entries(filters)}></SearchTags>
+      <SearchBottom filters={Object.entries(filters)}></SearchBottom>
     </>
   );
 }
 
-function SearchTags({ filters }) {
+function SearchBottom({ filters }) {
   const [isOpen, setIsOpen] = useState(false);
   const onFilters = filters.filter((filter) =>
     filter[1] == true
   )
+
+ 
+  const scrollToBottom = () => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+     })};
+    
 
   return (
     <Collapsible
@@ -137,9 +148,12 @@ function SearchTags({ filters }) {
             <span className="sr-only">Toggle</span>
           </Button>
         </CollapsibleTrigger>
-        <span className="text-xs" styles={styles.upperLeft}>
+        <div className="flex gap-5 items-baseline" styles={styles.upperLeft}>
+        <span className="text-xs">
           Current Filters ({onFilters.length})
         </span>
+        <a className="text-xs p-1 underline"onClick={scrollToBottom}>Suggested Courses</a>
+        </div>
       </div>
       <CollapsibleContent>
         {onFilters.length != 0 ? onFilters.map((filter) =>
@@ -152,14 +166,14 @@ function SearchTags({ filters }) {
   );
 }
 
-export { SearchTags };
+export{ SearchBottom };
 
 const styles = {
   upperLeft: {
-    position: "absolute",
-    zIndex: "2",
-    // left: "-15px",
-    // top: "5px",
+    // position: "absolute",
+    // zIndex: "2",
+    // // left: "-15px",
+    // // top: "5px",
     backgroundColor: "rgb(241 243 248)",
   },
 };
