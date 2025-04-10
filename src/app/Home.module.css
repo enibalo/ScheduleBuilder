@@ -1,12 +1,9 @@
 /* Global styles */
 .container {
   background-color: #f9fafb;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  
   
 }
 
@@ -37,7 +34,6 @@ html, body {
 .main {
   background-color: white;
   padding: 20px;
-  margin-top: 20px;
   width: 100%;
   max-width: 1200px;
   border-radius: 8px;
@@ -46,7 +42,10 @@ html, body {
 }
 
 .content {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 40% 1fr;
+  gap: 2em;
   height: 100%;
 }
 
@@ -55,13 +54,12 @@ html, body {
   flex-direction: column;
   justify-content: center;
   gap: 20px;
-  width: 50%;
 }
 
 .largeButton {
   background-color: #d50723; /* Light red */
   border: none;
-  padding: 30px 3px;
+  flex-grow: 1;
   color: white;
   font-size: 20px;
   font-weight:bolder;
@@ -78,7 +76,6 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50%;
 }
 
 .imageLabel {
@@ -89,12 +86,5 @@ html, body {
 
 .image {
   width: 100%;
-  max-width: 350px; 
   border-radius: 8px;
-}
-
-.imageContainer {
-  margin-top: 20px;
-  text-align: center;
-  padding: 20px; 
 }

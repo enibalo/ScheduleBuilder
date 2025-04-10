@@ -4,8 +4,10 @@ import styles from "./Home.module.css";
 import { AppHeader } from "./components/app-header";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import Video from "./media/video.png";
 import { useRouter } from "next/navigation";
+import Image from 'next/image'
+
 
 export default function Homepage() {
   //filtercourses.sort
@@ -19,7 +21,7 @@ export default function Homepage() {
   return (
     <>
       <AppHeader></AppHeader>
-      <div className={styles.container}>
+      <div className={styles.container + " p-4"}>
         <main className={styles.main}>
           <div className={styles.content}>
             <div className={styles.buttonColumn}>
@@ -29,23 +31,23 @@ export default function Homepage() {
               <button onClick={redirectSchedule} value={"winter2025"} className={styles.largeButton}>Winter 2025</button>
             </div>
 
-            <div className={styles.videoColumn}>
-              <div className={styles.imageContainer}>
-                <img
-                  src="./video.jpg"
-                  alt="Example Image"
-                  className={styles.image}
-                />
-              </div>
+            <div className={styles.videoColumn}>   
+                <Image
+                 src={Video}
+                 alt="Example Image"
+                 className={styles.image}
+                >
+                </Image>
+             
             </div>
           </div>
-          <div className="p-6 mt-4">
-            <h2 className="text-2xl font-bold">Helpful Tools</h2>
-            <hr className="my-4 border-gray-300" />
+          <div className="mt-5">
+            <h2 className="text-xl font-semibold ">Helpful Tools</h2>
+            <hr className="mb-4 mt-2 border-gray-300" />
 
             <div className="grid grid-cols-2 gap-8">
               <section>
-                <h3 className="text-xl font-semibold">First Year Guide</h3>
+                <h3 className="text-l font-semibold">First Year Guide</h3>
                 <p className="text-gray-700">
                   A recommended sequence of courses for a degree, designed by
                   the Academic Advising department to simplify schedule
@@ -55,7 +57,7 @@ export default function Homepage() {
               </section>
 
               <section>
-                <h3 className="text-xl font-semibold">
+                <h3 className="text-l font-semibold">
                   Academic Requirements Report
                 </h3>
                 <p className="text-gray-700">
