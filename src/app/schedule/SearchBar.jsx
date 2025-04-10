@@ -78,7 +78,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
   return (
     <>
       {/* <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-       //I coudln't get it to work and we had other stuff to do so...
+      
        */}
       <Input
         placeholder="Search courses..."
@@ -86,19 +86,19 @@ export default function SearchBar({ courses, onSelect, filters }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setTimeout(() => setIsFocused(false), 100)}
+        onBlur={() => setTimeout(() => {setIsFocused(false)}, 200)}
       />
       {isFocused && (
         <div className="absolute z-10 w-full">
-          <ScrollArea className="absolute bg-white z-10 h-72 w-48 border w-full border-input rounded-b max-h-[150px]">
+          <ScrollArea className="bg-white z-10 h-72 w-48 border w-full border-input rounded-b max-h-[150px]">
             <div className="p-4 pt-0">
               {filteredCourses.length != 0 ? (
                 filteredCourses.map((course, index) => (
                   <button
-                    type="button"
-                    value={1}
-                    onClick={(e) => onSelect(course.id)}
-                    key={course + "-" + "button" + "-" + index}
+                  type="button"
+                    value={course.id}
+                    onClick={() => {onSelect(course.id)}}
+                    key={course + "-" + "searchbar" + "-" + index}
                     className=" p-1 text-left w-full block text-sm border-b-2 border-input py-2 hover:bg-slate-100"
                   >
                     <h3 className="font-bold">{course.code}</h3>
@@ -106,6 +106,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
                       {course.professor}
                     </p>
                   </button>
+                  
                 ))
               ) : (
                 <div key={"no-courses"} className="text-center py-8 text-black">
@@ -120,6 +121,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
     </>
   );
 }
+
 
 function SearchBottom({ filters }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -158,7 +160,7 @@ function SearchBottom({ filters }) {
       <CollapsibleContent>
         {onFilters.length != 0 ? onFilters.map((filter) =>
         (
-          <Badge variant="outline">{filter[0]}</Badge>
+          <Badge variant="outline" key={"current-" + filter[0]}>{filter[0]}</Badge>
         )
         ) : <div className="text-xs no-bg">You have not selected any filters.</div>}
       </CollapsibleContent>

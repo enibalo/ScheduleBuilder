@@ -166,8 +166,7 @@ export default function CourseSearch() {
 
     const countSelected = activeScheduleData.courses.reduce((acc, course)=> acc + course.selected , 0)
     const countToggled = activeScheduleData.courses.reduce((acc, course)=> acc + course.pinned, 0)
-    console.log(`toggled ${countToggled}`)
-    console.log(`selected ${countSelected}`)
+
     //while schedule is empty 
     if (countSelected == 0){
       setTotalWeeks(0)
@@ -298,7 +297,6 @@ export default function CourseSearch() {
       id: Date.now().toString(),
       courses: []
     }]);
-    console.log(loadedSchedules);
     setActiveSchedule(0);
     setActiveScheduleData(loadedSchedules[0]);
     setSelectedTerm(term);
@@ -435,9 +433,9 @@ export default function CourseSearch() {
   function addCourseToSchedule(courseId) {
     const newCourse = allCourses.find(item => item.id === courseId)
     setSelectedCourse(newCourse)
-    console.log(`${newCourse}`)
+    console.log(`${newCourse.code}`)
     if (newCourse.requiredClasses){
-        console.log(`${newCourse.code} isnt required`)
+        console.log(`${newCourse.code} is required`)
         console.log(`${activeScheduleData.courses} `)
         if (activeScheduleData.courses.includes(item => item.id == courseId) == false){
           addCourse(newCourse)
@@ -584,7 +582,7 @@ export default function CourseSearch() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => addTab(activeScheduleData)}>
+                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => addTab({...activeScheduleData, name : `Schedule ${loadedSchedules.length}`})}>
                         <Copy className="h-3.5 w-3.5" />
                       </Button>
                     </TooltipTrigger>
@@ -613,6 +611,9 @@ export default function CourseSearch() {
           <div className="" >
             <SchedulePreview {...{
               weekNumber, totalWeeks, courses: selectedCourseBlocks, dates: weekDates,
+              conflicts: [{"day": 1,
+        "startHour": 11,
+        "duration": 1.5}],
               scheduleName: activeScheduleData.name,
               onTogglePin: toggleCoursePinned,
               onSaveSchedule: () => setSaveDialogOpen(true),
