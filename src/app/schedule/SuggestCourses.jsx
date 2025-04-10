@@ -28,7 +28,7 @@ export default function SuggestedCourses({ onAddCourse }) {
   const courses = [
     allCourses[0],
     allCourses[1],
-    allCourses[2],
+    allCourses[4],
     allCourses[3]
   ];
   return (
