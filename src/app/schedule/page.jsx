@@ -235,14 +235,16 @@ export default function CourseSearch() {
             color: course.color,
             isPinned: course.pinned,
           })
+
+          // get conflict blocks
           activeScheduleData.courses.forEach(course2 => {
             if (course2.selected && course2.id !== course.id) {
-
-
               course2["schedule" + course.currentWeek].forEach((scheduleItem2, index2) => {
                 if (scheduleItem2.day === scheduleItem.day) {
                   if (scheduleItem2.startHour >= scheduleItem.startHour && scheduleItem2.startHour <= (scheduleItem.startHour + scheduleItem.duration)) {
                     conflicts.push({
+                      course1: course.code,
+                      course2: course2.code,
                       day: scheduleItem.day,
                       startHour: scheduleItem2.startHour,
                       duration: (scheduleItem.startHour + scheduleItem.duration) - scheduleItem2.startHour
@@ -255,8 +257,6 @@ export default function CourseSearch() {
         })
       }
     })
-
-    console.log(conflicts);
 
     return [blocks, conflicts]
   }, [activeScheduleData])
@@ -576,7 +576,7 @@ export default function CourseSearch() {
               </div>
             </div>
 
-            <CourseList {...{ onDeleteCourse: handleDeleteCourse, courses: activeScheduleData.courses, toggleCourseSelection, toggleCoursePinned }} />
+            <CourseList {...{ onDeleteCourse: handleDeleteCourse, courses: activeScheduleData.courses, conflicts: conflictBlocks, toggleCourseSelection, toggleCoursePinned }} />
 
           </div>
 

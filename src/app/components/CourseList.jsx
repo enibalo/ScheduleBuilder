@@ -1,4 +1,5 @@
 import {
+  Info,
   Pin,
   PinOff,
   Trash2,
@@ -14,9 +15,27 @@ import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { ChevronDown } from 'lucide-react';
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, onDeleteCourse }) {
+
+function CourseList({ courses, conflicts, toggleCourseSelection, toggleCoursePinned, onDeleteCourse }) {
   const [isOpen, setIsOpen] = useState(new Array(courses.length).fill(false));
+
+  const conflictsByCourse = {}
+  conflicts.forEach(conflict => {
+    if (!conflictsByCourse[conflict.course1]) {
+      conflictsByCourse[conflict.course1] = []
+    }
+    if (!conflictsByCourse[conflict.course2]) {
+      conflictsByCourse[conflict.course2] = []
+    }
+    if (!conflictsByCourse[conflict.course1].includes(conflict.course2)) {
+      conflictsByCourse[conflict.course1].push(conflict.course2)
+    }
+    if (!conflictsByCourse[conflict.course2].includes(conflict.course1)) {
+      conflictsByCourse[conflict.course2].push(conflict.course1)
+    }
+  });
 
 
   return (
@@ -53,7 +72,32 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, onDele
                         </div>
                         <div className="flex items-center">
                           <EnrollmentStatus course={course} />
+                          {conflictsByCourse[course.code] &&
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="relative cursor-pointer ml-2">
+                                    <div className="absolute -inset-0.5 rounded-md bg-red-200 h-6"></div>
+                                    <Button variant="ghost" size="icon" className="relative z-10 h-5 w-5 p-0 hover:bg-transparent"> {/* ↓ smaller button */}
+                                      <Info className="h-3 w-3 text-red-500" />
+                                    </Button>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-sm p-2 text-xs"> {/* ↓ padding and text size */}
+                                  <div className="space-y-1.5">
+                                    <p className="font-medium">This course conflicts with these classes:</p>
+                                    <ol className="list-decimal pl-4 space-y-0.5">
+                                      {conflictsByCourse[course.code].map(courseCode => {
+                                        return (<li>{courseCode}</li>)
+                                      })}
+                                    </ol>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          }
                         </div>
+
                       </div>
                     </div>
 
