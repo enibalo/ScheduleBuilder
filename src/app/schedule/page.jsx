@@ -388,10 +388,8 @@ export default function CourseSearch() {
   function addCourseToSchedule(courseId) {
     const newCourse = allCourses.find(item => item.id === courseId)
     setSelectedCourse(newCourse)
-    console.log(`${newCourse.code}`)
+    
     if (newCourse.requiredClasses) {
-      console.log(`${newCourse.code} is required`)
-      console.log(`${activeScheduleData.courses} `)
       if (activeScheduleData.courses.includes(item => item.id == courseId) == false) {
         addCourse(newCourse)
       }
@@ -636,7 +634,7 @@ export default function CourseSearch() {
         </div>
         {/* Confirmation Dialog */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog course={selectedCourse} open={requiredDialogOpen} onConfirm={() => { console.log("item added"); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)}></RequirementsDialog>
+        <RequirementsDialog course={selectedCourse} open={requiredDialogOpen} onConfirm={() => { addCourse(selectedCourse); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)}></RequirementsDialog>
         <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={courseActions} />
       </div>
     </div>
