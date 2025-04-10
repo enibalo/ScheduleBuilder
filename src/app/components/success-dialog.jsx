@@ -24,6 +24,7 @@ export function SuccessDialog({ open, onOpenChange, actions }) {
                   {action.type === "enroll" && `You have successfully enrolled in ${action.courseName}`}
                   {action.type === "waitlist" && `You have been waitlisted in ${action.courseName}`}
                   {action.type === "drop" && `You have successfully dropped ${action.courseName}`}
+                  {action.type === "none" && `No action was applied to ${action.courseName}`}
                 </p>
               </div>
             ))}

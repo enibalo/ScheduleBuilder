@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog"
-import EnrollmentStatus from "./EnrollmentStatus"
+import EnrollStatus from "./EnrollStatus";
 
 
 const colors = {
@@ -16,35 +16,33 @@ const colors = {
 }
 
 function GetScheduleDialog({ open, courses, onConfirm, onCancel }) {
-  const pendingActions = [];
-
-
   function courseAction(course) {
-    if (course.status === "enrolled") {
-      return (
-        <>
-          <div className="text-lg font-bold text-gray-600">{course.code} - None</div>
-          <div className="text-sm text-gray-500">Already Enrolled</div>
-        </>
-      )
-    }
-    if (course.status === "waitlisted") {
-      if (course.seats.available < course.seats.total) {
+    if (course.status != "Enrolled" && course.status != "Waitlisted") {
+      if (course.status === "enrolled") {
         return (
           <>
-            <div className="text-lg font-bold text-green-600">{course.code} - Enroll</div>
+            <div className="text-lg font-bold text-gray-600">{course.code} - None</div>
+            <div className="text-sm text-gray-500">Already Enrolled</div>
           </>
         )
       }
-      return (
-        <>
-          <div className="text-lg font-bold text-gray-600">{course.code} - None</div>
-          <div className="text-sm text-gray-500">Already Waitlisted</div>
-        </>
-      )
-    }
-    if (course.status === "none") {
-      if (course.seats.available < course.seats.total) {
+      if (course.status === "waitlisted") {
+        if (course.seats.taken < course.seats.total) {
+          return (
+            <>
+              <div className="text-lg font-bold text-green-600">{course.code} - Enroll</div>
+            </>
+          )
+        }
+        return (
+          <>
+            <div className="text-lg font-bold text-gray-600">{course.code} - None</div>
+            <div className="text-sm text-gray-500">Already Waitlisted</div>
+          </>
+        )
+      }
+
+      if (course.seats.taken < course.seats.total) {
         return (
           <>
             <div className="text-lg font-bold text-green-600">{course.code} - Enroll</div>
@@ -57,16 +55,24 @@ function GetScheduleDialog({ open, courses, onConfirm, onCancel }) {
           <div className="text-sm text-gray-500">Class is full</div>
         </>
       )
+
+      // return (
+      //   <>
+      //     <div className="text-lg font-bold text-red-600">Drop</div>
+      //     <div className="text-sm text-gray-500"></div>
+      //   </>
+      // )
+    } else {
+      return (
+        <>
+          <div className="text-lg font-bold text-gray-600">{course.code} - None</div>
+          <div className="text-sm text-gray-500">Already {course.status}</div>
+        </>
+      )
     }
-    // return (
-    //   <>
-    //     <div className="text-lg font-bold text-red-600">Drop</div>
-    //     <div className="text-sm text-gray-500"></div>
-    //   </>
-    // )
   }
 
-  if (courses.length == 0){
+  if (courses.length == 0) {
     return (<Dialog open={open} onOpenChange={onCancel}>
       <DialogContent className=" p-0 overflow-hidden">
         <div className="flex h-full">
@@ -76,8 +82,8 @@ function GetScheduleDialog({ open, courses, onConfirm, onCancel }) {
                 <h2 className="text-lg font-semibold">Confirm Actions</h2>
                 <div className="text-sm font-normal pt-3">Please add at least one course to your schedule before attempting to enroll.</div>
                 <div className="text-sm font-normal pt-3"> <strong>TIP:</strong> If you're not sure what courses to enroll in check your <a className="underline" href="https://example.com/">
-          Academic Requirements Report
-        </a>.</div>
+                  Academic Requirements Report
+                </a>.</div>
               </div>
             </DialogTitle>
           </div>
@@ -105,10 +111,10 @@ function GetScheduleDialog({ open, courses, onConfirm, onCancel }) {
                 return (
                   <div key={index} className={`p-3 rounded-md border ${color} flex justify-between items-center`}>
                     <span className="font-medium">{course.code}</span>
-                    <span className="font-medium">Seats: {course.seats.available}/{course.seats.total}</span>
+                    <span className="font-medium">Seats: {course.seats.taken}/{course.seats.total}</span>
                     <span className="font-medium">Waiting: {course.waitlist.count}/{course.waitlist.capacity}</span>
                     <div className="text-xs text-gray-600 mt-1">
-                      <EnrollmentStatus course={course} />
+                      <EnrollStatus course={course} />
                     </div>
                   </div>
                 )

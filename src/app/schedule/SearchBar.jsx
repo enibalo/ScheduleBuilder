@@ -30,7 +30,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
       let timeMatch = false;
       //morning
       if (filters.morningClasses) {
-        timeMatch = timeMatch || course.schedule1[0].startHour < MORNING_CUTOFF || course.schedule2[0].startHour < MORNING_CUTOFF ;
+        timeMatch = timeMatch || course.schedule1[0].startHour < MORNING_CUTOFF || course.schedule2[0].startHour < MORNING_CUTOFF;
       }
 
       //afternoon
@@ -39,8 +39,8 @@ export default function SearchBar({ courses, onSelect, filters }) {
           timeMatch ||
           (course.schedule1[0].startHour >= MORNING_CUTOFF &&
             course.schedule1[0].startHour < AFTERNOON_CUTOFF) ||
-            (course.schedule2[0].startHour >= MORNING_CUTOFF &&
-              course.schedule2[0].startHour < AFTERNOON_CUTOFF);
+          (course.schedule2[0].startHour >= MORNING_CUTOFF &&
+            course.schedule2[0].startHour < AFTERNOON_CUTOFF);
       }
 
       //evening
@@ -63,17 +63,16 @@ export default function SearchBar({ courses, onSelect, filters }) {
     if (filters.fullClasses == true) {
       filterMatch =
         filterMatch &&
-        (course.seats.available == course.seats.total &&
+        (course.seats.taken == course.seats.total &&
           course.waitlist.count === course.waitlist.capacity) == false; // Classes that are full
     }
 
     if (filters.waitlistedClasses == true) {
-      filterMatch = filterMatch && course.seats.available == course.seats.total  // Classes with students on the waitlist
+      filterMatch = filterMatch && course.seats.taken == course.seats.total  // Classes with students on the waitlist
     }
 
     return searchMatch && filterMatch;
   });
-
 
   return (
     <>
@@ -86,7 +85,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setTimeout(() => {setIsFocused(false)}, 200)}
+        onBlur={() => setTimeout(() => { setIsFocused(false) }, 200)}
       />
       {isFocused && (
         <div className="absolute z-10 w-full">
@@ -95,9 +94,9 @@ export default function SearchBar({ courses, onSelect, filters }) {
               {filteredCourses.length != 0 ? (
                 filteredCourses.map((course, index) => (
                   <button
-                  type="button"
+                    type="button"
                     value={course.id}
-                    onClick={() => {onSelect(course.id)}}
+                    onClick={() => { onSelect(course.id) }}
                     key={course + "-" + "searchbar" + "-" + index}
                     className=" p-1 text-left w-full block text-sm border-b-2 border-input py-2 hover:bg-slate-100"
                   >
@@ -106,7 +105,7 @@ export default function SearchBar({ courses, onSelect, filters }) {
                       {course.professor}
                     </p>
                   </button>
-                  
+
                 ))
               ) : (
                 <div key={"no-courses"} className="text-center py-8 text-black">
@@ -129,13 +128,14 @@ function SearchBottom({ filters }) {
     filter[1] == true
   )
 
- 
+
   const scrollToBottom = () => {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: 'smooth',
-     })};
-    
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    })
+  };
+
 
   return (
     <Collapsible
@@ -151,10 +151,10 @@ function SearchBottom({ filters }) {
           </Button>
         </CollapsibleTrigger>
         <div className="flex gap-5 items-baseline" styles={styles.upperLeft}>
-        <span className="text-xs">
-          Current Filters ({onFilters.length})
-        </span>
-        <a className="text-xs p-1 underline"onClick={scrollToBottom}>Suggested Courses</a>
+          <span className="text-xs">
+            Current Filters ({onFilters.length})
+          </span>
+          <a className="text-xs p-1 underline" onClick={scrollToBottom}>Suggested Courses</a>
         </div>
       </div>
       <CollapsibleContent>
@@ -168,7 +168,7 @@ function SearchBottom({ filters }) {
   );
 }
 
-export{ SearchBottom };
+export { SearchBottom };
 
 const styles = {
   upperLeft: {

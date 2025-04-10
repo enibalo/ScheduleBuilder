@@ -5,7 +5,7 @@
     "title": "Intro to Computer Science",
     "currentWeek": 1,  
     "seats": {
-      "available": 101,
+      "taken": 101,
       "total": 101
     },
     "waitlist": {
@@ -53,7 +53,7 @@
     "currentWeek": 1,
     "title": "Data Structures",
     "seats": {
-      "available": 99,
+      "taken": 99,
       "total": 99
     },
     "waitlist": {
@@ -102,7 +102,7 @@
     "currentWeek": 1,
     
     "seats": {
-      "available": 0,
+      "taken": 0,
       "total": 60
     },
     "waitlist": {
@@ -163,7 +163,7 @@
     "currentWeek": 1,
     
     "seats": {
-      "available": 0,
+      "taken": 0,
       "total": 200
     },
     "waitlist": {
@@ -224,7 +224,7 @@
     "currentWeek": 1,
     
     "seats": {
-      "available": 25,
+      "taken": 25,
       "total": 120
     },
     "waitlist": {
@@ -285,7 +285,7 @@
     "currentWeek": 1,
     
     "seats": {
-      "available": 12,
+      "taken": 12,
       "total": 150
     },
     "waitlist": {
@@ -334,7 +334,7 @@
     "currentWeek": 1,
     
     "seats": {
-      "available": 0,
+      "taken": 0,
       "total": 80
     },
     "waitlist": {
@@ -394,7 +394,7 @@
     "title": "Composition",
     "currentWeek": 1,
     "seats": {
-      "available": 30,
+      "taken": 30,
       "total": 100
     },
     "waitlist": {

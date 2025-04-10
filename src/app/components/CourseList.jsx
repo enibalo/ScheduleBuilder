@@ -15,7 +15,7 @@ import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { ChevronDown } from 'lucide-react';
 import { useState } from "react";
 
-function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enrolledCourses, onDeleteCourse}) {
+function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, onDeleteCourse }) {
   const [isOpen, setIsOpen] = useState(new Array(courses.length).fill(false));
 
 
@@ -24,7 +24,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
       {courses.length > 0 ? (
         courses.map((course, index) => {
           const courseTimings = getCourseOfferings(course["schedule" + course.currentWeek]);
-  
+
           return (
             <Card key={course.id} className="overflow-hidden py-3">
               <CardContent className="p-2">
@@ -44,7 +44,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
                         <div className="flex flex-wrap gap-4 text-xs">
                           <div>
                             <p className="text-muted-foreground">Seats:</p>
-                            <p className="font-medium">{course.seats.available}/{course.seats.total}</p>
+                            <p className="font-medium">{course.seats.taken}/{course.seats.total}</p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Waitlist:</p>
@@ -52,11 +52,11 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
                           </div>
                         </div>
                         <div className="flex items-center">
-                          <EnrollmentStatus course={course} enrolledCourses={enrolledCourses} />
+                          <EnrollmentStatus course={course} />
                         </div>
                       </div>
                     </div>
-  
+
                     <Collapsible
                       open={isOpen[index]}
                       onOpenChange={(value) =>
@@ -91,7 +91,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
                       </CollapsibleContent>
                     </Collapsible>
                   </div>
-  
+
                   <div className="flex flex-col justify-between items-center gap-1">
                     <Button variant="ghost" size="icon" onClick={() => toggleCoursePinned(course.id)}>
                       {course.pinned ? (
@@ -120,7 +120,7 @@ function CourseList({ courses, toggleCourseSelection, toggleCoursePinned, enroll
       )}
     </div>
   );
-  
+
 }
 
 

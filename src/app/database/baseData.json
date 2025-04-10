@@ -1,36 +1,36 @@
 [[
   {
     "id": "1",
-    "status": "none"
+    "status": "None"
   },
   {
     "id": "2",
-    "status": "enrolled"
+    "status": "Enrolled"
   },
   {
     "id": "3",
-    "status": "waitlisted"
+    "status": "Waitlisted"
   },
   {
     "id": "4",
-    "status": "none"
+    "status": "None"
   }
   ], [
     {
       "id": "5",
-      "status": "none"
+      "status": "None"
     }, 
     {
       "id": "6",
-      "status": "none"
+      "status": "None"
     }, 
     {
       "id": "7",
-      "status": "enrolled"
+      "status": "Enrolled"
     }, 
     {
       "id": "8",
-      "status": "enrolled"
+      "status": "Enrolled"
     }
   ]
 ]

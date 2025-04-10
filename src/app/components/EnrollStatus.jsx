@@ -1,5 +1,3 @@
-"use client"
-
 import { Badge } from "@/components/ui/badge"
 import {
   UserPlus,
@@ -8,9 +6,7 @@ import {
   Ban,
 } from "lucide-react"
 
-
-
-function EnrollmentStatus({ course }) {
+function EnrollStatus({ course }) {
   if (course.status != "Enrolled" && course.status != "Waitlisted") {
     if (course.seats.taken < course.seats.total) {
       return (
@@ -42,4 +38,4 @@ function EnrollmentStatus({ course }) {
   }
 }
 
-export default EnrollmentStatus
+export default EnrollStatus

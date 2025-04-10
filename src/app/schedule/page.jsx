@@ -55,12 +55,12 @@ export default function CourseSearch() {
     return found;
   }
 
-  const initalCourses = 
-  [{
-    name: `Schedule ${0}`,
-    id: Date.now().toString(),
-    courses: []
-  }];
+  const initalCourses =
+    [{
+      name: `Schedule ${0}`,
+      id: Date.now().toString(),
+      courses: []
+    }];
 
   // baseData.map((schedule, index) => {
   //     return {
@@ -77,8 +77,6 @@ export default function CourseSearch() {
   //     }
   //   });
 
-  const [enrolledCourses, setEnrolledCourses] = useState({});
-
   const [searchQuery, setSearchQuery] = useState("")
   const [activeSchedule, setActiveSchedule] = useState(0)
   const [loadedSchedules, setLoadedSchedules] = useState(initalCourses)
@@ -90,12 +88,10 @@ export default function CourseSearch() {
   const [scheduleName, setScheduleName] = useState("")
   const [enrollmentStatus, setEnrollmentStatus] = useState({})
   const [selectedTerm, setSelectedTerm] = useState(localStorage.getItem("term"))
-  const [totalWeeks,setTotalWeeks] = useState(0)
+  const [totalWeeks, setTotalWeeks] = useState(0)
   const [selectedCourse, setSelectedCourse] = useState("")
 
- 
-  // Add new state for tracking pending actions
-  const [pendingActions, setPendingActions] = useState([])
+  const [courseActions, setCourseActions] = useState([])
   const [confirmationOpen, setConfirmationOpen] = useState(false)
   const [successDialogOpen, setSuccessDialogOpen] = useState(false)
   const [requiredDialogOpen, setRequiredDialogOpen] = useState(false)
@@ -162,31 +158,33 @@ export default function CourseSearch() {
     localStorage.setItem("enrollmentStatus", JSON.stringify(enrollmentStatus))
   }, [enrollmentStatus])
 
-  useEffect(()=>{
+  useEffect(() => {
 
-    const countSelected = activeScheduleData.courses.reduce((acc, course)=> acc + course.selected , 0)
-    const countToggled = activeScheduleData.courses.reduce((acc, course)=> acc + course.pinned, 0)
+    const countSelected = activeScheduleData.courses.reduce((acc, course) => acc + course.selected, 0)
+    const countToggled = activeScheduleData.courses.reduce((acc, course) => acc + course.pinned, 0)
 
     //while schedule is empty 
-    if (countSelected == 0){
+    if (countSelected == 0) {
       setTotalWeeks(0)
       setWeekNumber(0)
       //first item is added to schedule 
-    }else {
-      if (totalWeeks == 0){
-      setTotalWeeks(2)
-      setWeekNumber(1)
-    }}
+    } else {
+      if (totalWeeks == 0) {
+        setTotalWeeks(2)
+        setWeekNumber(1)
+      }
+    }
 
     //if all courses are pinned 
-    if (countSelected > 0 && countToggled == countSelected){
+    if (countSelected > 0 && countToggled == countSelected) {
       setTotalWeeks(1)
       setWeekNumber(1)
       // if one course is released from pinned state 
-    }else {
-      if (totalWeeks == 1){
-      setTotalWeeks(2)
-    }}
+    } else {
+      if (totalWeeks == 1) {
+        setTotalWeeks(2)
+      }
+    }
 
   }, [activeScheduleData])
 
@@ -222,8 +220,8 @@ export default function CourseSearch() {
 
     activeScheduleData.courses.forEach(course => {
       if (course.selected) {
-        {/*Handle pinned courses by checking a course's currentWeek */}
-        course["schedule" +  course.currentWeek].forEach((scheduleItem, index) => {
+        {/*Handle pinned courses by checking a course's currentWeek */ }
+        course["schedule" + course.currentWeek].forEach((scheduleItem, index) => {
           blocks.push({
             id: `${course.id}-${index}`,
             courseId: course.id,
@@ -291,7 +289,7 @@ export default function CourseSearch() {
     })
   }
 
-  function handleSelectedTerm(term){
+  function handleSelectedTerm(term) {
     setLoadedSchedules([{
       name: `Schedule ${0}`,
       id: Date.now().toString(),
@@ -336,33 +334,6 @@ export default function CourseSearch() {
     setSavedSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
   }
 
-  // Enrollment status management
-  const getCourseEnrollmentStatus = (courseId) => {
-    return enrollmentStatus[courseId] || "not-enrolled"
-  }
-
-  const updateEnrollmentStatus = (courseId, status) => {
-    setEnrollmentStatus((prev) => ({
-      ...prev,
-      [courseId]: status,
-    }))
-
-  }
-
-  const handleAction = (courseId, action) => {
-    const course = activeScheduleData.courses.find((c) => c.id === courseId)
-    setPendingActions((prev) => [
-      ...prev,
-      {
-        type: action,
-        courseId,
-        courseName: course.code,
-      },
-    ])
-  }
-
- 
-
   // Add a new function to handle the "Get Schedule" button click
   const handleGetSchedule = () => {
     setConfirmationOpen(true)
@@ -370,58 +341,42 @@ export default function CourseSearch() {
 
   // Add confirmation handlers
   const handleConfirmActions = () => {
-    pendingActions.forEach((action) => {
-      switch (action.type) {
-        case "enroll":
-          updateEnrollmentStatus(action.courseId, "enrolled")
-          if (!activeScheduleData.includes(action.courseId)) {
-            toggleCourseSelection(action.courseId)
-          }
-          break
-        case "waitlist":
-          updateEnrollmentStatus(action.courseId, "waitlisted")
-          if (!activeScheduleData.includes(action.courseId)) {
-            toggleCourseSelection(action.courseId)
-          }
-          break
-        case "drop":
-          updateEnrollmentStatus(action.courseId, "not-enrolled")
-          if (activeScheduleData.includes(action.courseId)) {
-            toggleCourseSelection(action.courseId)
-          }
-          break
+    const completedActions = []
+    const updatedCourseList = activeScheduleData.courses.map(course => {
+      if (course.status === "None") {
+        if (course.seats.taken < course.seats.total) {
+          completedActions.push({ courseName: course.code, type: "enroll" })
+          return { ...course, status: "Enrolled" }
+        }
+        if (course.waitlist.count < course.waitlist.capacity) {
+          completedActions.push({ courseName: course.code, type: "waitlist" })
+          return { ...course, status: "Waitlisted" }
+        }
       }
+      completedActions.push({ courseName: course.code, type: "none" })
+      return course;
+    });
+
+
+    setActiveScheduleData({
+      ...activeScheduleData, courses: updatedCourseList
     })
 
-    let newEnrolledCourses = {}
-
-    {/**used to update the Enrollment Status of a course */}
-    pendingActions.forEach( (action)=>{
-      if (action.type != "drop"){
-        const courseKey =  action.id + "-" + activeScheduleData.find((item ) => item.id == action.id).currentWeek
-        const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-        newEnrolledCourses[courseKey] = capitalizeFirst(action.type + "ed")
-      }
-    })
-
-    setEnrolledCourses((newEnrolledCourses))
+    setCourseActions(completedActions);
 
     setConfirmationOpen(false)
-    // Show success dialog after actions are completed
     setSuccessDialogOpen(true)
   }
 
   const handleCancelActions = () => {
-    setPendingActions([])
     setConfirmationOpen(false)
   }
 
   const handleSaveFilters = () => {
-    // Apply filters logic here
     setFilterDialogOpen(false)
   }
 
-  const handleDeleteCourse = (courseId) =>{
+  const handleDeleteCourse = (courseId) => {
     const newCourses = activeScheduleData.courses.filter(course => course.id != courseId)
     setActiveScheduleData({
       ...activeScheduleData,
@@ -434,19 +389,19 @@ export default function CourseSearch() {
     const newCourse = allCourses.find(item => item.id === courseId)
     setSelectedCourse(newCourse)
     console.log(`${newCourse.code}`)
-    if (newCourse.requiredClasses){
-        console.log(`${newCourse.code} is required`)
-        console.log(`${activeScheduleData.courses} `)
-        if (activeScheduleData.courses.includes(item => item.id == courseId) == false){
-          addCourse(newCourse)
-        }
+    if (newCourse.requiredClasses) {
+      console.log(`${newCourse.code} is required`)
+      console.log(`${activeScheduleData.courses} `)
+      if (activeScheduleData.courses.includes(item => item.id == courseId) == false) {
+        addCourse(newCourse)
+      }
 
-    }else{
-      setRequiredDialogOpen(true)  
+    } else {
+      setRequiredDialogOpen(true)
     }
   }
 
-  function addCourse(course){
+  function addCourse(course) {
     setActiveScheduleData({
       ...activeScheduleData,
       courses: [
@@ -456,7 +411,7 @@ export default function CourseSearch() {
           currentWeek: (weekNumber == 0 ? 1 : weekNumber),
           selected: false,
           pinned: false,
-          status: "none"
+          status: "None"
         }
       ]
     })
@@ -469,20 +424,20 @@ export default function CourseSearch() {
     gap: '4em',
     maxWidth: "1130px",
   };
-  
+
 
   return (
     <div className="min-h-screen bg-gray-50 text-sm"> {/* ↓ base text size */}
       <AppHeader />
-  
+
       <div className="w-full max-w-[1400px] mx-auto p-2 pt-2 flex min-h-screen justify-center"> {/* ↓ padding, align top */}
         <div className="p-2  w-full items-start" style={gridStyle}> {/* ↓ gap */}
           {/* {
     gridColumn: 'span 1',
   }; */}
           {/* Course Search Section */}
-          <div className="space-y-3" style={{maxWidth: "480px", }}> {/* ↓ vertical spacing */}
-  
+          <div className="space-y-3" style={{ maxWidth: "480px", }}> {/* ↓ vertical spacing */}
+
             {/* Term selection */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -502,7 +457,7 @@ export default function CourseSearch() {
                   </SelectContent>
                 </Select>
               </div>
-  
+
               <TooltipProvider>
                 <Tooltip delayDuration={300}>
                   <TooltipTrigger asChild>
@@ -528,7 +483,7 @@ export default function CourseSearch() {
                 </Tooltip>
               </TooltipProvider>
             </div>
-  
+
             {/* Search and filter row */}
             <div className="flex flex-col md:flex-row gap-2 items-start">
               <div className="relative flex-1">
@@ -540,7 +495,7 @@ export default function CourseSearch() {
               </Button>
               <FilterDialog {...{ open: filterDialogOpen, onOpenChange: setFilterDialogOpen, filters, onFiltersChange: setFilters, onSave: handleSaveFilters }} />
             </div>
-  
+
             {/* Tab section */}
             <div>
               <div className="flex border-b overflow-auto scrollbar-none overflow-y-hidden text-xs">
@@ -556,7 +511,7 @@ export default function CourseSearch() {
                     {activeSchedule === index && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
                   </div>
                 ))}
-  
+
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -576,20 +531,20 @@ export default function CourseSearch() {
                 </TooltipProvider>
                 <div className="flex-1 border-b -mb-px"></div>
               </div>
-  
+
               {/* Schedule action buttons */}
               <div className="flex justify-end items-center gap-2 mt-1 mb-2">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => addTab({...activeScheduleData, name : `Schedule ${loadedSchedules.length}`})}>
+                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => addTab({ ...activeScheduleData, name: `Schedule ${loadedSchedules.length}` })}>
                         <Copy className="h-3.5 w-3.5" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent><p>Copy</p></TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-  
+
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -602,18 +557,20 @@ export default function CourseSearch() {
                 </TooltipProvider>
               </div>
             </div>
-  
-            <CourseList {...{ onDeleteCourse: handleDeleteCourse, courses: activeScheduleData.courses, enrolledCourses, toggleCourseSelection, toggleCoursePinned }} />
-            
+
+            <CourseList {...{ onDeleteCourse: handleDeleteCourse, courses: activeScheduleData.courses, toggleCourseSelection, toggleCoursePinned }} />
+
           </div>
-  
+
           {/* Schedule Preview */}
           <div className="" >
             <SchedulePreview {...{
               weekNumber, totalWeeks, courses: selectedCourseBlocks, dates: weekDates,
-              conflicts: [{"day": 1,
-        "startHour": 11,
-        "duration": 1.5}],
+              conflicts: [{
+                "day": 1,
+                "startHour": 11,
+                "duration": 1.5
+              }],
               scheduleName: activeScheduleData.name,
               onTogglePin: toggleCoursePinned,
               onSaveSchedule: () => setSaveDialogOpen(true),
@@ -640,34 +597,34 @@ export default function CourseSearch() {
                 });
               }
             }} />
-  
+
             <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
               <DialogContent className="sm:max-w-[400px] h-auto text-sm">
                 <DialogHeader>
                   <DialogTitle>Save Schedule</DialogTitle>
-                  {activeScheduleData.courses.length > 0 ? <DialogDescription>Name your schedule to save it.</DialogDescription> : 
-                  <div>Please add at least one course to your schedule before attempting to save it.</div> }
+                  {activeScheduleData.courses.length > 0 ? <DialogDescription>Name your schedule to save it.</DialogDescription> :
+                    <div>Please add at least one course to your schedule before attempting to save it.</div>}
                 </DialogHeader>
                 <div className="grid gap-3 py-3">
                   <div className="grid grid-cols-4 items-center gap-2">
-                  {activeScheduleData.courses.length > 0 &&
-                  <><Label htmlFor="name" className="text-right">Name</Label>
-                    <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" /></> 
-                     }
-                    
+                    {activeScheduleData.courses.length > 0 &&
+                      <><Label htmlFor="name" className="text-right">Name</Label>
+                        <Input id="name" value={scheduleName} onChange={(e) => setScheduleName(e.target.value)} className="col-span-3 h-8" /></>
+                    }
+
                   </div>
                 </div>
                 <DialogFooter>
                   {activeScheduleData.courses.length > 0 &&
-                  <>
-                  <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={saveCurrentSchedule}>Save</Button>
-                  </>}
+                    <>
+                      <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
+                      <Button onClick={saveCurrentSchedule}>Save</Button>
+                    </>}
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
-  
+
           {/* Fixed Saved Schedules */}
           <SavedSchedules {...{
             savedSchedules, onRemoveSchedule: removeSavedSchedule,
@@ -675,16 +632,15 @@ export default function CourseSearch() {
             onCollapse: () => setSavedSchedulesCollapsed(!savedSchedulesCollapsed),
             isCollapsed: savedSchedulesCollapsed
           }} />
-         <SuggestedCourses onAddCourse={addCourseToSchedule} />
+          <SuggestedCourses onAddCourse={addCourseToSchedule} />
         </div>
-  
-        {/* Misc dialogs */}
+        {/* Confirmation Dialog */}
         <GetScheduleDialog open={confirmationOpen} courses={activeScheduleData.courses} onConfirm={handleConfirmActions} onCancel={handleCancelActions} />
-        <RequirementsDialog course={selectedCourse} open={requiredDialogOpen} onConfirm={() => { addCourse(selectedCourse); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)} />
-        <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={pendingActions} />
+        <RequirementsDialog course={selectedCourse} open={requiredDialogOpen} onConfirm={() => { console.log("item added"); setRequiredDialogOpen(false) }} onCancel={() => setRequiredDialogOpen(false)}></RequirementsDialog>
+        <SuccessDialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen} actions={courseActions} />
       </div>
     </div>
   )
-  
+
 }
 
