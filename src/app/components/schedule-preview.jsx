@@ -180,7 +180,6 @@ export function SchedulePreview({
 const styles = { 
   hours : { 
     position: "absolute",
-    zIndex: "2",
     // left: "-10px",
     // top:"-7px",
     marginRight: "5px",
@@ -188,9 +187,8 @@ const styles = {
     backgroundColor: 'white',
     left: '-55px',
     padding: '0px 10px',
-    borderRightWidth: '0px',
+    borderLeft: '1px solid rgb(241, 243, 248)',
     borderTop: '1px solid rgb(241, 243, 248)',
-    paddingRight: '50px',
   
   }   
 
