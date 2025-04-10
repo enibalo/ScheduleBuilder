@@ -215,8 +215,9 @@ export default function CourseSearch() {
   const weekDates = calculateDates(1)
 
   // Convert selected courses to schedule blocks
-  const selectedCourseBlocks = useMemo(() => {
+  const [selectedCourseBlocks, conflictBlocks] = useMemo(() => {
     const blocks = []
+    const conflicts = []
 
     activeScheduleData.courses.forEach(course => {
       if (course.selected) {
@@ -234,11 +235,30 @@ export default function CourseSearch() {
             color: course.color,
             isPinned: course.pinned,
           })
+          activeScheduleData.courses.forEach(course2 => {
+            if (course2.selected && course2.id !== course.id) {
+
+
+              course2["schedule" + course.currentWeek].forEach((scheduleItem2, index2) => {
+                if (scheduleItem2.day === scheduleItem.day) {
+                  if (scheduleItem2.startHour >= scheduleItem.startHour && scheduleItem2.startHour <= (scheduleItem.startHour + scheduleItem.duration)) {
+                    conflicts.push({
+                      day: scheduleItem.day,
+                      startHour: scheduleItem2.startHour,
+                      duration: (scheduleItem.startHour + scheduleItem.duration) - scheduleItem2.startHour
+                    })
+                  }
+                }
+              })
+            }
+          })
         })
       }
     })
 
-    return blocks
+    console.log(conflicts);
+
+    return [blocks, conflicts]
   }, [activeScheduleData])
 
   const toggleCourseSelection = (courseId) => {
@@ -388,7 +408,7 @@ export default function CourseSearch() {
   function addCourseToSchedule(courseId) {
     const newCourse = allCourses.find(item => item.id === courseId)
     setSelectedCourse(newCourse)
-    
+
     if (newCourse.requiredClasses) {
       if (activeScheduleData.courses.includes(item => item.id == courseId) == false) {
         addCourse(newCourse)
@@ -564,11 +584,7 @@ export default function CourseSearch() {
           <div className="" >
             <SchedulePreview {...{
               weekNumber, totalWeeks, courses: selectedCourseBlocks, dates: weekDates,
-              conflicts: [{
-                "day": 1,
-                "startHour": 11,
-                "duration": 1.5
-              }],
+              conflicts: conflictBlocks,
               scheduleName: activeScheduleData.name,
               onTogglePin: toggleCoursePinned,
               onSaveSchedule: () => setSaveDialogOpen(true),
