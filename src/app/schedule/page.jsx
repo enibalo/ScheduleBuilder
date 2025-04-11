@@ -239,7 +239,7 @@ export default function CourseSearch() {
           // get conflict blocks
           activeScheduleData.courses.forEach(course2 => {
             if (course2.selected && course2.id !== course.id) {
-              course2["schedule" + course.currentWeek].forEach((scheduleItem2, index2) => {
+              course2["schedule" + course2.currentWeek].forEach((scheduleItem2, index2) => {
                 if (scheduleItem2.day === scheduleItem.day) {
                   if (scheduleItem2.startHour >= scheduleItem.startHour && scheduleItem2.startHour <= (scheduleItem.startHour + scheduleItem.duration)) {
                     conflicts.push({
