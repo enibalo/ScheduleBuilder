@@ -44,7 +44,7 @@
     "professor": "Dr. Smith",
     "room": "Online",
     "tutorialRoom": "Room T101",
-    "requiredClasses": false,
+    "requiredClasses": true,
     "onlineClasses": true
   },
   {
@@ -153,7 +153,7 @@
     "professor": "Dr. Thompson",
     "room": "Room 303",
     "tutorialRoom": "Room T301",
-    "requiredClasses": false,
+    "requiredClasses": true,
     "onlineClasses": false
   },
   {
@@ -275,7 +275,7 @@
     "professor": "Dr. Patel",
     "room": "Room 505",
     "tutorialRoom": "Room T501",
-    "requiredClasses": true,
+    "requiredClasses": false,
     "onlineClasses": false
   },
   {
