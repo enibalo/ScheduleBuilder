@@ -1,9 +1,9 @@
 ## Group Members
-Sam Gaudet 
-Eni Balogun 
-Steven Susorov 
-Firdovsi Aliyev 
-Hareem Arif 
+- Sam Gaudet 
+- Eni Balogun 
+- Steven Susorov 
+- Firdovsi Aliyev 
+- Hareem Arif 
 
 
 ## Project description
